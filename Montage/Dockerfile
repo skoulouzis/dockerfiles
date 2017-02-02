@@ -32,10 +32,9 @@ RUN echo PATH=$PATH:/root/Montage/bin >> /root/.bashrc
 RUN echo PATH=$PATH:/root/Montage/examples >> /root/.bashrc
 RUN source /root/.bashrc
 
-RUN mArchiveList
-
 WORKDIR examples
 RUN chmod +x *.sh
 RUN ./downloadDSS.sh
-      
-ENTRYPOINT sh pleiades.sh
+ 
+#ENTRYPOINT tail -f /dev/null
+ENTRYPOINT sh pleiades.sh > out.log 
