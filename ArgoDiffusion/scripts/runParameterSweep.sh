@@ -44,11 +44,13 @@ function parseResult(){
     
     area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lon_min $geospatial_lat_max $geospatial_lon_max`
     
-#     {"date": "2017-05-16T12:52:40Z", "subscription_id": "1", "subscription_user_id": "2", "duration (seconds)": "0.855"}
     date=`jq -r .date out`
     execution_time=`jq -r '."duration (seconds)"' out`
+    num_of_params=`jq -r '.parameters[] | length' configuration_new.json`
+    input_folder=`jq -r .input_folder configuration_new.json`
+    dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     
-    echo "{" \"area\": $area, \"time_coverage\": \"$time_coverage\", \"data\": \"$date\", \"execution_time\": \"$execution_time\""}"
+    echo "{" \"area\": $area, \"time_coverage\": \"$time_coverage\", \"num_of_params\": \"$num_of_params\", \"dataset_size\": \"$dataset_size\", \"execution_time\": \"$execution_time\",\"execution_date\": \"$date\""}"
 }
 
 #Set latitude

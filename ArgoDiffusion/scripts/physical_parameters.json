@@ -1,0 +1,1654 @@
+{
+  "9": {
+    "label": "Depth",
+    "unit": "meter"
+  },
+  "11": {
+    "label": "Dissolved oxygen",
+    "unit": "millimole/m3"
+  },
+  "12": {
+    "label": "Dissolved oxygen (deprecated)",
+    "unit": "unknown"
+  },
+  "13": {
+    "label": "West-east current component",
+    "unit": "meter/second"
+  },
+  "20": {
+    "label": "South-north current component",
+    "unit": "meter/second"
+  },
+  "28": {
+    "label": "Sea pressure",
+    "unit": "decibar"
+  },
+  "30": {
+    "label": "Practical salinity",
+    "unit": "psu",
+    "standard_name": "sea_water_salinity"
+  },
+  "35": {
+    "label": "Sea temperature",
+    "unit": "degree_Celsius"
+  },
+  "43": {
+    "label": "West-east wind component from model",
+    "unit": "meter/second"
+  },
+  "44": {
+    "label": "South-north wind component from model",
+    "unit": "meter/second"
+  },
+  "45": {
+    "label": "Electrical conductivity",
+    "unit": "S/m"
+  },
+  "50": {
+    "label": "Result of current test",
+    "unit": "none"
+  },
+  "54": {
+    "label": "Wind stress east component from model",
+    "unit": "newton/m2"
+  },
+  "55": {
+    "label": "Wind stress north component from model",
+    "unit": "newton/m2"
+  },
+  "58": {
+    "label": "Sea temperature from TSG",
+    "unit": "degree_Celsius"
+  },
+  "59": {
+    "label": "Horizontal current speed",
+    "unit": "meter/second"
+  },
+  "60": {
+    "label": "Current to direction relative true north",
+    "unit": "degree"
+  },
+  "61": {
+    "label": "Dissolved oxygen",
+    "unit": "ml/l"
+  },
+  "63": {
+    "label": "Fluorescence",
+    "unit": "relative unit"
+  },
+  "64": {
+    "label": "Dissolved oxygen",
+    "unit": "micromole/kg"
+  },
+  "65": {
+    "label": "Chlorophyll-a",
+    "unit": "milligram/m3"
+  },
+  "66": {
+    "label": "Sea pressure adjusted",
+    "unit": "decibar"
+  },
+  "67": {
+    "label": "Sea pressure adjusted error",
+    "unit": "decibar"
+  },
+  "68": {
+    "label": "Sea temperature adjusted",
+    "unit": "degree_Celsius"
+  },
+  "69": {
+    "label": "Sea temperature adjusted error",
+    "unit": "degree_Celsius"
+  },
+  "70": {
+    "label": "Practical salinity adjusted",
+    "unit": "psu",
+    "standard_name": "sea_water_salinity"
+  },
+  "71": {
+    "label": "Practical salinity adjusted error",
+    "unit": "psu"
+  },
+  "72": {
+    "label": "Electrical conductivity adjusted",
+    "unit": "S/m"
+  },
+  "73": {
+    "label": "Electrical conductivity adjusted error",
+    "unit": "S/m"
+  },
+  "74": {
+    "label": "Molar dissolved oxygen adjusted",
+    "unit": "millimole/m3"
+  },
+  "75": {
+    "label": "Molar dissolved oxygen adjusted error",
+    "unit": "millimole/m3"
+  },
+  "76": {
+    "label": "Depth adjusted",
+    "unit": "meter"
+  },
+  "77": {
+    "label": "Depth adjusted error",
+    "unit": "meter"
+  },
+  "82": {
+    "label": "Atmospheric pressure at sea level",
+    "unit": "hectopascal"
+  },
+  "83": {
+    "label": "Atmospheric pressure hourly tendency",
+    "unit": "hectopascal/hour"
+  },
+  "84": {
+    "label": "Atmospheric pressure at altitude",
+    "unit": "hectopascal"
+  },
+  "87": {
+    "label": "Horizontal wind speed",
+    "unit": "meter/second"
+  },
+  "88": {
+    "label": "Wind from direction relative true north",
+    "unit": "degree"
+  },
+  "89": {
+    "label": "Air temperature in dry bulb",
+    "unit": "degree_Celsius"
+  },
+  "90": {
+    "label": "Relative humidity",
+    "unit": "%"
+  },
+  "94": {
+    "label": "SWELL PERIOD",
+    "unit": "second"
+  },
+  "95": {
+    "label": "SWELL HEIGHT",
+    "unit": "meter"
+  },
+  "96": {
+    "label": "Sea temperature from oxygen sensor",
+    "unit": "degree_Celsius"
+  },
+  "97": {
+    "label": "Sea temperature from oxygen sensor adjusted",
+    "unit": "degree_Celsius"
+  },
+  "98": {
+    "label": "Sea temperature from oxygen sensor adjusted error",
+    "unit": "degree_Celsius"
+  },
+  "100": {
+    "label": "Oxygen saturation",
+    "unit": "%"
+  },
+  "101": {
+    "label": "Turbidity",
+    "unit": "milliF.T.U Formaz Turb Unit"
+  },
+  "102": {
+    "label": "Chlorophyll-a fluorescence",
+    "unit": "milligram/m3"
+  },
+  "103": {
+    "label": "Gust wind speed",
+    "unit": "meter/second"
+  },
+  "104": {
+    "label": "Incident radiation",
+    "unit": "W/m2"
+  },
+  "105": {
+    "label": "Longwave incoming radiation",
+    "unit": "W/m2"
+  },
+  "106": {
+    "label": "Hourly precipitation rate",
+    "unit": "millimeter/hour"
+  },
+  "107": {
+    "label": "Platform heading relative true north",
+    "unit": "degree"
+  },
+  "108": {
+    "label": "AVER. HEIGHT HIGHEST 1/3 WAVE",
+    "unit": "meter"
+  },
+  "109": {
+    "label": "WAVE DIRECTION REL. TRUE NORTH",
+    "unit": "degree"
+  },
+  "114": {
+    "label": "Total chlorophyll",
+    "unit": "milligram/m3"
+  },
+  "124": {
+    "label": "Ph",
+    "unit": "none"
+  },
+  "132": {
+    "label": "Total suspended matter",
+    "unit": "gram/m3"
+  },
+  "133": {
+    "label": "Light attenuation coefficient",
+    "unit": "m-1"
+  },
+  "135": {
+    "label": "Turbidity",
+    "unit": "ntu"
+  },
+  "139": {
+    "label": "SIGNIFICANT WAVE HEIGHT",
+    "unit": "meter"
+  },
+  "145": {
+    "label": "River flow rate",
+    "unit": "m3/second"
+  },
+  "146": {
+    "label": "Observed sea level",
+    "unit": "meter"
+  },
+  "147": {
+    "label": "Altitude",
+    "unit": "meter"
+  },
+  "148": {
+    "label": "AVER ZERO CROSSING WAVE PERIOD",
+    "unit": "second"
+  },
+  "150": {
+    "label": "Daily precipitation rate",
+    "unit": "millimeter/day",
+    "standard_name": "lwe_precipitation_rate"
+  },
+  "151": {
+    "label": "Daily potential evapotranspiration",
+    "unit": "millimeter/day"
+  },
+  "153": {
+    "label": "Dew point temperature",
+    "unit": "degree_Celsius"
+  },
+  "154": {
+    "label": "SWELL DIRECTION REL TRUE N.",
+    "unit": "degree"
+  },
+  "155": {
+    "label": "Fluorescence",
+    "unit": "FFU"
+  },
+  "156": {
+    "label": "LIGHT IRRADIANCE SURFACE PAR",
+    "unit": "micromole photon/(m2.s)"
+  },
+  "157": {
+    "label": "TRANSMISSIVITY",
+    "unit": "per meter"
+  },
+  "158": {
+    "label": "MAX CREST TROUGH WAVE HEIGHT",
+    "unit": "meter"
+  },
+  "159": {
+    "label": "AVER. PERIOD HIGHEST 1/3 WAVE",
+    "unit": "second"
+  },
+  "160": {
+    "label": "SPECTRAL SIGNIF. WAVE HEIGHT",
+    "unit": "meter"
+  },
+  "161": {
+    "label": "Sea temperature standard deviation",
+    "unit": "degree_Celsius"
+  },
+  "162": {
+    "label": "Practical salinity standard deviation",
+    "unit": "psu"
+  },
+  "163": {
+    "label": "Dissolved oxygen standard deviation",
+    "unit": "millimole/m3"
+  },
+  "164": {
+    "label": "Light attenuation coefficient standard deviation",
+    "unit": "m-1"
+  },
+  "165": {
+    "label": "Spectral irradiance for 1st wavelength",
+    "unit": "uW cm-2 nm-1"
+  },
+  "166": {
+    "label": "Spectral irradiance for 2nd wavelength",
+    "unit": "uW cm-2 nm-1"
+  },
+  "167": {
+    "label": "Spectral irradiance for 3rd wavelength",
+    "unit": "uW cm-2 nm-1"
+  },
+  "168": {
+    "label": "Backscattering",
+    "unit": "m-1 sr-1"
+  },
+  "169": {
+    "label": "Cdom",
+    "unit": "ppb"
+  },
+  "170": {
+    "label": "Spectral irradiance for 1st wavelength standard deviation",
+    "unit": "uW cm-2 nm-1"
+  },
+  "171": {
+    "label": "Spectral irradiance for 2nd wavelength standard deviation",
+    "unit": "uW cm-2 nm-1"
+  },
+  "172": {
+    "label": "Spectral irradiance for 3rd wavelength standard deviation",
+    "unit": "uW cm-2 nm-1"
+  },
+  "173": {
+    "label": "CO2 partial pressure",
+    "unit": "microatmosphere"
+  },
+  "174": {
+    "label": "CO2 fugacity",
+    "unit": "microatmosphere"
+  },
+  "175": {
+    "label": "Bphase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "176": {
+    "label": "Residual sea level (observed - predicted)",
+    "unit": "meter"
+  },
+  "177": {
+    "label": "Electrical conductivity standard deviation",
+    "unit": "S/m"
+  },
+  "180": {
+    "label": "Sea temperature from TSG standard deviation",
+    "unit": "degree_Celsius"
+  },
+  "183": {
+    "label": "Sea temperature from TSG adjusted",
+    "unit": "degree_Celsius"
+  },
+  "184": {
+    "label": "Sea temperature from TSG adjusted error",
+    "unit": "degree_Celsius"
+  },
+  "188": {
+    "label": "Molar dissolved oxygen",
+    "unit": "millimole/m3"
+  },
+  "192": {
+    "label": "Chlorophyll-a fluorescence adjusted",
+    "unit": "milligram/m3"
+  },
+  "193": {
+    "label": "Dissolved oxygen adjusted",
+    "unit": "micromole/kg"
+  },
+  "194": {
+    "label": "Dissolved oxygen adjusted error",
+    "unit": "micromole/kg"
+  },
+  "195": {
+    "label": "Bphase signal of oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "196": {
+    "label": "Bphase signal of oxygen sensor adjusted error",
+    "unit": "degree"
+  },
+  "197": {
+    "label": "Dphase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "198": {
+    "label": "Dphase signal of oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "199": {
+    "label": "Dphase signal of oxygen sensor adjusted error",
+    "unit": "degree"
+  },
+  "200": {
+    "label": "Frequency signal of oxygen sensor",
+    "unit": "Hz"
+  },
+  "201": {
+    "label": "Frequency signal of oxygen sensor adjusted",
+    "unit": "Hz"
+  },
+  "202": {
+    "label": "Frequency signal of oxygen sensor adjusted error",
+    "unit": "Hz"
+  },
+  "203": {
+    "label": "Voltage signal of oxygen sensor",
+    "unit": "V"
+  },
+  "204": {
+    "label": "Voltage signal of oxygen sensor adjusted",
+    "unit": "V"
+  },
+  "205": {
+    "label": "Voltage signal of oxygen sensor adjusted error",
+    "unit": "V"
+  },
+  "206": {
+    "label": "Count signal of oxygen sensor",
+    "unit": "count"
+  },
+  "207": {
+    "label": "Count signal of oxygen sensor adjusted",
+    "unit": "count"
+  },
+  "208": {
+    "label": "Count signal of oxygen sensor adjusted error",
+    "unit": "count"
+  },
+  "209": {
+    "label": "Scattering",
+    "unit": "m-1 sr-1"
+  },
+  "210": {
+    "label": "SPECT. MOMENT(0,2) WAVE PERIOD",
+    "unit": "second"
+  },
+  "211": {
+    "label": "WAVE SPECTRUM PEAK PERIOD",
+    "unit": "second"
+  },
+  "212": {
+    "label": "WAVE SPECTRUM PEAK ENERGY DIR.",
+    "unit": "degree"
+  },
+  "213": {
+    "label": "Wave directional spreading at spectral peak",
+    "unit": "degree"
+  },
+  "214": {
+    "label": "WAVE SPECTRUM PEAK ENERGY",
+    "unit": "m2 second"
+  },
+  "215": {
+    "label": "Chlorophyll-A signal from fluorescence sensor",
+    "unit": "count"
+  },
+  "216": {
+    "label": "Count signal of backscatter sensor",
+    "unit": "count"
+  },
+  "217": {
+    "label": "Count signal of thermistor",
+    "unit": "count"
+  },
+  "218": {
+    "label": "Mass concentration of oxygen",
+    "unit": "milligram/m3"
+  },
+  "219": {
+    "label": "Battery voltage 12V",
+    "unit": "volt"
+  },
+  "220": {
+    "label": "Battery voltage 24V",
+    "unit": "volt"
+  },
+  "221": {
+    "label": "Internal pressure",
+    "unit": "millibar"
+  },
+  "222": {
+    "label": "JPP pressure 1",
+    "unit": "microsecond"
+  },
+  "223": {
+    "label": "JPP Temperature 1",
+    "unit": "microsecond"
+  },
+  "224": {
+    "label": "OBS hard disk block count",
+    "unit": "count"
+  },
+  "225": {
+    "label": "OBS totalSeismsSinceOn",
+    "unit": "count"
+  },
+  "226": {
+    "label": "OBS Dumps count",
+    "unit": "count"
+  },
+  "227": {
+    "label": "Fluorescence",
+    "unit": "volt"
+  },
+  "228": {
+    "label": "West-east wind component",
+    "unit": "meter/second"
+  },
+  "229": {
+    "label": "South-north wind component",
+    "unit": "meter/second"
+  },
+  "230": {
+    "label": "Wind to direction relative true north",
+    "unit": "degree"
+  },
+  "231": {
+    "label": "Bottom-top current component",
+    "unit": "meter/second"
+  },
+  "232": {
+    "label": "MAX PERIOD HIGHEST 1/3 WAVE",
+    "unit": "second"
+  },
+  "233": {
+    "label": "PERIOD OF THE HIGHEST WAVE",
+    "unit": "second"
+  },
+  "300": {
+    "label": "Alpha and beta-carotenes",
+    "unit": "milligram/m3"
+  },
+  "301": {
+    "label": "Total alkalinity",
+    "unit": "micromole/kg"
+  },
+  "302": {
+    "label": "SEDIMENT AMINO-ACIDS",
+    "unit": "microgram/g"
+  },
+  "303": {
+    "label": "Ammonium (NH4-N)",
+    "unit": "micromole/kg"
+  },
+  "304": {
+    "label": "ABSORPTION STANDARD DEVIATION",
+    "unit": "milligram/m3"
+  },
+  "305": {
+    "label": "Alloxanthin",
+    "unit": "milligram/m3"
+  },
+  "306": {
+    "label": "Number of bacteria cells in sea water",
+    "unit": "10+9/m3"
+  },
+  "307": {
+    "label": "BACTERIAL BIOMASS IN SEA WATER",
+    "unit": "milligram carbon/m3"
+  },
+  "308": {
+    "label": "19'-Butanoyloxyfucoxanthin",
+    "unit": "milligram/m3"
+  },
+  "309": {
+    "label": "DARK FIXATION",
+    "unit": "milligram carbon/(m3.day)"
+  },
+  "310": {
+    "label": "DISSOLVED CFC11",
+    "unit": "picomole/kg"
+  },
+  "311": {
+    "label": "DISSOLVED CFC12",
+    "unit": "picomole/kg"
+  },
+  "312": {
+    "label": "Divinyl chlorophyll-a",
+    "unit": "milligram/m3"
+  },
+  "313": {
+    "label": "Epimere chlorophyll-a",
+    "unit": "milligram/m3"
+  },
+  "314": {
+    "label": "Divinyl chlorophyll-b",
+    "unit": "milligram/m3"
+  },
+  "315": {
+    "label": "Chlorophyll-c1+c2",
+    "unit": "milligram/m3"
+  },
+  "316": {
+    "label": "Chlorophyll-c3",
+    "unit": "milligram/m3"
+  },
+  "317": {
+    "label": "Total chlorophyll-b",
+    "unit": "milligram/m3"
+  },
+  "318": {
+    "label": "Total chlorophyll-c",
+    "unit": "milligram/m3"
+  },
+  "319": {
+    "label": "SEDIMENT CARBOHYDRATES",
+    "unit": "microgram/g"
+  },
+  "320": {
+    "label": "Chlorophyll-a (less divinyl chlorophyll-a)",
+    "unit": "milligram/m3"
+  },
+  "321": {
+    "label": "Total chlorophyll",
+    "unit": "microgram/kg"
+  },
+  "322": {
+    "label": "Chlorophyll-b (less divinyl chlorophyll-b)",
+    "unit": "milligram/m3"
+  },
+  "323": {
+    "label": "Number of ciliate cells in sea water",
+    "unit": "10+3/m3"
+  },
+  "324": {
+    "label": "DISSOLVED C-TETRACHLORIDE",
+    "unit": "picomole/kg"
+  },
+  "325": {
+    "label": "Number of copepods in sea water",
+    "unit": "count/m3"
+  },
+  "326": {
+    "label": "DISSOLVED ORGANIC CARBON",
+    "unit": "millimole/m3"
+  },
+  "327": {
+    "label": "PART. CaCO3 FLUX",
+    "unit": "milligram/(m2.day)"
+  },
+  "328": {
+    "label": "CARBONATES CONTENT",
+    "unit": "%"
+  },
+  "329": {
+    "label": "SEDIMENT CARBONATES",
+    "unit": "%"
+  },
+  "330": {
+    "label": "Chlorophyll-a (2nd measure)",
+    "unit": "milligram/m3"
+  },
+  "331": {
+    "label": "Chlorophyll-a >2 micrometers",
+    "unit": "milligram/m3"
+  },
+  "332": {
+    "label": "Chlorophyll-a >10 micrometers",
+    "unit": "milligram/m3"
+  },
+  "333": {
+    "label": "14C PRODUCTION FILTER UNSPECIF",
+    "unit": "milligram carbon/(m3.day)"
+  },
+  "334": {
+    "label": "14C UPTAKE 0.2-1 MICRON",
+    "unit": "milligram carbon/(m3.day)"
+  },
+  "335": {
+    "label": "DELTA 13C (13C/12C)",
+    "unit": "per thousand"
+  },
+  "336": {
+    "label": "DARK CARBON ABSORPTION",
+    "unit": "milligram/m3"
+  },
+  "337": {
+    "label": "Number of dinophysis specimens in sea water",
+    "unit": "10+3/m3"
+  },
+  "338": {
+    "label": "DISSOLVED ORGANIC PHOSPHORUS",
+    "unit": "millimole/m3"
+  },
+  "339": {
+    "label": "DEPTH BELOW BOTTOM-LOWER LIMIT",
+    "unit": "meter"
+  },
+  "340": {
+    "label": "DURATION (DAYS)",
+    "unit": "ddd"
+  },
+  "341": {
+    "label": "Diadinoxanthin",
+    "unit": "milligram/m3"
+  },
+  "342": {
+    "label": "TOTAL SUSP. PART. MATTER/ESTER",
+    "unit": "gram/m3"
+  },
+  "343": {
+    "label": "PARTICULATE 234 TH ACT. ERROR",
+    "unit": "Bequerel/m3"
+  },
+  "344": {
+    "label": "DISSOLVED 234 TH ACT. ERROR",
+    "unit": "Bq/m3"
+  },
+  "345": {
+    "label": "Fucoxanthin",
+    "unit": "milligram/m3"
+  },
+  "346": {
+    "label": "CARBOHYDRATE",
+    "unit": "milligram/m3"
+  },
+  "347": {
+    "label": "TOTAL SUSP. PART. MATTER/GLASS",
+    "unit": "gram/m3"
+  },
+  "348": {
+    "label": "Number of gyrodinium specimens in sea water",
+    "unit": "10+3/m3"
+  },
+  "349": {
+    "label": "Number of heterotrophic bacteria cells in sea water",
+    "unit": "10+6/m3"
+  },
+  "350": {
+    "label": "DELTA HELIUM 3",
+    "unit": "%"
+  },
+  "351": {
+    "label": "DISSOLVED HELIUM",
+    "unit": "nanomole/kg"
+  },
+  "352": {
+    "label": "19'-Hexanoyloxyfucoxanthin",
+    "unit": "milligram/m3"
+  },
+  "353": {
+    "label": "WATER CONTENT",
+    "unit": "%"
+  },
+  "354": {
+    "label": "DIC DELTA 13C",
+    "unit": "per thousand"
+  },
+  "355": {
+    "label": "IODINE",
+    "unit": "millimole/m3"
+  },
+  "356": {
+    "label": "INORGANIC SUSPENDED MATTER",
+    "unit": "gram/m3"
+  },
+  "357": {
+    "label": "LIGHT CARBON ABSORPTION",
+    "unit": "milligram/m3"
+  },
+  "358": {
+    "label": "LIGHT IRRADIANCE IMMERGED PAR",
+    "unit": "micromole photon/(m2.second)"
+  },
+  "359": {
+    "label": "PAR ATTENUATION COEFFICIENT",
+    "unit": "m-1"
+  },
+  "360": {
+    "label": "LIGHT IRRADIANCE CORRECTED PAR",
+    "unit": "micromole photon/(m2.second)"
+  },
+  "361": {
+    "label": "IMMERGED/SURF IRRADIANCE RATIO",
+    "unit": "%"
+  },
+  "362": {
+    "label": "LIPIDS IN THE WATER COLUMN",
+    "unit": "milligram/m3"
+  },
+  "363": {
+    "label": "SEDIMENT LIPIDS",
+    "unit": "microgram/g"
+  },
+  "364": {
+    "label": "LITHOGENIC CONTENT",
+    "unit": "%"
+  },
+  "365": {
+    "label": "LITHOGENIC FRACTION FLUX",
+    "unit": "milligram/(m2.day)"
+  },
+  "366": {
+    "label": "LEUCINE UPTAKE RATE",
+    "unit": "microgram carbon/(m3.hour)"
+  },
+  "367": {
+    "label": "DISSOLVED COPPER (Cu)",
+    "unit": "micromole/m3"
+  },
+  "368": {
+    "label": "DISSOLVED NICKEL (Ni)",
+    "unit": "micromole/m3"
+  },
+  "369": {
+    "label": "Mesozooplankton ash-free dry weight",
+    "unit": "milligram/m3"
+  },
+  "370": {
+    "label": "MEAN SPHERIC DIAM. OF PARTICLE",
+    "unit": "millimeter"
+  },
+  "371": {
+    "label": "MEAN SPHERIC DIAM. MEDIAN",
+    "unit": "millimeter"
+  },
+  "372": {
+    "label": "Mesozooplankton dry weight",
+    "unit": "milligram/m3"
+  },
+  "373": {
+    "label": "Number of nanoflagellate cells in sea water",
+    "unit": "10+3/m3"
+  },
+  "374": {
+    "label": "AMMONIUM REGENERATION",
+    "unit": "micromole nitrogen/(m3.day)"
+  },
+  "375": {
+    "label": "AMMONIUM UPTAKE",
+    "unit": "micromole nitrogen/(m3.day)"
+  },
+  "376": {
+    "label": "NITROGEN UPTAKE (FIXATION)",
+    "unit": "micromole nitrogen/(m3.day)"
+  },
+  "377": {
+    "label": "DISSOLVED ORGANIC NITROGEN",
+    "unit": "micromole/kg"
+  },
+  "378": {
+    "label": "DISSOLVED ORGANIC NITROGEN",
+    "unit": "millimole/m3"
+  },
+  "379": {
+    "label": "NITRIFICATION",
+    "unit": "micromole nitrogen/(m3.day)"
+  },
+  "380": {
+    "label": "NITRATE UPTAKE",
+    "unit": "micromole nitrogen/(m3.day)"
+  },
+  "381": {
+    "label": "Nitrate (NO3-N)",
+    "unit": "micromole/kg"
+  },
+  "382": {
+    "label": "Nitrite (NO2-N)",
+    "unit": "micromole/kg"
+  },
+  "383": {
+    "label": "TOTAL NITROGEN (N) CONTENT",
+    "unit": "millimole/m3"
+  },
+  "384": {
+    "label": "Nitrate + Nitrite",
+    "unit": "micromole/kg"
+  },
+  "385": {
+    "label": "TOTAL PARTICULATE NITROGEN",
+    "unit": "micromole/kg"
+  },
+  "386": {
+    "label": "NUMBER OF PARTICLES 3-80UM",
+    "unit": "number/m3"
+  },
+  "387": {
+    "label": "NUMBER OF PARTICLES >=480UM",
+    "unit": "number/m3"
+  },
+  "388": {
+    "label": "DELTA 15N (15N/14N)",
+    "unit": "per thousand"
+  },
+  "389": {
+    "label": "PART. ORGANIC MATTER FLUX",
+    "unit": "milligram/(m2.day)"
+  },
+  "390": {
+    "label": "OPAL CONTENT",
+    "unit": "%"
+  },
+  "391": {
+    "label": "ORGANIC SUSPENDED MATTER",
+    "unit": "gram/m3"
+  },
+  "392": {
+    "label": "ISOTOPIC RATIO O18/O16",
+    "unit": "per thousand"
+  },
+  "393": {
+    "label": "Number of picoeukaryote cells in sea water",
+    "unit": "10+6/m3"
+  },
+  "394": {
+    "label": "PARTICULATE ORGANIC CARBON/POC",
+    "unit": "millimole/m3"
+  },
+  "395": {
+    "label": "Peridinin",
+    "unit": "milligram/m3"
+  },
+  "396": {
+    "label": "Pheophytin-a",
+    "unit": "milligram/m3"
+  },
+  "397": {
+    "label": "Pheophytin-b",
+    "unit": "milligram/m3"
+  },
+  "398": {
+    "label": "Pheophytin-c",
+    "unit": "milligram/m3"
+  },
+  "399": {
+    "label": "Pheophytin >2 micrometers",
+    "unit": "milligram/m3"
+  },
+  "400": {
+    "label": "Pheophytin >10 micrometers",
+    "unit": "milligram/m3"
+  },
+  "401": {
+    "label": "SEDIMENT PHENOLS",
+    "unit": "microgram/g"
+  },
+  "402": {
+    "label": "Phosphate (PO4-P)",
+    "unit": "micromole/kg"
+  },
+  "403": {
+    "label": "Total Pheophytin",
+    "unit": "milligram/m3"
+  },
+  "404": {
+    "label": "PARTICULATE ORGANIC NITROGEN",
+    "unit": "millimole/m3"
+  },
+  "405": {
+    "label": "PARTICULATE ORGANIC CARBON/POC",
+    "unit": "milligram/m3"
+  },
+  "406": {
+    "label": "DISSOLVED ORGANIC PHOSPHORUS",
+    "unit": "micromole/kg"
+  },
+  "407": {
+    "label": "PARTICULATE ORGANIC NITROGEN",
+    "unit": "milligram/m3"
+  },
+  "408": {
+    "label": "PART. ORGANIC PHOSPHORUS (P)",
+    "unit": "millimole/m3"
+  },
+  "409": {
+    "label": "Number of prochlorococcus cells in sea water",
+    "unit": "10+6/m3"
+  },
+  "410": {
+    "label": "PROTEIN",
+    "unit": "milligram/m3"
+  },
+  "411": {
+    "label": "TOTAL PARTICULATE NITROGEN",
+    "unit": "milligram/m3"
+  },
+  "412": {
+    "label": "TOTAL PARTICULATE PHOSPHORUS",
+    "unit": "micromole/kg"
+  },
+  "413": {
+    "label": "Prasinoxanthin",
+    "unit": "milligram/m3"
+  },
+  "414": {
+    "label": "SIGNAL RETURN AMPLITUDE",
+    "unit": "decibel"
+  },
+  "415": {
+    "label": "Secchi disk depth",
+    "unit": "meter"
+  },
+  "416": {
+    "label": "PART. BIOGENIC Si FLUX",
+    "unit": "milligram/(m2.day)"
+  },
+  "417": {
+    "label": "PARTICULATE ORGANIC SILICA(SI)",
+    "unit": "millimole/m3"
+  },
+  "418": {
+    "label": "Silicate (SIO4-SI)",
+    "unit": "micromole/kg"
+  },
+  "419": {
+    "label": "Number of synechococcus cells in sea water",
+    "unit": "10+6/m3"
+  },
+  "420": {
+    "label": "Particulate total carbon mass flux",
+    "unit": "milligram/m2/day"
+  },
+  "421": {
+    "label": "SEDIMENT TOTAL CARBON",
+    "unit": "%"
+  },
+  "422": {
+    "label": "PARTICULATE 234TH ACTIVTY",
+    "unit": "Bq/m3"
+  },
+  "423": {
+    "label": "DISSOLVED 234TH",
+    "unit": "Bq/m3"
+  },
+  "424": {
+    "label": "TOTAL INORGANIC CARBON",
+    "unit": "micromole/kg"
+  },
+  "425": {
+    "label": "DISSOLVED INORGANIC NITROGEN",
+    "unit": "millimole/m3"
+  },
+  "426": {
+    "label": "Particulate total nitrogen mass flux",
+    "unit": "milligram/m2/day"
+  },
+  "427": {
+    "label": "SEDIMENT TOTAL NITROGEN",
+    "unit": "%"
+  },
+  "428": {
+    "label": "SEDIMENT TOTAL ORGANIC CARBON",
+    "unit": "%"
+  },
+  "429": {
+    "label": "TOTAL ORGANIC CARBON",
+    "unit": "millimole/m3"
+  },
+  "430": {
+    "label": "ORGANIC MATTER CONTENT",
+    "unit": "%"
+  },
+  "431": {
+    "label": "Dissolved adenosine triphosphate",
+    "unit": "milligram/m3"
+  },
+  "432": {
+    "label": "Total pheopigments",
+    "unit": "milligram/m3"
+  },
+  "433": {
+    "label": "TOTAL PHOSPHORUS (P) CONTENT",
+    "unit": "millimole/m3"
+  },
+  "434": {
+    "label": "Particulate total mass flux",
+    "unit": "milligram/m2/day"
+  },
+  "435": {
+    "label": "Light transmission",
+    "unit": "%"
+  },
+  "436": {
+    "label": "Turbidity",
+    "unit": "relative unit"
+  },
+  "437": {
+    "label": "Diatoxanthin",
+    "unit": "milligram/m3"
+  },
+  "438": {
+    "label": "BACTERIAL PRODUCTION(THYM. UP)",
+    "unit": "nanomole/m3/hour"
+  },
+  "439": {
+    "label": "BACT. PROD. STANDARD DEVIATION",
+    "unit": "nanomole/m3/hour"
+  },
+  "440": {
+    "label": "UREA",
+    "unit": "millimole/m3"
+  },
+  "441": {
+    "label": "VERTICAL DISPLACEMENT",
+    "unit": "meter"
+  },
+  "442": {
+    "label": "VOLUME CONC. OF PARTICLES",
+    "unit": "ppm"
+  },
+  "443": {
+    "label": "Platform tilt",
+    "unit": "degree"
+  },
+  "444": {
+    "label": "Zeaxanthin",
+    "unit": "milligram/m3"
+  },
+  "445": {
+    "label": "Time within day in format HHMMSS",
+    "unit": "none"
+  },
+  "500": {
+    "label": "Nitrate + Nitrite",
+    "unit": "millimole/m3"
+  },
+  "501": {
+    "label": "Phosphate (PO4-P)",
+    "unit": "millimole/m3"
+  },
+  "502": {
+    "label": "Silicate (SIO4-SI)",
+    "unit": "millimole/m3"
+  },
+  "504": {
+    "label": "Sound velocity",
+    "unit": "meter/second"
+  },
+  "505": {
+    "label": "Nitrite (NO2-N)",
+    "unit": "millimole/m3"
+  },
+  "506": {
+    "label": "Originator's sample identifier",
+    "unit": "none"
+  },
+  "508": {
+    "label": "Ammonium (NH4-N)",
+    "unit": "millimole/m3"
+  },
+  "509": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "510": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "511": {
+    "label": "Undefined salinity",
+    "unit": "unknown"
+  },
+  "512": {
+    "label": "Salinity (pre-1978 definition)",
+    "unit": "g/kg"
+  },
+  "513": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "514": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "515": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "516": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "517": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "520": {
+    "label": "Nitrate (NO3-N)",
+    "unit": "millimole/m3"
+  },
+  "521": {
+    "label": "Time within day in format HHMM",
+    "unit": "none"
+  },
+  "522": {
+    "label": "Practical salinity minimum value",
+    "unit": "psu"
+  },
+  "523": {
+    "label": "Sea temperature minimum value",
+    "unit": "degree_Celsius"
+  },
+  "524": {
+    "label": "Practical salinity maximum value",
+    "unit": "psu"
+  },
+  "525": {
+    "label": "Sea temperature maximum value",
+    "unit": "degree_Celsius"
+  },
+  "526": {
+    "label": "Number of values used in computation",
+    "unit": "count"
+  },
+  "534": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "535": {
+    "label": "GTSPP CODE",
+    "unit": "-"
+  },
+  "536": {
+    "label": "Total alkalinity",
+    "unit": "millimole/m3"
+  },
+  "542": {
+    "label": "Smatch battery voltage",
+    "unit": "volt"
+  },
+  "543": {
+    "label": "Smatch automate battery voltage",
+    "unit": "volt"
+  },
+  "544": {
+    "label": "Smatch chloration current",
+    "unit": "mA"
+  },
+  "545": {
+    "label": "Nitrate (NO3-N) standard deviation",
+    "unit": "millimole/m3"
+  },
+  "546": {
+    "label": "Tphase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "547": {
+    "label": "Sea potential temperature",
+    "unit": "degree_Celsius"
+  },
+  "548": {
+    "label": "C1 uncalibrated phase shift reported by oxygen sensor",
+    "unit": "degree"
+  },
+  "549": {
+    "label": "C2 uncalibrated phase shift reported by oxygen sensor",
+    "unit": "degree"
+  },
+  "551": {
+    "label": "Tsg water flow",
+    "unit": "l/minute"
+  },
+  "552": {
+    "label": "Sea sigma-theta",
+    "unit": "kg/m3"
+  },
+  "553": {
+    "label": "Beaufort wind force",
+    "unit": "none"
+  },
+  "554": {
+    "label": "Hourly rainfall rate",
+    "unit": "millimeter/hour"
+  },
+  "555": {
+    "label": "Phycocyanin",
+    "unit": "milligram/m3"
+  },
+  "556": {
+    "label": "Air temperature in wet bulb",
+    "unit": "degree_Celsius"
+  },
+  "557": {
+    "label": "Daily rainfall rate",
+    "unit": "millimeter/day",
+    "standard_name": "rainfall_rate"
+  },
+  "558": {
+    "label": "Maximum wave height",
+    "unit": "meter"
+  },
+  "559": {
+    "label": "Maximum wave period",
+    "unit": "second"
+  },
+  "560": {
+    "label": "Significant wave period",
+    "unit": "second"
+  },
+  "561": {
+    "label": "Significant wave direction",
+    "unit": "degree"
+  },
+  "562": {
+    "label": "Tphase signal of oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "563": {
+    "label": "C1 uncalibrated phase shift reported by oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "564": {
+    "label": "Tphase signal of oxygen sensor adjusted error",
+    "unit": "degree"
+  },
+  "565": {
+    "label": "C1 uncalibrated phase shift reported by oxygen sensor adj. error",
+    "unit": "degree"
+  },
+  "566": {
+    "label": "C2 uncalibrated phase shift reported by oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "567": {
+    "label": "C2 uncalibrated phase shift reported by oxygen sensor adj. error",
+    "unit": "degree"
+  },
+  "568": {
+    "label": "Battery voltage",
+    "unit": "volt"
+  },
+  "569": {
+    "label": "Pump flow at start of cycle",
+    "unit": "l/minute"
+  },
+  "570": {
+    "label": "Pump flow at end of cycle",
+    "unit": "l/minute"
+  },
+  "571": {
+    "label": "Phase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "572": {
+    "label": "Rphase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "573": {
+    "label": "Wphase signal of oxygen sensor",
+    "unit": "degree"
+  },
+  "575": {
+    "label": "Bisulfide (HS-)",
+    "unit": "micromole/kg"
+  },
+  "576": {
+    "label": "Particle backscattering at 532 nm",
+    "unit": "m-1"
+  },
+  "577": {
+    "label": "Particle backscattering at 700 nm",
+    "unit": "m-1"
+  },
+  "578": {
+    "label": "Estuary current speed",
+    "unit": "meter/second"
+  },
+  "579": {
+    "label": "Downwelling photosynthetic active radiation",
+    "unit": "micromol m-2 s-1"
+  },
+  "580": {
+    "label": "Downwelling irradiance at 380 nm",
+    "unit": "W m-2 nm-1"
+  },
+  "581": {
+    "label": "Downwelling irradiance at 412 nm",
+    "unit": "W m-2 nm-1"
+  },
+  "582": {
+    "label": "Downwelling irradiance at 490 nm",
+    "unit": "W m-2 nm-1"
+  },
+  "583": {
+    "label": "Particle beam attenuation at 660 nanometers",
+    "unit": "m-1"
+  },
+  "584": {
+    "label": "Chlorophyll-a adjusted",
+    "unit": "milligram/m3"
+  },
+  "585": {
+    "label": "Chlorophyll-a adjusted error",
+    "unit": "milligram/m3"
+  },
+  "586": {
+    "label": "Marel : Tension +12.5 PCO2",
+    "unit": "TBD"
+  },
+  "587": {
+    "label": "Marel : Tension +7 PCO2",
+    "unit": "TBD"
+  },
+  "588": {
+    "label": "Marel : Tension -7 PCO2",
+    "unit": "TBD"
+  },
+  "589": {
+    "label": "Marel : Humidite relative PCO2",
+    "unit": "TBD"
+  },
+  "590": {
+    "label": "Marel : Temperature PCO2",
+    "unit": "TBD"
+  },
+  "591": {
+    "label": "Marel : Courant pompe PCO2",
+    "unit": "TBD"
+  },
+  "592": {
+    "label": "Marel : Compteur cycle PCO2",
+    "unit": "TBD"
+  },
+  "593": {
+    "label": "Marel : I850 PCO2",
+    "unit": "TBD"
+  },
+  "594": {
+    "label": "Marel : I596 PCO2",
+    "unit": "TBD"
+  },
+  "595": {
+    "label": "Marel : I434 PCO2",
+    "unit": "TBD"
+  },
+  "596": {
+    "label": "Marel : Reference Haute PCO2",
+    "unit": "TBD"
+  },
+  "597": {
+    "label": "Marel : Reference Basse PCO2",
+    "unit": "TBD"
+  },
+  "598": {
+    "label": "Marel : Thermistance PCO2",
+    "unit": "TBD"
+  },
+  "599": {
+    "label": "Fluorescence adjusted",
+    "unit": "FFU"
+  },
+  "600": {
+    "label": "Fluorescence adjusted error",
+    "unit": "FFU"
+  },
+  "601": {
+    "label": "Dissolved oxygen adjusted",
+    "unit": "ml/l"
+  },
+  "602": {
+    "label": "Dissolved oxygen adjusted error",
+    "unit": "ml/l"
+  },
+  "603": {
+    "label": "Ph adjusted",
+    "unit": "none"
+  },
+  "604": {
+    "label": "Ph adjusted error",
+    "unit": "none"
+  },
+  "605": {
+    "label": "Sea temperature from carbon sensor",
+    "unit": "degree_Celsius"
+  },
+  "606": {
+    "label": "Sea temperature from carbon sensor adjusted",
+    "unit": "degree_Celsius"
+  },
+  "607": {
+    "label": "Sea temperature from carbon sensor adjusted error",
+    "unit": "degree_Celsius"
+  },
+  "608": {
+    "label": "CO2 fugacity adjusted",
+    "unit": "microatmosphere"
+  },
+  "609": {
+    "label": "CO2 fugacity adjusted error",
+    "unit": "microatmosphere"
+  },
+  "610": {
+    "label": "Particulate organic carbon mass flux",
+    "unit": "milligram/m2/day"
+  },
+  "611": {
+    "label": "Shortwave incoming radiation",
+    "unit": "W/m2"
+  },
+  "612": {
+    "label": "Rphase signal of oxygen sensor adjusted",
+    "unit": "degree"
+  },
+  "613": {
+    "label": "Rphase signal of oxygen sensor adjusted error",
+    "unit": "degree"
+  },
+  "614": {
+    "label": "Maximum wave steepness",
+    "unit": "none"
+  },
+  "615": {
+    "label": "Particle backscattering at 700 nm adjusted",
+    "unit": "m-1"
+  },
+  "616": {
+    "label": "Nitrate (NO3-N) adjusted",
+    "unit": "micromole/kg"
+  },
+  "617": {
+    "label": "Nitrate (NO3-N) adjusted error",
+    "unit": "micromole/kg"
+  },
+  "618": {
+    "label": "Particle backscattering at 470 nm",
+    "unit": "m-1"
+  },
+  "619": {
+    "label": "Atmospheric pressure at equilibration",
+    "unit": "hectopascal"
+  },
+  "620": {
+    "label": "Air temperature at equilibration",
+    "unit": "degree_Celsius"
+  },
+  "621": {
+    "label": "CO2 fugacity at equilibration",
+    "unit": "microatmosphere"
+  },
+  "622": {
+    "label": "CO2 fraction",
+    "unit": "micromole/mole"
+  },
+  "623": {
+    "label": "Generic significant wave height (Hs)",
+    "unit": "meter"
+  },
+  "624": {
+    "label": "Spectral significant wave height (Hm0)",
+    "unit": "meter"
+  },
+  "625": {
+    "label": "Average height highest 1/3 wave (H1/3)",
+    "unit": "meter"
+  },
+  "626": {
+    "label": "Average height highest 1/10 wave (H1/10)",
+    "unit": "meter"
+  },
+  "627": {
+    "label": "Average zero crossing wave height (Hzm)",
+    "unit": "meter"
+  },
+  "628": {
+    "label": "Estimated maximum wave height",
+    "unit": "meter"
+  },
+  "629": {
+    "label": "Maximum zero crossing wave height (Hmax)",
+    "unit": "meter"
+  },
+  "630": {
+    "label": "Maximum crest trough wave height (Hc,max)",
+    "unit": "meter"
+  },
+  "631": {
+    "label": "Depth of the deepest trough",
+    "unit": "meter"
+  },
+  "632": {
+    "label": "Height of the highest crest",
+    "unit": "meter"
+  },
+  "633": {
+    "label": "Spectral moments (-1,0) wave period (Tm-10)",
+    "unit": "second"
+  },
+  "634": {
+    "label": "Spectral moments (0,2) wave period (Tm02)",
+    "unit": "second"
+  },
+  "635": {
+    "label": "Average zero crossing wave period (Tz)",
+    "unit": "second"
+  },
+  "636": {
+    "label": "Generic average wave period",
+    "unit": "second"
+  },
+  "637": {
+    "label": "Wave period at spectral peak / peak period (Tp)",
+    "unit": "second"
+  },
+  "638": {
+    "label": "Average period highest 1/3 wave (T1/3)",
+    "unit": "second"
+  },
+  "639": {
+    "label": "Average period highest 1/10 wave (T1/10)",
+    "unit": "second"
+  },
+  "640": {
+    "label": "Maximum wave period (Tmax)",
+    "unit": "second"
+  },
+  "641": {
+    "label": "Period of the highest wave (Thmax)",
+    "unit": "second"
+  },
+  "642": {
+    "label": "Mean wave direction from (Mdir)",
+    "unit": "degree"
+  },
+  "643": {
+    "label": "Wave direction rel. true north",
+    "unit": "degree"
+  },
+  "644": {
+    "label": "Wave principal direction at spectral peak",
+    "unit": "degree"
+  },
+  "645": {
+    "label": "Wave spectrum peak energy (Smax)",
+    "unit": "meter2 second"
+  }
+}
