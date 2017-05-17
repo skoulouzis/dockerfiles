@@ -52,7 +52,7 @@ function parseResult(){
     output_file=`jq -r .output_file configuration_new.json`
     output_file_size=$(wc -c <"$output_file")
     
-    echo "{" \"area\": $area, \"time_coverage\": \"$time_coverage\", \"num_of_params\": \"$num_of_params\", \"dataset_size\": \"$dataset_size\", \"output_file_size\": \"$output_file_size\", \"execution_time\": \"$execution_time\",\"execution_date\": \"$date\""}" 
+    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\""}"
 }
 
 
