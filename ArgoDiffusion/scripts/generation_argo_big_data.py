@@ -103,6 +103,9 @@ class Argo:
                                 #print row
                                 self.model.add_data_line(row)
                                 
+        except: 
+            print argofile
+            print row [3]
         finally:
             fargofile.close()
     
