@@ -88,7 +88,6 @@ class Argo:
                 if rownum == 1:
                     #nothing to do
                     continue
-                print argofile
                 # test position
                 lat = float(row [3])
                 lon = float(row [4])
