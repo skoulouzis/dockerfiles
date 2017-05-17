@@ -13,7 +13,7 @@ CIRCUMFERENCE=40091147
 
 
 
-function newConf() {
+function newConf {
     
     sed "s/\"geospatial_lat_min\": 0,/\"geospatial_lat_min\": $MIN_LAT".00",/" configuration.json > configuration_new.json
     sed -i "s/\"geospatial_lon_min\": 0,/\"geospatial_lon_min\": $MIN_LON".00",/" configuration_new.json
@@ -28,7 +28,7 @@ function newConf() {
 
 
 
-function parseResult(){
+function parseResult {
     sed -ie 's/duration (seconds)/duration/g' out
     time_coverage_start=`jq -r .time_range.time_coverage_start configuration_new.json`
     time_coverage_end=`jq -r .time_range.time_coverage_end configuration_new.json`
