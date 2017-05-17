@@ -106,6 +106,7 @@ class Argo:
         except: 
             print argofile
             print row [3]
+            print rownum
         finally:
             fargofile.close()
     
