@@ -103,10 +103,8 @@ class Argo:
                                 #print row
                                 self.model.add_data_line(row)
                                 
-        except: 
-            print argofile
-            print row [3]
-            print rownum
+        except:
+            print "argofile: %s  row [3]: %d, row %s rownum %d." % ( argofile, row [3], row, rownum)
         finally:
             fargofile.close()
     
