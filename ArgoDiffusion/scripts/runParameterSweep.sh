@@ -30,7 +30,6 @@ function newConf() {
 
 function parseResult(){
     sed -ie 's/duration (seconds)/duration/g' out
-    cat out 
     time_coverage_start=`jq -r .time_range.time_coverage_start configuration_new.json`
     time_coverage_end=`jq -r .time_range.time_coverage_end configuration_new.json`
     start=`date -d "$time_coverage_start" +%s`
