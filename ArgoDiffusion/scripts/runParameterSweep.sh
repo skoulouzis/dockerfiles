@@ -49,9 +49,12 @@ function parseResult(){
     num_of_params=`jq -r '.parameters[] | length' configuration_new.json`
     input_folder=`jq -r .input_folder configuration_new.json`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
+    output_file=`jq -r .output_file configuration_new.json`
+    output_file_size=$(wc -c <"$output_file")
     
-    echo "{" \"area\": $area, \"time_coverage\": \"$time_coverage\", \"num_of_params\": \"$num_of_params\", \"dataset_size\": \"$dataset_size\", \"execution_time\": \"$execution_time\",\"execution_date\": \"$date\""}"
+    echo "{" \"area\": $area, \"time_coverage\": \"$time_coverage\", \"num_of_params\": \"$num_of_params\", \"dataset_size\": \"$dataset_size\", \"output_file_size\": \"$output_file_size\", \"execution_time\": \"$execution_time\",\"execution_date\": \"$date\""}" 
 }
+
 
 #Set latitude
 for (( i=$MIN_LAT; i<=$MAX_LAT; i=i+$STEP ))

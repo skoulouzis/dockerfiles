@@ -1,0 +1,1 @@
+Cruise	Station	yyyy-mm-ddThh:mm:ss	Longitude [degrees_east]	Latitude [degrees_north]

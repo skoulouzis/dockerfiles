@@ -5,7 +5,7 @@ import csv
 import time
 import sys
 import os.path
-
+import psutil
 import argo_model
 
 # time format
@@ -244,6 +244,11 @@ class Argo:
             print repr(e)
         finally:
             fout.close()
+            
+            
+            
+
+
 
 if __name__ == '__main__':
     from optparse import OptionParser
@@ -261,3 +266,9 @@ if __name__ == '__main__':
     argo = Argo()
     argo.run()
     
+    #process = psutil.Process(os.getpid())
+    #mem = process.memory_percent()
+    #cpu = process.cpu_percent()
+    #disk_io = process.disk_io_counters()
+    #print mem
+    #print cpu

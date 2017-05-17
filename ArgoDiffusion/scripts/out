@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 262, in <module>
-    argo.run()
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 55, in run
-    self.read_file(argofile)
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 86, in read_file
-    rownum += 1
-KeyboardInterrupt
