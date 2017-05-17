@@ -46,7 +46,7 @@ function parseResult(){
     
     date=`jq -r .date out`
     sed -ie 's/"duration (seconds)/duration/g' out
-    execution_time=`jq -r '.duration out`
+    execution_time=`jq -r .duration out`
     num_of_params=`jq -r '.parameters[] | length' configuration_new.json`
     input_folder=`jq -r .input_folder configuration_new.json`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
