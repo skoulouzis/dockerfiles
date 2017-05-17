@@ -29,6 +29,7 @@ function newConf() {
 
 
 function parseResult(){
+    sed -ie 's/"duration (seconds)/duration/g' out
     cat out 
     time_coverage_start=`jq -r .time_range.time_coverage_start configuration_new.json`
     time_coverage_end=`jq -r .time_range.time_coverage_end configuration_new.json`
@@ -45,7 +46,6 @@ function parseResult(){
     area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lon_min $geospatial_lat_max $geospatial_lon_max`
     
     date=`jq -r .date out`
-    sed -ie 's/"duration (seconds)/duration/g' out
     execution_time=`jq -r .duration out`
     num_of_params=`jq -r '.parameters[] | length' configuration_new.json`
     input_folder=`jq -r .input_folder configuration_new.json`
