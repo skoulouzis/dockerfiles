@@ -85,7 +85,7 @@ class Argo:
             for row in reader:
                 rownum += 1
                 #first line, header   
-                if (rownum == 1) of (not row [3]):
+                if (rownum == 1) or (not row [3]):
                     #nothing to do
                     continue
                 # test position
