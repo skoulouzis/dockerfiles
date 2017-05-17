@@ -104,7 +104,7 @@ class Argo:
                                 self.model.add_data_line(row)
                                 
         except:
-            print "argofile: %s  row [3]: %d, row %s rownum %d." % ( argofile, row [3], row, rownum)
+            print "argofile: %s  row [3]: %s, row %s rownum %s." % ( argofile, row [3], row, rownum)
         finally:
             fargofile.close()
     
