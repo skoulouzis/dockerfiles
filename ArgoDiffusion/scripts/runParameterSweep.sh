@@ -28,7 +28,7 @@ function parseResult() {
     geospatial_lon_min=`jq -r .bounding_box.geospatial_lon_min configuration_new.json`
     geospatial_lon_max=`jq -r .bounding_box.geospatial_lon_max configuration_new.json`
     
-    area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lon_min $geospatial_lat_max $geospatial_lon_max`
+    area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
     
     date=`jq -r .date out`
     execution_time=`jq -r .duration out`
@@ -39,16 +39,16 @@ function parseResult() {
     output_file_size=$(wc -c <"$output_file")
     
     conf=`jq . configuration_new.json`
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
+#     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
 }
 
 
 function run() {
     #Set latitude
-    for (( i=$MIN_LAT; i<=$MAX_LAT; i=i+$STEP ))
+    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
     do
         # Set longitude
-        for (( j=$MIN_LON; j<=$MAX_LON; j=j+$STEP ))
+        for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
         do
             for (( k=1; k<=21; k=k+10))
             do
@@ -65,10 +65,10 @@ function run() {
                 count=$((count+1))
                 parameters=$parameters","$l
                 if [ "$count" -gt "200" ]; then
-                    count=0
                     newConf $i $j $NEXT_DATE $parameters
                     ./generation_argo_big_data.csh configuration_new.json &> out
                     parseResult
+                    count=0
                 fi
                 
             done <physical_parameter_keys.txt
@@ -78,11 +78,14 @@ function run() {
 }
 
 #Mediterranean
-MIN_LAT=-3
-MAX_LAT=35
-MIN_LON=31
-MAX_LON=44
-STEP=20
+MIN_LAT=36
+MAX_LAT=37
+MIN_LON=13
+MAX_LON=20
+STEP=15
+LAT_START=$((MIN_LAT+1))
+LON_START=$((MIN_LON+1))
+
 # Set date
 DATE=1999-01-01T00:00:19Z
 MAX_DATE=2017-04-13T00:07:18Z
@@ -90,10 +93,12 @@ MAX_DATE_SECONDS=`date -d "$MAX_DATE" +%s`
 run
 
 #Atlantic
-MIN_LAT=-72
-MAX_LAT=20
+MIN_LAT=-48
+MAX_LAT=62
 MIN_LON=-60
-MAX_LON=60
+MAX_LON=-56
+LAT_START=$((MIN_LAT+1))
+LON_START=$((MIN_LON+1))
 run 
 
 
