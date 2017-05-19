@@ -19,8 +19,8 @@ function newConf() {
     sed -i "s/\"geospatial_lon_min\": 0,/\"geospatial_lon_min\": $MIN_LON".00",/" configuration_new.json
     sed -i "s/\"geospatial_lat_max\": 0,/\"geospatial_lat_max\": $1".00",/" configuration_new.json
     sed -i "s/\"geospatial_lon_max\": 0/\"geospatial_lon_max\": $2".00"/" configuration_new.json
-    sed -ie "s/\"time_coverage_end\":.*/\"time_coverage_end\": \"$3\"/" configuration_new.json
-    sed -ie "s/\"parameters\":.*/\"parameters\": [\"$4\"],/" configuration_new.json
+    sed -i "s/\"time_coverage_end\":.*/\"time_coverage_end\": \"$3\"/" configuration_new.json
+    sed -i "s/\"parameters\":.*/\"parameters\": [\"$4\"],/" configuration_new.json
     
 #     echo geospatial_lat_min $MIN_LAT geospatial_lon_min $MIN_LON geospatial_lat_max $1".00" geospatial_lon_max $2".00" time_coverage_end $3 parameter $4
 #     cat configuration_new.json
@@ -29,12 +29,10 @@ function newConf() {
 
 
 function parseResult() {
-    sed -ie 's/duration (seconds)/duration/g' out
+    sed -i 's/duration (seconds)/duration/g' out
     time_coverage_start=`jq -r .time_range.time_coverage_start configuration_new.json`
     time_coverage_end=`jq -r .time_range.time_coverage_end configuration_new.json`
-    start=`date -d "$time_coverage_start" +%s`
-    end=`date -d "$time_coverage_end" +%s`
-    time_coverage=`echo "$end + $start" | bc`
+    time_coverage=`python getDelta.py $time_coverage_start $time_coverage_end`
     
     
     geospatial_lat_min=`jq -r .bounding_box.geospatial_lat_min configuration_new.json`
@@ -74,7 +72,7 @@ do
                 count=0
                 newConf $i $j $NEXT_DATE $parameters
                 ./generation_argo_big_data.csh configuration_new.json &> out
-                parseResult $4
+                parseResult
             fi
             
         done <physical_parameter_keys.txt
