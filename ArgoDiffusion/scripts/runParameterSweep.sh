@@ -1,16 +1,4 @@
  #!/bin/bash
-        
-
-#Mediterranean
-MIN_LAT=-3
-MAX_LAT=35
-MIN_LON=31
-MAX_LON=44
-STEP=4
-# Set date
-DATE=1999-01-01T00:00:19Z
-CIRCUMFERENCE=40091147 
-
 
 
 function newConf() {
@@ -51,34 +39,63 @@ function parseResult() {
     output_file_size=$(wc -c <"$output_file")
     
     conf=`jq . configuration_new.json`
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
+#     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
 }
 
 
-#Set latitude
-for (( i=$MIN_LAT; i<=$MAX_LAT; i=i+$STEP ))
-do
-    # Set longitude
-    for (( j=$MIN_LON; j<=$MAX_LON; j=j+$STEP ))
+function run() {
+    #Set latitude
+    for (( i=$MIN_LAT; i<=$MAX_LAT; i=i+$STEP ))
     do
-        for (( k=1; k<=25; k=k+10))
+        # Set longitude
+        for (( j=$MIN_LON; j<=$MAX_LON; j=j+$STEP ))
         do
-        count=0
-        NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
-        parameters=9
-        while read l; do
-            count=$((count+1))
-            parameters=$parameters","$l
-            if [ "$count" -gt "200" ]; then
-                count=0
-                newConf $i $j $NEXT_DATE $parameters
-                ./generation_argo_big_data.csh configuration_new.json &> out
-                parseResult
-            fi
-            
-        done <physical_parameter_keys.txt
-
-        done        
+            for (( k=1; k<=25; k=k+5))
+            do
+            count=0
+            NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+            parameters=9
+            while read l; do
+                count=$((count+1))
+                parameters=$parameters","$l
+                if [ "$count" -gt "200" ]; then
+                    count=0
+                    newConf $i $j $NEXT_DATE $parameters
+                    echo $i $j $NEXT_DATE
+#                     ./generation_argo_big_data.csh configuration_new.json &> out
+#                     parseResult
+                fi
+                
+            done <physical_parameter_keys.txt
+            done        
+        done
     done
-done
-            
+}
+
+#Mediterranean
+MIN_LAT=-3
+MAX_LAT=35
+MIN_LON=31
+MAX_LON=44
+STEP=8
+# Set date
+DATE=1999-01-01T00:00:19Z
+
+run
+
+#Atlantic
+MIN_LAT=-72
+MAX_LAT=20
+MIN_LON=-60
+MAX_LON=60
+run 
+
+
+
+#Atlantic
+MIN_LAT=-72
+MAX_LAT=142
+MIN_LON=-68
+MAX_LON=52
+run 
+
