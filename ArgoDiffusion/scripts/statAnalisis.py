@@ -45,13 +45,13 @@ def getDataFrame():
     execution_time=[]
 
     docs = db.argoBenchmark.find({});
-    print "area,time_coverage,num_of_params,execution_time"
+    #print "area,time_coverage,num_of_params,execution_time"
     for doc in docs:
         area.append(doc["area"])
         time_coverage.append(doc["time_coverage"])
         num_of_params.append(doc["num_of_params"])
         execution_time.append(doc["execution_time"])
-        print "%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], doc["execution_time"])
+        #print "%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], doc["execution_time"])
     
     data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time}
     return pandas.DataFrame(data)
@@ -78,7 +78,7 @@ corr.to_csv("correlation.csv")
 #print dataframe.head()
 model = smf.ols(formula='execution_time ~ time_coverage', data=dataframe)
 results = model.fit()
-#print(results.summary())
+print(results.summary())
 fig, ax = plt.subplots()
 fig = sm.graphics.plot_fit(results, 1, ax=ax)
 #ax.set_ylabel("execution_time")
