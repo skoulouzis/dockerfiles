@@ -45,12 +45,13 @@ def getDataFrame():
     execution_time=[]
 
     docs = db.argoBenchmark.find({});
+    print "area,time_coverage,num_of_params,execution_time"
     for doc in docs:
         area.append(doc["area"])
         time_coverage.append(doc["time_coverage"])
         num_of_params.append(doc["num_of_params"])
         execution_time.append(doc["execution_time"])
-        print "%s,%s" % (doc["execution_time"], doc["time_coverage"])
+        print "%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], doc["execution_time"])
     
     data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time}
     return pandas.DataFrame(data)

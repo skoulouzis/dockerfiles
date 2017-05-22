@@ -90,7 +90,7 @@ LON_START=$((MIN_LON+1))
 DATE=1999-01-01T00:00:19Z
 MAX_DATE=2017-04-13T00:07:18Z
 MAX_DATE_SECONDS=`date -d "$MAX_DATE" +%s`
-run
+# run
 
 #Atlantic
 MIN_LAT=-48
@@ -99,14 +99,14 @@ MIN_LON=-60
 MAX_LON=-56
 LAT_START=$((MIN_LAT+1))
 LON_START=$((MIN_LON+1))
-run 
-
-
-
-# #Pacific
-# MIN_LAT=-72
-# MAX_LAT=142
-# MIN_LON=-68
-# MAX_LON=52
 # run 
+
+
+
+#Pacific
+MIN_LAT=-72
+MAX_LAT=142
+MIN_LON=-68
+MAX_LON=52
+run 
 
