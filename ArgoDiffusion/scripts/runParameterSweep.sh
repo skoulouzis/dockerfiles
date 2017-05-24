@@ -77,6 +77,40 @@ function run() {
     done
 }
 
+
+function run_new_conf() {
+    #Set latitude
+    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    do
+        # Set longitude
+        for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
+        do
+            for (( k=1; k<=21; k=k+10))
+            do
+            count=0
+            date_count=0
+            NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+            NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+            if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
+                NEXT_DATE=$MAX_DATE        
+            fi
+
+            parameters=9
+            while read l; do
+                count=$((count+1))
+                parameters=$parameters","$l
+                if [ "$count" -gt "200" ]; then
+                    newConf $i $j $NEXT_DATE $parameters
+                    count=0
+                fi
+                
+            done <physical_parameter_keys.txt
+            done        
+        done
+    done
+}
+
+
 #Mediterranean
 MIN_LAT=36
 MAX_LAT=37
@@ -91,6 +125,7 @@ DATE=1999-01-01T00:00:19Z
 MAX_DATE=2017-04-13T00:07:18Z
 MAX_DATE_SECONDS=`date -d "$MAX_DATE" +%s`
 # run
+run_new_conf
 
 #Atlantic
 MIN_LAT=-48
@@ -108,5 +143,5 @@ MIN_LAT=-72
 MAX_LAT=142
 MIN_LON=-68
 MAX_LON=52
-run 
+# run 
 

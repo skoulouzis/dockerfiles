@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+from random import randint
 
 
 
@@ -55,51 +56,41 @@ def getDataFrame():
     
     data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time}
     return pandas.DataFrame(data)
-    #return numpy.corrcoef([area, time_coverage, num_of_params, execution_time])
-
+    
+    
     
 dataframe = getDataFrame()
-corr = dataframe.corr()
+grouped = dataframe.groupby(['area', 'time_coverage','num_of_params'], as_index=False)
+#print grouped.describe()
+gm = grouped.mean()
+
+corr = gm.corr()
 corr.to_csv("correlation.csv")
-#print corr 
+print corr 
 #seaborn.heatmap(corr, 
             #xticklabels=corr.columns.values,
             #yticklabels=corr.columns.values)
-#seaborn.plt.show()
-#
+##seaborn.plt.show()
 
-#gradient, intercept, r_value, p_value, std_err = stats.linregress(dataframe['time_coverage'].values,dataframe['execution_time'].values)
-#print "Gradient and intercept", gradient, intercept
-#print "R-squared", r_value**2
-#print "p-value", p_value
-#plotData(corr)
-
-
-#print dataframe.head()
-model = smf.ols(formula='execution_time ~ time_coverage', data=dataframe)
+#model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params', data=gm)
+#model = smf.ols(formula='execution_time ~ time_coverage', data=gm)
+model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params', data=dataframe)
+#model = smf.ols(formula='execution_time ~ time_coverage', data=dataframe)
 results = model.fit()
+
+#R-squared: how close the data are to the fitted regression line. Which % of the dependent variable can be explained by the independent. How the variability is exampled by the dependent variable. If you add more DF it gets higher. Look at adj. R-squared to get some meaning on relation 
+#Adj. R-squared: Adjusts with the number of "useful" variables 
+#Df Residuals: Residuals degrees of freedom 
+#Df Model: Degrees of freedom 
+#Residuals: Unexplained. Distance from model to regression line. Difference between what model predict and what actually happed  
+#F-statistic: The F critical value is what is referred to as the F statistic
+#Prob (F-statistic): The p-value
 print(results.summary())
-fig, ax = plt.subplots()
-fig = sm.graphics.plot_fit(results, 1, ax=ax)
-#ax.set_ylabel("execution_time")
-#ax.set_xlabel("time_coverage Level")
-#ax.set_title("Linear Regression")
-plt.show()
-
-
-#df = sm.datasets.get_rdataset("Guerry", "HistData").data
-#df = df[['Lottery', 'Literacy', 'Wealth', 'Region']].dropna()
-#print df.head()
-
-#mod = smf.ols(formula='Lottery ~ Literacy + Wealth + Region', data=df)
-#results = mod.fit()
-#print(results.summary())
 
 #fig, ax = plt.subplots()
-#fig = sm.graphics.plot_fit(results, 5, ax=ax)
+#fig = sm.graphics.plot_fit(results, 2, ax=ax)
 #ax.set_ylabel("execution_time")
 #ax.set_xlabel("time_coverage Level")
 #ax.set_title("Linear Regression")
 #plt.show()
-
 
