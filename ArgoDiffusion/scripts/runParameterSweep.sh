@@ -15,8 +15,8 @@ function newConf() {
 
 
 
-function parseResult() {
-    sed -i 's/duration (seconds)/duration/g' out
+function parse_ssh_result() {
+    
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
     if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
@@ -33,13 +33,45 @@ function parseResult() {
     
     area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
     
-    date=`jq -r .date out`
+     
+    execution_time=$((END_EXECUTION-START_EXECUTION))
+    num_of_params=`jq -r '.parameters[] | length' $1`
+    input_folder=`jq -r .input_folder $1`
+    dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
+    output_file=`jq -r .output_file $1`
+    output_file_size=$(wc -c <"$output_file")
+    
+    conf=`jq . $1`
+    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf "}"
+}
+
+
+function parseResult() {
+    sed -i 's/duration (seconds)/duration/g' $FILTER_RESULT_FILE
+    time_coverage_start=`jq -r .time_range.time_coverage_start $1`
+    time_coverage_end=`jq -r .time_range.time_coverage_end $1`
+    if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
+        echo "time_coverage was empty" 
+        exit
+    fi
+    
+    time_coverage=`python getDelta.py $time_coverage_start $time_coverage_end`
+    
+    geospatial_lat_min=`jq -r .bounding_box.geospatial_lat_min $1`
+    geospatial_lat_max=`jq -r .bounding_box.geospatial_lat_max $1`
+    geospatial_lon_min=`jq -r .bounding_box.geospatial_lon_min $1`
+    geospatial_lon_max=`jq -r .bounding_box.geospatial_lon_max $1`
+    
+    area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
+    
+    date=`jq -r .date $FILTER_RESULT_FILE`
     if [ -z "$date" ]; then
-        echo "output file was malformed" 
+        echo "output file was malformed"
+        cat $FILTER_RESULT_FILE
         exit
     fi
      
-    execution_time=`jq -r .duration out`
+    execution_time=`jq -r .duration $FILTER_RESULT_FILE`
     num_of_params=`jq -r '.parameters[] | length' $1`
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
@@ -48,6 +80,7 @@ function parseResult() {
     
     conf=`jq . $1`
     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
+    rm $FILTER_RESULT_FILE
 }
 
 
@@ -119,12 +152,77 @@ function run_new_conf() {
     done
 }
 
+function block() {
+    while read line; do
+        running=true
+        test -e  $WORK_DIR/running && running=true
+        test -e  $WORK_DIR/running || running=false
+        while [ "$running" = "true" ]
+        do
+            test -e  $WORK_DIR/running && running=true
+            test -e  $WORK_DIR/running || running=false
+#             echo $running
+        done 
+    done < $SSH_FILE
+    END_EXECUTION=`date +%s`
+}
 
 
 function run() {
-    ./generation_argo_big_data.csh $1 &> out
+    touch $WORK_DIR/running
+    FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
+    python generation_argo_big_data.py $1 &> $FILTER_RESULT_FILE
+    rm $WORK_DIR/running
     parseResult $1
 }
+
+function run_ssh() {
+    ssh_count=0
+    EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
+    START_EXECUTION=`date +%s`
+    while read line; do
+        screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=$HOME/workspace/dockerfiles/ArgoDiffusion/scripts/$ssh_count"_"configuration_new.json
+        ssh_count=$((ssh_count+1))
+    done < $SSH_FILE
+    block
+    parse_ssh_result configuration_new.json
+}
+
+function run_parameter_sweep_distributed() {
+    count_all=0
+    #Set latitude
+    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    do
+        # Set longitude
+        for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
+        do
+            for (( k=1; k<=21; k=k+10))
+            do
+                count=0
+                date_count=0
+                NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+                NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+                if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
+                    NEXT_DATE=$MAX_DATE        
+                fi
+
+                parameters=9
+                while read l; do
+                    count=$((count+1))
+                    parameters=$parameters","$l
+                    if [ "$count" -gt "200" ]; then
+                        newConf $1 $i $j $NEXT_DATE $parameters
+                        python partitioning.py configuration_new.json $SSH_FILE
+                        run_ssh
+                        count_all=$((count_all+1))
+                        count=0
+                    fi
+                done <physical_parameter_keys.txt
+            done        
+        done
+    done
+}
+
 
 
 for i in "$@"
@@ -146,8 +244,11 @@ done
 # echo JSON_CONF_FILE = ${JSON_CONF_FILE}
 # echo CONF_FILE = ${CONF_FILE}
 
-source ${CONF_FILE}
+if [ -n "$CONF_FILE" ]; then
+    source ${CONF_FILE}
+fi
 
+WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 case ${OPERATION} in
     run)
@@ -159,6 +260,9 @@ case ${OPERATION} in
     run_parameter_sweep)
     run_parameter_sweep $JSON_CONF_FILE
     ;;
+    run_parameter_sweep_distributed)
+    run_parameter_sweep_distributed $JSON_CONF_FILE
+    ;;    
 esac
 
 
