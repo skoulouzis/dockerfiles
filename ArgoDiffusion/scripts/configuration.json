@@ -1,6 +1,6 @@
 {
         "input_folder": "/mnt/data/data_argo/",
-        "metadata_file": "/home/vm_user/dockerfiles/ArgoDiffusion/scripts/ar_bigmetadata.json",
+        "metadata_file": "/mnt/data/source/ar_bigmetadata.json",
         "output_file": "/mnt/data/data_argo.txt",
         "bounding_box":{          
                 "geospatial_lat_min": 0,

@@ -24,14 +24,14 @@ function parse_ssh_result() {
         exit
     fi
     
-    time_coverage=`python getDelta.py $time_coverage_start $time_coverage_end`
+    time_coverage=`python $WORK_DIR/getDelta.py $time_coverage_start $time_coverage_end`
     
     geospatial_lat_min=`jq -r .bounding_box.geospatial_lat_min $1`
     geospatial_lat_max=`jq -r .bounding_box.geospatial_lat_max $1`
     geospatial_lon_min=`jq -r .bounding_box.geospatial_lon_min $1`
     geospatial_lon_max=`jq -r .bounding_box.geospatial_lon_max $1`
     
-    area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
+    area=`python $WORK_DIR/coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
     
      
     execution_time=$((END_EXECUTION-START_EXECUTION))
@@ -47,7 +47,7 @@ function parse_ssh_result() {
 
 
 function parseResult() {
-    sed -i 's/duration (seconds)/duration/g' $FILTER_RESULT_FILE
+    sed -i 's/duration (seconds)/duration/g' $WORK_DIR/$FILTER_RESULT_FILE
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
     if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
@@ -55,23 +55,23 @@ function parseResult() {
         exit
     fi
     
-    time_coverage=`python getDelta.py $time_coverage_start $time_coverage_end`
+    time_coverage=`python $WORK_DIR/getDelta.py $time_coverage_start $time_coverage_end`
     
     geospatial_lat_min=`jq -r .bounding_box.geospatial_lat_min $1`
     geospatial_lat_max=`jq -r .bounding_box.geospatial_lat_max $1`
     geospatial_lon_min=`jq -r .bounding_box.geospatial_lon_min $1`
     geospatial_lon_max=`jq -r .bounding_box.geospatial_lon_max $1`
     
-    area=`python coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
+    area=`python $WORK_DIR/coordinates2Area.py $geospatial_lat_min $geospatial_lat_max $geospatial_lon_min $geospatial_lon_max`
     
-    date=`jq -r .date $FILTER_RESULT_FILE`
+    date=`jq -r .date $WORK_DIR/$FILTER_RESULT_FILE`
     if [ -z "$date" ]; then
         echo "output file was malformed"
-        cat $FILTER_RESULT_FILE
+        cat $WORK_DIR/$FILTER_RESULT_FILE
         exit
     fi
      
-    execution_time=`jq -r .duration $FILTER_RESULT_FILE`
+    execution_time=`jq -r .duration $WORK_DIR/$FILTER_RESULT_FILE`
     num_of_params=`jq -r '.parameters[] | length' $1`
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
@@ -80,7 +80,7 @@ function parseResult() {
     
     conf=`jq . $1`
     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf "}"
-    rm $FILTER_RESULT_FILE
+#     rm $WORK_DIR/$FILTER_RESULT_FILE
 }
 
 
@@ -171,7 +171,7 @@ function block() {
 function run() {
     touch $WORK_DIR/running
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
-    python generation_argo_big_data.py $1 &> $FILTER_RESULT_FILE
+    python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
     rm $WORK_DIR/running
     parseResult $1
 }
@@ -181,7 +181,8 @@ function run_ssh() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=`date +%s`
     while read line; do
-        screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=$HOME/workspace/dockerfiles/ArgoDiffusion/scripts/$ssh_count"_"configuration_new.json
+        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
+        ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     block
@@ -265,6 +266,7 @@ case ${OPERATION} in
     ;;    
 esac
 
+#  ./runParameterSweep.sh -op=run_parameter_sweep_distributed -json_conf_file=configuration1.json  -conf_file=med.conf
 
 # this="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 # grep "function" $this | awk '{print $2}' 
