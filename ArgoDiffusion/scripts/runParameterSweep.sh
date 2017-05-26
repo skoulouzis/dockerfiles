@@ -35,6 +35,8 @@ function parse_ssh_result() {
     
      
     execution_time=$((END_EXECUTION-START_EXECUTION))
+    execution_time=`bc <<< "scale = 3; ($execution_time / 1000)"`
+
     num_of_params=`jq -r '.parameters[] | length' $1`
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
@@ -164,7 +166,7 @@ function block() {
 #             echo $running
         done 
     done < $SSH_FILE
-    END_EXECUTION=`date +%s`
+    END_EXECUTION=$(($(date +%s%N)/1000000))
 }
 
 
@@ -179,7 +181,7 @@ function run() {
 function run_ssh() {
     ssh_count=0
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
-    START_EXECUTION=`date +%s`
+    START_EXECUTION=$(($(date +%s%N)/1000000))
     while read line; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
         ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
