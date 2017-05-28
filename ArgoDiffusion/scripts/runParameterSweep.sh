@@ -176,10 +176,10 @@ function block() {
 #     END_EXECUTION=$(($(date +%s%N)/1000000))
 #     rm $WORK_DIR/running.out &> /dev/null
     while read line; do
+        echo $line
         ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
         ls_out=`cat $WORK_DIR/running.out`
         echo $ls_out
-        exit 
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
     rm $WORK_DIR/running.out &> /dev/null
