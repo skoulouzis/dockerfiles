@@ -190,12 +190,12 @@ function run_ssh() {
     ssh_count=0
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
-    while read line; do
-        echo $line
-#         echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source #&> /dev/null
-        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
-#         echo ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
-        ssh $line -i $KEY_PATH screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json
+    while read node; do
+        echo $node
+#         echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source #&> /dev/null
+        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null
+#         echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
+        ssh $node -i $KEY_PATH screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
 #     block
