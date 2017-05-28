@@ -178,8 +178,13 @@ function block() {
     while read line; do
         echo $line
         ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
-        ls_out=`cat $WORK_DIR/running.out`
+        ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
         echo $ls_out
+        while [[ $ls_out == *"argoBenchmark"* ]]; then
+            ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
+            echo $ls_out
+            break
+        done         
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
     rm $WORK_DIR/running.out &> /dev/null
