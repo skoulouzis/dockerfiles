@@ -186,6 +186,12 @@ function run() {
     parseResult $1
 }
 
+function run_screen() {
+    ssh $1 -i $2 "screen -L -dmS argoBenchmark ls"
+    # ssh $1 -i $2 "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
+}
+
+
 function run_ssh() {
     ssh_count=0
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
@@ -194,9 +200,7 @@ function run_ssh() {
         echo $node
 #         echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source #&> /dev/null
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null
-#         echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
-        echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark ls"
-#         ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark ls"
+        run_screen $node $KEY_PATH
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
 #     block
