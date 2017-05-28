@@ -44,7 +44,8 @@ function parse_ssh_result() {
     output_file_size=$(wc -c <"$output_file")
     
     conf=`jq . $1`
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf "}"
+    num_of_nodes=`wc -l $SSH_FILE | awk '{print $1}'`
+    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\": "}"
 }
 
 
@@ -187,7 +188,6 @@ function run_ssh() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read line; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
-#         echo ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
