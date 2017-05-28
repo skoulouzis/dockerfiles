@@ -180,7 +180,7 @@ function block() {
         ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
         ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
         echo $ls_out
-        while [[ $ls_out == *"argoBenchmark"* ]]; then
+        while [ $ls_out == *".argoBenchmark"* ]; then
             ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
             echo $ls_out
             break
