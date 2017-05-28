@@ -193,13 +193,13 @@ function run_ssh() {
     while read line; do
         echo $line
 #         echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source #&> /dev/null
-        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
+#         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
 #         echo ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
-        ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
-        ssh_count=$((ssh_count+1))
+#         ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
+#         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
-    block
-    parse_ssh_result configuration_new.json
+#     block
+#     parse_ssh_result configuration_new.json
 }
 
 function run_parameter_sweep_distributed() {
