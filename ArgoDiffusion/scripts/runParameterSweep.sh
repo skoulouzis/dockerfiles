@@ -180,10 +180,12 @@ function block() {
         ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
         ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
         echo $ls_out
-        while [ $ls_out == *".argoBenchmark"* ]; then
+        while true
             ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
             echo $ls_out
-            break
+            if [[ $ls_out == *".argoBenchmark"* ]]; then
+                break
+            fi
         done         
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
