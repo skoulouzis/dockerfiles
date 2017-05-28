@@ -168,6 +168,7 @@ function block() {
         done 
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
+    rm $WORK_DIR/running.out &> /dev/null
 }
 
 
@@ -175,7 +176,7 @@ function run() {
     touch ~/workspace/dockerfiles/ArgoDiffusion/scripts/running
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
-    rm ~/workspace/dockerfiles/ArgoDiffusion/scripts/running
+    rm ~/workspace/dockerfiles/ArgoDiffusion/scripts/running &> /dev/null
     parseResult $1
 }
 
@@ -185,7 +186,7 @@ function run_ssh() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read line; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
-        echo ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
+        ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     block
