@@ -187,6 +187,7 @@ function block() {
             if [[ $ls_out != *".argoBenchmark"* ]]; then
                 break
             fi
+            sleep 0.01
         done         
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
