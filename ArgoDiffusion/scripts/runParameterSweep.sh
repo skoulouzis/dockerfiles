@@ -184,7 +184,7 @@ function block() {
         do
             ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
             echo $ls_out
-            if [[ $ls_out == *".argoBenchmark"* ]]; then
+            if [[ $ls_out != *".argoBenchmark"* ]]; then
                 break
             fi
         done         
