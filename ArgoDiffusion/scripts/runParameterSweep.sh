@@ -195,7 +195,7 @@ function run_ssh() {
 #         echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source #&> /dev/null
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source #&> /dev/null
 #         echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
-        ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
+#         ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     block
@@ -226,7 +226,6 @@ function run_parameter_sweep_distributed() {
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
-                        echo python partitioning.py configuration_new.json $SSH_FILE
                         python partitioning.py configuration_new.json $SSH_FILE
                         run_ssh
                         count_all=$((count_all+1))
