@@ -199,8 +199,8 @@ function run_ssh() {
         ssh $node -i $KEY_PATH "ls"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
-    block
-    parse_ssh_result configuration_new.json
+#     block
+#     parse_ssh_result configuration_new.json
 }
 
 function run_parameter_sweep_distributed() {
