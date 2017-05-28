@@ -45,6 +45,10 @@ function parse_ssh_result() {
     
     conf=`jq . $1`
     num_of_nodes=`wc -l $SSH_FILE | awk '{print $1}'`
+    last_ssh_line=`tail -1  $SSH_FILE`
+    if [ -z "$last_ssh_line" ] ; then
+        num_of_nodes=$((num_of_nodes - 1))
+    fi
     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes "}"
 }
 
