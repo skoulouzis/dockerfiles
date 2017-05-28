@@ -161,10 +161,11 @@ function block() {
         ls_out=`cat $WORK_DIR/running.out`
         while [ "$running" = "true" ]
         do
-            if [[ $ls_out =~ ".*No such file or directory.*" ]]
-            then
+        ssh $line -i $KEY_PATH "ls ~/workspace/dockerfiles/ArgoDiffusion/scripts/running" &> $WORK_DIR/running.out
+        ls_out=`cat $WORK_DIR/running.out`
+            if [[ $ls_out == *"No such file or directory"* ]]; then
                 running=false
-            fi
+            fi            
         done 
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
@@ -186,6 +187,7 @@ function run_ssh() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read line; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $line:/mnt/data/source &> /dev/null
+#         echo ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh $line -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json"
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
