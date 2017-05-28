@@ -160,21 +160,30 @@ function run_new_conf() {
 }
 
 function block() {
+#     while read line; do
+#         running=true
+#         ssh $line -i $KEY_PATH "ls ~/workspace/dockerfiles/ArgoDiffusion/scripts/running" &> $WORK_DIR/running.out  < /dev/null
+#         ls_out=`cat $WORK_DIR/running.out`
+#         while [ "$running" = "true" ]
+#         do
+#         ssh $line -i $KEY_PATH "ls ~/workspace/dockerfiles/ArgoDiffusion/scripts/running" &> $WORK_DIR/running.out  < /dev/null
+#         ls_out=`cat $WORK_DIR/running.out`
+#             if [[ $ls_out == *"No such file or directory"* ]]; then
+#                 running=false
+#             fi            
+#         done 
+#     done < $SSH_FILE
+#     END_EXECUTION=$(($(date +%s%N)/1000000))
+#     rm $WORK_DIR/running.out &> /dev/null
     while read line; do
-        running=true
-        ssh $line -i $KEY_PATH "ls ~/workspace/dockerfiles/ArgoDiffusion/scripts/running" &> $WORK_DIR/running.out
+        ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
         ls_out=`cat $WORK_DIR/running.out`
-        while [ "$running" = "true" ]
-        do
-        ssh $line -i $KEY_PATH "ls ~/workspace/dockerfiles/ArgoDiffusion/scripts/running" &> $WORK_DIR/running.out
-        ls_out=`cat $WORK_DIR/running.out`
-            if [[ $ls_out == *"No such file or directory"* ]]; then
-                running=false
-            fi            
-        done 
+        echo $ls_out
+        exit 
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
     rm $WORK_DIR/running.out &> /dev/null
+    
 }
 
 
