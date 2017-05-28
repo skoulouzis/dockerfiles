@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 266, in <module>
-    argo.run()
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 33, in run
-    self.read_configuration()
-  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/scripts/generation_argo_big_data.py", line 149, in read_configuration
-    with open(config_file) as data_file:
-IOError: [Errno 2] No such file or directory: '~/workspace/dockerfiles/ArgoDiffusion/scripts/0_configuration_new.json'
