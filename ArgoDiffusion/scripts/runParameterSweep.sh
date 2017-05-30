@@ -224,6 +224,7 @@ function run_parameter_sweep_distributed() {
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
+                        exit
                         run_ssh
                         count_all=$((count_all+1))
                         count=0
@@ -258,12 +259,12 @@ done
 # echo JSON_CONF_FILE = ${JSON_CONF_FILE}
 # echo CONF_FILE = ${CONF_FILE}
 
+WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+MY_IP=`wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}
 fi
-
-WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-MY_IP=`wget -q -O - checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
 
 case ${OPERATION} in
     run)
