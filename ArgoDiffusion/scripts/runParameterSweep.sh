@@ -160,14 +160,19 @@ function run_new_conf() {
 }
 
 function block() {
+    extra_mils=0
+    
+    $((count+1))
     while read line; do
         node_ip=`echo $line | awk -F "@" '{print $2}'`
         while [ -f /tmp/$node_ip.run ]
         do
-            sleep 0.01
+            extra_mils=$((extra_mils+100))
+            sleep 0.1
         done
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
+    END_EXECUTION=$((END_EXECUTION-extra_mils))
 }
 
 
