@@ -189,7 +189,7 @@ function run_ssh() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
-        node_ip=`echo $line | awk -F "@" '{print $2}'`
+        node_ip=`echo $node | awk -F "@" '{print $2}'`
         echo touch /tmp/$node_ip.run
         echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
         ssh_count=$((ssh_count+1))
