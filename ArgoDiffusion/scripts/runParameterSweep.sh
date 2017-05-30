@@ -168,7 +168,6 @@ function block() {
         done
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
-    rm $WORK_DIR/running.out &> /dev/null
 }
 
 
