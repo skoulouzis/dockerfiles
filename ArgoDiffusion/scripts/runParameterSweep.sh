@@ -161,28 +161,21 @@ function run_new_conf() {
 
 function block() {
     while read line; do
-        ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
-        ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
-        while true
+        node_ip=`echo $line | awk -F "@" '{print $2}'`
+        while [ -f /tmp/$node_ip.run ]
         do
-            ssh $line -i $KEY_PATH "screen -ls" &> $WORK_DIR/running.out  < /dev/null
-            ls_out=`cat $WORK_DIR/running.out | awk '{print $1}'`
-            if [[ $ls_out != *".argoBenchmark"* ]]; then
-                break
-            fi
-        done         
+            sleep 0.01
+        done
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
     rm $WORK_DIR/running.out &> /dev/null
-    
 }
 
 
 function run() {
-    touch ~/workspace/dockerfiles/ArgoDiffusion/scripts/running
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
-    rm ~/workspace/dockerfiles/ArgoDiffusion/scripts/running &> /dev/null
+    ssh $MASTER_IP "rm /tmp/$my_ip.run"
     parseResult $1
 }
 
@@ -191,9 +184,12 @@ function run_ssh() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null
-        ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json" < /dev/null
+        scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
+        node_ip=`echo $line | awk -F "@" '{print $2}'`
+        touch /tmp/$node_ip.run
+        ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
         ssh_count=$((ssh_count+1))
+        
     done < $SSH_FILE
     block
     parse_ssh_result configuration_new.json
@@ -248,6 +244,9 @@ case $i in
     -conf_file=*)
     CONF_FILE="${i#*=}"
     ;;
+    -maser_ip=*)
+    MASTER_IP="${i#*=}"
+    ;;    
 esac
 done
 
@@ -260,6 +259,7 @@ if [ -n "$CONF_FILE" ]; then
 fi
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+MY_IP=`wget -q -O - checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
 
 case ${OPERATION} in
     run)
