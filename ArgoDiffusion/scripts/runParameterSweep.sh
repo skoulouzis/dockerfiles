@@ -165,8 +165,6 @@ function block() {
         node_ip=`echo $line | awk -F "@" '{print $2}'`
         while [ -f /tmp/$node_ip.run ]
         do
-            echo "blocking"
-            ls /tmp/$node_ip.run
             extra_mils=$((extra_mils+100))
             sleep 0.1
         done
@@ -190,8 +188,7 @@ function run_ssh() {
     while read node; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
         node_ip=`echo $node | awk -F "@" '{print $2}'`
-        touch /tmp/$node_ip.run
-        echo ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
+#         touch /tmp/$node_ip.run
         ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
@@ -225,6 +222,7 @@ function run_parameter_sweep_distributed() {
                         newConf $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         run_ssh
+                        sleep 0.5
                         count_all=$((count_all+1))
                         count=0
                     fi
@@ -260,8 +258,6 @@ done
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MY_IP=`ifconfig eth0 | awk '/inet addr/ {gsub("addr:", "", $2); print $2}'`
-
-echo $MY_IP
 
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}
