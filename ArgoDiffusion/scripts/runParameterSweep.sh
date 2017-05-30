@@ -161,8 +161,6 @@ function run_new_conf() {
 
 function block() {
     extra_mils=0
-    
-    $((count+1))
     while read line; do
         node_ip=`echo $line | awk -F "@" '{print $2}'`
         while [ -f /tmp/$node_ip.run ]
