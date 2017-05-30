@@ -165,6 +165,8 @@ function block() {
         node_ip=`echo $line | awk -F "@" '{print $2}'`
         while [ -f /tmp/$node_ip.run ]
         do
+            echo "blocking"
+            ls /tmp/$node_ip.run
             extra_mils=$((extra_mils+100))
             sleep 0.1
         done
