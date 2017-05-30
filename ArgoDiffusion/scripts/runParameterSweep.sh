@@ -259,7 +259,7 @@ done
 # echo CONF_FILE = ${CONF_FILE}
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-MY_IP=`wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+MY_IP=`ifconfig eth0 | awk '/inet addr/ {gsub("addr:", "", $2); print $2}'`
 
 echo $MY_IP
 
