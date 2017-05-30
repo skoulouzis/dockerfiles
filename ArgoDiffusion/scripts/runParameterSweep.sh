@@ -188,7 +188,7 @@ function run_ssh() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-        echo  scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source
+        echo scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
         node_ip=`echo $line | awk -F "@" '{print $2}'`
         touch /tmp/$node_ip.run
