@@ -261,6 +261,8 @@ done
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MY_IP=`wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
 
+echo $MY_IP
+
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}
 fi
