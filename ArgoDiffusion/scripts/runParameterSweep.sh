@@ -177,7 +177,7 @@ function block() {
 function run() {
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
-    ssh $MASTER_IP "rm /tmp/$my_ip.run"
+    ssh $MASTER_IP "rm /tmp/$MY_IP.run"
     parseResult $1
 }
 
