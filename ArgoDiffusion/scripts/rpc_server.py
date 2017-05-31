@@ -51,6 +51,8 @@ def on_request(ch, method, props, body):
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='argo_rpc_queue')
 
+thread = Thread(target = threaded_function, args = (1, ))
+thread.start()
 
 try:
     channel.start_consuming()
