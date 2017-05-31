@@ -212,12 +212,11 @@ function send_messages() {
     while read node; do
 #         node_ip=`echo $node | awk -F "@" '{print $2}'`
 #         FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
-        echo $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$ssh_count"_".out
-        python rpc_client.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$ssh_count"_".out &
+        python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$ssh_count"_".out
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
 #     echo waiting 
-    wait
+#     wait
 #     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
     parse_dist_result configuration_new.json 
