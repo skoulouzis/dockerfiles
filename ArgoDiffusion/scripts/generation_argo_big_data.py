@@ -73,7 +73,7 @@ class Argo:
         out_data['date'] = time.strftime(date_format, start_time)
         out_data['duration (seconds)'] = '%.3f' % duration
         out_data = json.dumps(out_data)
-        print out_data
+        return out_data
     
     
     def read_file(self, argofile):
@@ -263,7 +263,7 @@ if __name__ == '__main__':
         config_file = args[0]
 
     argo = Argo()
-    argo.run()
+    print argo.run()
     
     #process = psutil.Process(os.getpid())
     #mem = process.memory_percent()

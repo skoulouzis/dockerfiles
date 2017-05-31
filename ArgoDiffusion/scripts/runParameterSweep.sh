@@ -15,7 +15,7 @@ function newConf() {
 
 
 
-function parse_ssh_result() {
+function parse_dist_result() {
     
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
@@ -77,7 +77,16 @@ function parseResult() {
         cat $WORK_DIR/$FILTER_RESULT_FILE
         exit
     fi
-     
+    
+    ip=$2
+    if [ -z "$ip" ]; then
+        ip=$MY_IP
+    fi
+    num_of_nodes=$3
+    if [ -z "$num_of_nodes" ]; then
+        num_of_nodes=1
+    fi
+    
     execution_time=`jq -r .duration $WORK_DIR/$FILTER_RESULT_FILE`
     num_of_params=`jq -r '.parameters[] | length' $1`
     input_folder=`jq -r .input_folder $1`
@@ -86,7 +95,7 @@ function parseResult() {
     output_file_size=$(wc -c <"$output_file")
     
     conf=`jq . $1`
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":1, \"executing_node\":\"$MY_IP\""}"
+    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
 #     rm $WORK_DIR/$FILTER_RESULT_FILE
 }
 
@@ -193,10 +202,61 @@ function run_ssh() {
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     block
-    parse_ssh_result configuration_new.json
+    parse_dist_result configuration_new.json
 }
 
-function run_parameter_sweep_distributed() {
+function send_messages() {
+    ssh_count=0
+    EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
+    START_EXECUTION=$(($(date +%s%N)/1000000))
+    while read node; do
+        node_ip=`echo $node | awk -F "@" '{print $2}'`
+        FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
+        python rpc_client.py localhost $ssh_count"_"configuration_new.json &> $WORK_DIR/$FILTER_RESULT_FILE
+        parseResult $ssh_count"_"configuration_new.json $node_ip
+        ssh_count=$((ssh_count+1))
+    done < $SSH_FILE
+    parse_dist_result configuration_new.json 
+}
+
+
+function run_parameter_sweep_distributed_ssh() {
+    count_all=0
+    #Set latitude
+    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    do
+        # Set longitude
+        for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
+        do
+            for (( k=1; k<=21; k=k+10))
+            do
+                count=0
+                date_count=0
+                NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+                NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+                if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
+                    NEXT_DATE=$MAX_DATE        
+                fi
+                parameters=9
+                while read l; do
+                    count=$((count+1))
+                    parameters=$parameters","$l
+                    if [ "$count" -gt "200" ]; then
+                        newConf $1 $i $j $NEXT_DATE $parameters
+                        python partitioning.py configuration_new.json $SSH_FILE
+                        run_ssh
+                        sleep 0.5
+                        count_all=$((count_all+1))
+                        count=0
+                    fi
+                done <physical_parameter_keys.txt
+            done        
+        done
+    done
+}
+
+
+function run_parameter_sweep_distributed_rabbit() {
     count_all=0
     #Set latitude
     for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
@@ -221,8 +281,7 @@ function run_parameter_sweep_distributed() {
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
-                        run_ssh
-                        sleep 0.5
+                        send_messages
                         count_all=$((count_all+1))
                         count=0
                     fi
@@ -231,6 +290,7 @@ function run_parameter_sweep_distributed() {
         done
     done
 }
+
 
 
 
@@ -258,6 +318,10 @@ done
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MY_IP=`ifconfig eth0 | awk '/inet addr/ {gsub("addr:", "", $2); print $2}'`
+if [ -z "$MY_IP" ]; then
+    MY_IP=$HOSTNAME
+fi
+    
 
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}
@@ -273,12 +337,15 @@ case ${OPERATION} in
     run_parameter_sweep)
     run_parameter_sweep $JSON_CONF_FILE
     ;;
-    run_parameter_sweep_distributed)
-    run_parameter_sweep_distributed $JSON_CONF_FILE
+    run_parameter_sweep_distributed_ssh)
+    run_parameter_sweep_distributed_ssh $JSON_CONF_FILE
     ;;    
+    run_parameter_sweep_distributed_rabbit)
+    run_parameter_sweep_distributed_rabbit $JSON_CONF_FILE
+    ;;      
 esac
 
-#  ./runParameterSweep.sh -op=run_parameter_sweep_distributed -json_conf_file=configuration1.json  -conf_file=med.conf
+#  ./runParameterSweep.sh -op=run_parameter_sweep_distributed_ssh -json_conf_file=configuration1.json  -conf_file=med.conf
 
 # this="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 # grep "function" $this | awk '{print $2}' 
