@@ -20,7 +20,7 @@ def execute(data):
     tempfile.gettempdir() 
     f = tempfile.NamedTemporaryFile(delete=False)
     rand_name = randomword();
-    rand_name+=".json"
+    rand_name+=".json.out"
     with open(rand_name, 'w') as outfile:
         outfile.write(str(data))
     
