@@ -6,7 +6,7 @@ import json
 
 class ArgoRpcClient(object):
     def __init__(self):
-        self.connection = pika.BlockingConnection(parameters)
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
 
         self.channel = self.connection.channel()
 
@@ -41,8 +41,6 @@ class ArgoRpcClient(object):
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]
 conf_file = sys.argv[3]
-
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
 
 
 argo_rpc = ArgoRpcClient()
