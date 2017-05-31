@@ -212,7 +212,7 @@ function send_messages() {
     while read node; do
         node_ip=`echo $node | awk -F "@" '{print $2}'`
         FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
-        python rpc_client.py localhost $ssh_count"_"configuration_new.json &> $WORK_DIR/$FILTER_RESULT_FILE
+        python rpc_client.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$FILTER_RESULT_FILE
         parseResult $ssh_count"_"configuration_new.json $node_ip
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
@@ -322,6 +322,8 @@ if [ -z "$MY_IP" ]; then
     MY_IP=$HOSTNAME
 fi
     
+RMQ_HOST=localhost 
+RMQ_PORT=5672
 
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}

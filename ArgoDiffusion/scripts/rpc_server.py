@@ -6,8 +6,9 @@ import tempfile
 import random, string
 
 rabbit_host = sys.argv[1]
+rabbit_port = sys.argv[2]
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
 
 channel = connection.channel()
 
