@@ -86,16 +86,15 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         "configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
         "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
         "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
-        "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
-        "area":{ "$gte":area},
-        "num_of_params":{ "$gte": max_distinct_num_of_params},
-        "time_coverage":{ "$gte":max_distinct_time_coverage}
+        "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']}
+        #"area":{ "$gte":area},
+        #"num_of_params":{ "$gte": max_distinct_num_of_params},
+        #"time_coverage":{ "$gte":max_distinct_time_coverage}
         })
     
     for doc in square:
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
-        print doc
         print "%s,%s" % (doc["num_of_nodes"],doc["execution_time"])
     
     data = {'execution_time':execution_time,'num_of_nodes':num_of_nodes}

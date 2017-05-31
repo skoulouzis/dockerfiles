@@ -216,6 +216,7 @@ function send_messages() {
         parseResult $ssh_count"_"configuration_new.json $node_ip
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
+    END_EXECUTION=$(($(date +%s%N)/1000000))
     parse_dist_result configuration_new.json 
 }
 
