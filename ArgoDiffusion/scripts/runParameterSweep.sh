@@ -54,7 +54,7 @@ function parse_dist_result() {
 
 
 function parseResult() {
-    sed -i 's/duration (seconds)/duration/g' $WORK_DIR/$FILTER_RESULT_FILE
+    sed -i 's/duration (seconds)/duration/g' $2
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
     if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
@@ -78,11 +78,11 @@ function parseResult() {
         exit
     fi
     
-    ip=$2
+    ip=$3
     if [ -z "$ip" ]; then
         ip=$MY_IP
     fi
-    num_of_nodes=$3
+    num_of_nodes=$4
     if [ -z "$num_of_nodes" ]; then
         num_of_nodes=1
     fi
@@ -187,7 +187,7 @@ function run() {
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
     ssh $MASTER_IP "rm /tmp/$MY_IP.run" < /dev/null
-    parseResult $1
+    parseResult $1 $WORK_DIR/$FILTER_RESULT_FILE
 }
 
 function run_ssh() {
@@ -210,12 +210,13 @@ function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-        node_ip=`echo $node | awk -F "@" '{print $2}'`
-        FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
-        python rpc_client.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$FILTER_RESULT_FILE
-        parseResult $ssh_count"_"configuration_new.json $node_ip
+#         node_ip=`echo $node | awk -F "@" '{print $2}'`
+#         FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
+        python rpc_client.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$ssh_count"_".out &
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
+    wait
+#     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
     parse_dist_result configuration_new.json 
 }
