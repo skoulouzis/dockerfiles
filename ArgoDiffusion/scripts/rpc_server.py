@@ -14,6 +14,14 @@ channel = connection.channel()
 
 channel.queue_declare(queue='argo_rpc_queue')
 
+done = False
+
+def threaded_function(args):
+    while not done:
+        connection.process_data_events()
+        sleep(5)
+        
+
 def randomword():
    return ''.join(random.choice(string.lowercase) for i in range(5))
 
@@ -43,4 +51,12 @@ def on_request(ch, method, props, body):
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='argo_rpc_queue')
 
-channel.start_consuming()
+
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    #thread.stop()
+    done = True
+    thread.join()
+    print "threads successfully closed"
+    

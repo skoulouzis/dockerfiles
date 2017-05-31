@@ -14,7 +14,8 @@ import statsmodels.formula.api as smf
 from random import randint
 from datetime import datetime
 
-
+med_box = {'geospatial_lon_min': -6,'geospatial_lon_max':37,
+       'geospatial_lat_min':30,'geospatial_lat_max':46}
 
 def plotData(corr):
     seaborn.set(style="white")
@@ -37,6 +38,68 @@ def plotData(corr):
     #seaborn.savefig("output.png")
     seaborn.plt.show()
     
+
+def get_distinct_area(bounding_box):
+    connection = Connection('localhost', 27017)
+    db = connection.drip    
+    distinct_area = db.argoBenchmark.find({
+    "configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
+    "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
+    "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
+    "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']}
+    }).distinct("area")  
+    
+    return distinct_area
+
+def getDistinct_num_of_params(bounding_box):
+    connection = Connection('localhost', 27017)
+    db = connection.drip    
+    distinct_num_of_params = db.argoBenchmark.find({
+    "configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
+    "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
+    "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
+    "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']}
+    }).distinct("num_of_params")  
+    
+    return distinct_num_of_params
+
+def getDistinct_time_coverage(bounding_box):
+    connection = Connection('localhost', 27017)
+    db = connection.drip    
+    distinct_time_coverage = db.argoBenchmark.find({
+    "configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
+    "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
+    "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
+    "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']}
+    }).distinct("time_coverage")  
+    
+    return distinct_time_coverage
+    
+
+def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_coverage):
+    connection = Connection('localhost', 27017)
+    db = connection.drip
+    execution_time=[]
+    num_of_nodes = []
+    
+    square = db.argoBenchmark.find({
+        "configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
+        "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
+        "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
+        "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
+        "area":{ "$gte":area},
+        "num_of_params":{ "$gte": max_distinct_num_of_params},
+        "time_coverage":{ "$gte":max_distinct_time_coverage}
+        })
+    
+    for doc in square:
+        execution_time.append(doc["execution_time"])
+        num_of_nodes.append(doc["num_of_nodes"])
+        print doc
+        print "%s,%s" % (doc["num_of_nodes"],doc["execution_time"])
+    
+    data = {'execution_time':execution_time,'num_of_nodes':num_of_nodes}
+    return pandas.DataFrame(data)
     
 def getDataFrame():
     connection = Connection('localhost', 27017)
@@ -47,7 +110,10 @@ def getDataFrame():
     execution_time=[]
     num_of_nodes = []
     timestamp_end = []
+    timestamp_start = []
+                                         
 
+    
     docs = db.argoBenchmark.find({});
     #docs = db.argoBenchmark.find({ "num_of_nodes" : 1 })
     #print "area,time_coverage,num_of_params,execution_time,num_of_nodes,timestamp_end"
@@ -58,42 +124,60 @@ def getDataFrame():
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
         timestamp = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_end"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
-        timestamp_end.append(timestamp)
+        timestamp_end.append(int(timestamp))
+        
+        timestamp = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_start"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
+        timestamp_start.append(int(timestamp))        
         #print "%s,%s,%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], doc["execution_time"], doc["num_of_nodes"], timestamp)
     
-    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end}
+    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end,'timestamp_start':timestamp_start}   
     return pandas.DataFrame(data)
     
     
+distinct_area = get_distinct_area(med_box)
+max_distinct_area = max(distinct_area)
+distinct_num_of_params = getDistinct_num_of_params(med_box)
+max_distinct_num_of_params = max(distinct_num_of_params)
+distinct_time_coverage = getDistinct_time_coverage(med_box)
+max_distinct_time_coverage = max(distinct_time_coverage)
+
+med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
+
+
+grouped = med.groupby(['num_of_nodes'], as_index=False)
+gm = grouped.mean()
+gm.to_csv("speed_up.csv")
+print gm
     
-dataframe = getDataFrame()
-print dataframe.head
-grouped = dataframe.groupby(['area', 'time_coverage','num_of_params','num_of_nodes','timestamp_end'], as_index=False)
-#print grouped.describe()
+
+
+
+#dataframe = getDataFrame()
+#grouped = dataframe.groupby(['area', 'time_coverage','num_of_params','num_of_nodes','timestamp_end','timestamp_start'], as_index=False)
+##print grouped.describe()
 #gm = grouped.mean()
 
 #corr = dataframe.corr()
 #corr.to_csv("correlation.csv")
-##print corr 
 ##seaborn.heatmap(corr, 
             ##xticklabels=corr.columns.values,
             ##yticklabels=corr.columns.values)
 ###seaborn.plt.show()
 
-##model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params', data=gm)
-##model = smf.ols(formula='execution_time ~ time_coverage', data=gm)
+#model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params', data=gm)
+#model = smf.ols(formula='execution_time ~ time_coverage', data=gm)
 #model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params + num_of_nodes + timestamp_end', data=dataframe)
-##model = smf.ols(formula='execution_time ~ time_coverage', data=dataframe)
+#model = smf.ols(formula='execution_time ~ time_coverage', data=dataframe)
 #results = model.fit()
 
-##R-squared: how close the data are to the fitted regression line. Which % of the dependent variable can be explained by the independent. How the variability is exampled by the dependent variable. If you add more DF it gets higher. Look at adj. R-squared to get some meaning on relation 
-##Adj. R-squared: Adjusts with the number of "useful" variables 
-##Df Residuals: Residuals degrees of freedom 
-##Df Model: Degrees of freedom 
-##Residuals: Unexplained. Distance from model to regression line. Difference between what model predict and what actually happed  
-##F-statistic: The F critical value is what is referred to as the F statistic
-##Prob (F-statistic): The p-value
-##print(results.summary())
+#R-squared: how close the data are to the fitted regression line. Which % of the dependent variable can be explained by the independent. How the variability is exampled by the dependent variable. If you add more DF it gets higher. Look at adj. R-squared to get some meaning on relation 
+#Adj. R-squared: Adjusts with the number of "useful" variables 
+#Df Residuals: Residuals degrees of freedom 
+#Df Model: Degrees of freedom 
+#Residuals: Unexplained. Distance from model to regression line. Difference between what model predict and what actually happed  
+#F-statistic: The F critical value is what is referred to as the F statistic
+#Prob (F-statistic): The p-value
+#print(results.summary())
 
 ##fig, ax = plt.subplots()
 ##fig = sm.graphics.plot_fit(results, 2, ax=ax)
