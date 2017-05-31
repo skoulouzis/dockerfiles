@@ -216,7 +216,7 @@ function send_messages() {
         python rpc_client.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json &> $WORK_DIR/$ssh_count"_".out &
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
-    echo waiting 
+#     echo waiting 
     wait
 #     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
