@@ -218,11 +218,16 @@ function send_messages() {
     q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
     while [ $q_size -ge 1 ]
     do
+        echo $q_size
         q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
     done
+    echo $q_size
+    echo "Done!"
+#     echo waiting 
+#     wait
 #     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
-    parse_dist_result configuration_new.json 
+#     parse_dist_result configuration_new.json 
 }
 
 
