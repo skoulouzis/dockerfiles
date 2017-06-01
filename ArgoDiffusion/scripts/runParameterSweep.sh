@@ -212,6 +212,7 @@ function send_messages() {
     while read node; do
 #         node_ip=`echo $node | awk -F "@" '{print $2}'`
 #         FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
+        echo "Sending "$ssh_count"_"configuration_new.json
         python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
@@ -291,6 +292,7 @@ function run_parameter_sweep_distributed_rabbit() {
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
+                        echo $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         send_messages
                         count_all=$((count_all+1))

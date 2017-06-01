@@ -36,6 +36,7 @@ def execute(data):
 
 
 def callback(ch, method, properties, body):
+    print body
     n = str(body)
     response = execute(n)
     print response
