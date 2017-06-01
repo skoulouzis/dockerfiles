@@ -224,7 +224,7 @@ function send_messages() {
 #     wait
 #     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
-#     parse_dist_result configuration_new.json 
+    parse_dist_result configuration_new.json 
 }
 
 
