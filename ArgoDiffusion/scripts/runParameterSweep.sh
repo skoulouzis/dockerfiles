@@ -217,9 +217,9 @@ function send_messages() {
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
+    echo $q_size
     while [ $q_size -ge 1 ]
     do
-        echo $q_size
         q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
     done
     echo $q_size
@@ -292,7 +292,6 @@ function run_parameter_sweep_distributed_rabbit() {
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
-                        echo $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         send_messages
                         count_all=$((count_all+1))
