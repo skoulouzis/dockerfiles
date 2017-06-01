@@ -55,8 +55,10 @@ done = False
 
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(callback,
-                      queue='task_queue')
+channel.basic_consume(callback, queue='task_queue')
+
+thread = Thread(target = threaded_function, args = (1, ))
+thread.start()
 
 try:
     channel.start_consuming()
