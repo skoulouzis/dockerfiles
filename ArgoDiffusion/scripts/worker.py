@@ -36,10 +36,10 @@ def execute(data):
 
 
 def callback(ch, method, properties, body):
-    print body
+    #print body
     n = str(body)
     response = execute(n)
-    print response
+    #print response
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
