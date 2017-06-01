@@ -8,7 +8,8 @@ import random, string
 from threading import Thread
 from time import sleep
 
-done = False
+
+
 def threaded_function(args):
     while not done:
         connection.process_data_events()
@@ -16,7 +17,8 @@ def threaded_function(args):
         
         
 def randomword():
-   return ''.join(random.choice(string.lowercase) for i in range(5))
+    return ''.join(random.choice(string.lowercase) for i in range(5))
+
 
 def execute(data):
     tempfile.gettempdir() 
@@ -32,6 +34,7 @@ def execute(data):
     return out
 
 
+
 def callback(ch, method, properties, body):
     n = str(body)
     response = execute(n)
@@ -39,20 +42,20 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
-
-
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
+
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host,port=int(rabbit_port)))
 channel = connection.channel()
 channel.queue_declare(queue='task_queue', durable=True)
+done = False
 
-thread = Thread(target = threaded_function, args = (1, ))
-#thread.start()
 
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(callback,queue='task_queue')
+channel.basic_consume(callback,
+                      queue='task_queue')
 
 try:
     channel.start_consuming()
@@ -60,4 +63,4 @@ except KeyboardInterrupt:
     #thread.stop()
     done = True
     thread.join()
-    print "threads successfully closed"
+#print "threads successfully closed"
