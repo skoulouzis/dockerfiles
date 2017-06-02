@@ -13,6 +13,7 @@ import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from random import randint
 from datetime import datetime
+import json
 
 med_box = {'geospatial_lon_min': -6,'geospatial_lon_max':37,
        'geospatial_lat_min':30,'geospatial_lat_max':46}
@@ -87,15 +88,15 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         "configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
         "configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
         "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
-        "area":{ "$gte":area},
-        "num_of_params":{ "$gte": max_distinct_num_of_params},
-        "time_coverage":{ "$gte":max_distinct_time_coverage}
+        "area":{ "$eq":area},
+        "num_of_params":{ "$eq": max_distinct_num_of_params},
+        "time_coverage":{ "$eq":max_distinct_time_coverage}
         })
     
     for doc in square:
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
-        print "%s,%s,%s" % (doc["num_of_nodes"],doc["execution_time"],doc["time_coverage"])
+        print "%s , %s , %s , %s" % (doc["_id"],doc["num_of_nodes"],doc["execution_time"],doc["time_coverage"])
     
     data = {'execution_time':execution_time,'num_of_nodes':num_of_nodes}
     return pandas.DataFrame(data)
@@ -133,20 +134,24 @@ def getDataFrame():
     return pandas.DataFrame(data)
     
     
+
 distinct_area = get_distinct_area(med_box)
 max_distinct_area = max(distinct_area)
 distinct_num_of_params = getDistinct_num_of_params(med_box)
 max_distinct_num_of_params = max(distinct_num_of_params)
+
 distinct_time_coverage = getDistinct_time_coverage(med_box)
 max_distinct_time_coverage = max(distinct_time_coverage)
 
 med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
 
 
-grouped = med.groupby(['num_of_nodes'], as_index=False)
-gm = grouped.mean()
-gm.to_csv("speed_up.csv")
-print gm
+#grouped = med.groupby(['num_of_nodes'], as_index=False)
+#gm = grouped.mean()
+#gm.to_csv("speed_up.csv")
+#print gm
+
+
     
 
 

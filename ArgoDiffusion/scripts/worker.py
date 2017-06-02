@@ -34,12 +34,16 @@ def execute(data):
     return out
 
 
+def parse_output(output):
+    
+    
+    
 
 def callback(ch, method, properties, body):
     #print body
     n = str(body)
     response = execute(n)
-    #print response
+    parse_output(response)
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 

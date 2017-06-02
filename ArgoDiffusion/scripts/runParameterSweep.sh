@@ -2,12 +2,13 @@
 
 
 function newConf() {
+    
     sed "s/\"geospatial_lat_min\": 0,/\"geospatial_lat_min\": $MIN_LAT".00",/" $1 > configuration_new.json
     sed -i "s/\"geospatial_lon_min\": 0,/\"geospatial_lon_min\": $MIN_LON".00",/" configuration_new.json
     sed -i "s/\"geospatial_lat_max\": 0,/\"geospatial_lat_max\": $2".00",/" configuration_new.json
     sed -i "s/\"geospatial_lon_max\": 0/\"geospatial_lon_max\": $3".00"/" configuration_new.json
     sed -i "s/\"time_coverage_end\":.*/\"time_coverage_end\": \"$4\"/" configuration_new.json
-    sed -i "s/\"parameters\":.*/\"parameters\": [\"$5\"],/" configuration_new.json
+    sed -i "s/\"parameters\":.*/\"parameters\": [$5],/" configuration_new.json
     
 #     echo geospatial_lat_min $MIN_LAT geospatial_lon_min $MIN_LON geospatial_lat_max $1".00" geospatial_lon_max $2".00" time_coverage_end $3 parameter $4
 #     cat configuration_new.json
@@ -37,7 +38,8 @@ function parse_dist_result() {
     execution_time=$((END_EXECUTION-START_EXECUTION))
     execution_time=`bc <<< "scale = 3; ($execution_time / 1000)"`
 
-    num_of_params=`jq -r '.parameters[] | length' $1`
+    num_of_params=`jq -r '.parameters[]' $1 | wc -l`
+    echo $num_of_params
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
@@ -88,7 +90,7 @@ function parseResult() {
     fi
     
     execution_time=`jq -r .duration $WORK_DIR/$FILTER_RESULT_FILE`
-    num_of_params=`jq -r '.parameters[] | length' $1`
+    num_of_params=`jq -r '.parameters[]' $1 | wc -l`
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
@@ -109,28 +111,31 @@ function run_parameter_sweep() {
         do
             for (( k=1; k<=21; k=k+10))
             do
-            count=0
-            date_count=0
-            NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
-            NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
-            if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
-                NEXT_DATE=$MAX_DATE        
-            fi
-
-            parameters=9
-            while read l; do
-                count=$((count+1))
-                parameters=$parameters","$l
-                if [ "$count" -gt "200" ]; then
-                    newConf $1 $i $j $NEXT_DATE $parameters
-                    run configuration_new.json
-                    count=0
-                fi
-                
-            done <physical_parameter_keys.txt
-            done        
+                count=0
+                date_count=0
+                NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+                NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+                parameters=9
+                while read l; do
+                    count=$((count+1))
+                    parameters=$parameters","$l
+                    if [ "$count" -ge "400" ]; then                        
+                        newConf $1 $i $j $NEXT_DATE $parameters
+                        run configuration_new.json
+                        count=0
+                    fi
+                done <physical_parameter_keys.txt
+                newConf $1 $i $j $NEXT_DATE $parameters
+                run configuration_new.json
+            done
+            newConf $1 $i $j $MAX_DATE $parameters
+            run configuration_new.json
         done
+        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        run configuration_new.json        
     done
+    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
+    run configuration_new.json            
 }
 
 
@@ -142,30 +147,34 @@ function run_new_conf() {
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
         do
-            for (( k=1; k<=21; k=k+10))
+            for (( k=1; k<=21; k=k+20))
             do
-            count=0
-            date_count=0
-            NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
-            NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
-            if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
-                NEXT_DATE=$MAX_DATE        
-            fi
-
-            parameters=9
-            while read l; do
-                count=$((count+1))
-                parameters=$parameters","$l
-                if [ "$count" -gt "200" ]; then
-                    newConf $1 $i $j $NEXT_DATE $parameters
-                    mv configuration_new.json $count_all"_"configuration_new.json
-                    count_all=$((count_all+1))
-                    count=0
-                fi
-            done <physical_parameter_keys.txt
-            done        
+                count=0
+                date_count=0
+                NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+                NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+                parameters=9
+                while read l; do
+                    count=$((count+1))
+                    parameters=$parameters","$l
+                    if [ "$count" -gt "400" ]; then
+                        newConf $1 $i $j $NEXT_DATE $parameters
+                        mv configuration_new.json $count_all"_"configuration_new.json
+                        count_all=$((count_all+1))
+                        count=0
+                    fi
+                done <physical_parameter_keys.txt
+                newConf $1 $i $j $NEXT_DATE $parameters
+                run configuration_new.json
+            done
+            newConf $1 $i $j $MAX_DATE $parameters
+            run configuration_new.json            
         done
+        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        run configuration_new.json                
     done
+    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
+    run configuration_new.json      
 }
 
 function block() {
@@ -186,7 +195,7 @@ function block() {
 function run() {
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
-    ssh $MASTER_IP "rm /tmp/$MY_IP.run" < /dev/null
+#     ssh $MASTER_IP "rm /tmp/$MY_IP.run" < /dev/null
     parseResult $1 $WORK_DIR/$FILTER_RESULT_FILE
 }
 
@@ -210,8 +219,6 @@ function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-#         node_ip=`echo $node | awk -F "@" '{print $2}'`
-#         FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
         python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
@@ -220,9 +227,6 @@ function send_messages() {
     do
         q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
     done
-#     echo waiting 
-#     wait
-#     parseResult $ssh_count"_"configuration_new.json $node_ip $WORK_DIR/$ssh_count"_".out
     END_EXECUTION=$(($(date +%s%N)/1000000))
     parse_dist_result configuration_new.json 
 }
@@ -242,9 +246,6 @@ function run_parameter_sweep_distributed_ssh() {
                 date_count=0
                 NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
                 NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
-                if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
-                    NEXT_DATE=$MAX_DATE        
-                fi
                 parameters=9
                 while read l; do
                     count=$((count+1))
@@ -258,9 +259,17 @@ function run_parameter_sweep_distributed_ssh() {
                         count=0
                     fi
                 done <physical_parameter_keys.txt
+                newConf $1 $i $j $NEXT_DATE $parameters
+                run configuration_new.json
             done        
+            newConf $1 $i $j $MAX_DATE $parameters
+            run configuration_new.json               
         done
+        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        run configuration_new.json          
     done
+    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
+    run configuration_new.json      
 }
 
 
@@ -278,10 +287,6 @@ function run_parameter_sweep_distributed_rabbit() {
                 date_count=0
                 NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
                 NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
-                if [ "$NEXT_DATE_SECONDS" -gt "$MAX_DATE_SECONDS" ]; then
-                    NEXT_DATE=$MAX_DATE        
-                fi
-
                 parameters=9
                 while read l; do
                     count=$((count+1))
@@ -294,9 +299,17 @@ function run_parameter_sweep_distributed_rabbit() {
                         count=0
                     fi
                 done <physical_parameter_keys.txt
+                newConf $1 $i $j $NEXT_DATE $parameters
+                run configuration_new.json                
             done        
+            newConf $1 $i $j $MAX_DATE $parameters
+            run configuration_new.json              
         done
+        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        run configuration_new.json          
     done
+    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
+    run configuration_new.json    
 }
 
 
@@ -325,7 +338,9 @@ done
 # echo CONF_FILE = ${CONF_FILE}
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-MY_IP=`ifconfig eth0 | awk '/inet addr/ {gsub("addr:", "", $2); print $2}'`
+
+# MY_IP=`ifconfig eth0 | awk '/inet addr/ {gsub("addr:", "", $2); print $2}'  &> /dev/null`
+
 if [ -z "$MY_IP" ]; then
     MY_IP=$HOSTNAME
 fi

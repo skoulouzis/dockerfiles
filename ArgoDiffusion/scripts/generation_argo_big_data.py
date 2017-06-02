@@ -242,8 +242,7 @@ class Argo:
         except Exception, e:
             print repr(e)
         finally:
-            fout.close()
-            
+            fout.close()            
             
             
 
