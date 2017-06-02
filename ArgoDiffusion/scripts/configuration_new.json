@@ -4,12 +4,11 @@
         "output_file": "/mnt/data/data_argo.txt",
         "bounding_box":{          
                 "geospatial_lat_min": -11.00,
-                "geospatial_lat_max": -10.00,
+                "geospatial_lat_max": 53.00,
                 "geospatial_lon_min": -51.00,
-                "geospatial_lon_max": -50.00
+                "geospatial_lon_max": 172.00
         },
         "time_range": {
-
                 "time_coverage_start": "1999-01-01T00:00:19Z",
                 "time_coverage_end": "2010-01-01T11:36:19Z"
         },
