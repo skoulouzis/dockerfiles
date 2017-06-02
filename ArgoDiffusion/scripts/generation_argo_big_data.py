@@ -8,6 +8,9 @@ import os.path
 import psutil
 import argo_model
 
+
+sys.settrace 
+
 # time format
 print_time_format = '%a, %d %b %Y %H:%M:%S'
 date_format = '%Y-%m-%dT%H:%M:%SZ'
