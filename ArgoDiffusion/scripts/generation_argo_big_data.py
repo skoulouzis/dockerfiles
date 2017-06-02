@@ -84,6 +84,7 @@ class Argo:
             rownum = 0
             for row in reader:
                 rownum += 1
+                print row
                 #first line, header   
                 if (rownum == 1) or (not row [3]):
                     #nothing to do
