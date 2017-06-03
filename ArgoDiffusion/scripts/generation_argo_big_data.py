@@ -263,8 +263,11 @@ if __name__ == '__main__':
         parser.error("incorrect number of arguments")
     else:
         config_file = args[0]
-
-    argo = Argo()
+    try:
+        argo = Argo()
+    except Exception as ex:
+        logging.exception("Something happened!")
+    
     print argo.run()
     
     #process = psutil.Process(os.getpid())
