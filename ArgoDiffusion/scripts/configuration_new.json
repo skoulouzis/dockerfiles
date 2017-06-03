@@ -6,7 +6,7 @@
                 "geospatial_lat_min": -11,
                 "geospatial_lat_max": 53,
                 "geospatial_lon_min": -51,
-                "geospatial_lon_max": 172
+                "geospatial_lon_max": 50
         },
         "time_range": {
                 "time_coverage_start": "1999-01-01T00:00:19Z",
