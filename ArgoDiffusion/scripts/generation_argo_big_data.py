@@ -86,6 +86,8 @@ class Argo:
             reader = csv.reader(fargofile, dialect='in')
             rownum = 0
             for row in reader:
+                print row
+                print argofile
                 rownum += 1
                 #first line, header   
                 if (rownum == 1) or (not row [3]):
