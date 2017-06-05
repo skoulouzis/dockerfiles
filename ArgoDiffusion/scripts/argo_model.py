@@ -34,7 +34,7 @@ class ArgoModel:
         z_code = row [9]    
         z_value = row [10]    
         z_qc = row [11]  
-        #station.add_data_line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
+        station.add_data_line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
         
         if z_code not in  self.parameters:
             self.parameters.append(z_code)
@@ -86,11 +86,11 @@ class Line:
         'init'
         self.parameters = []
         
-        self.variables = {}
+        #self.variables = {}
         var = Variable(z_code,z_value,z_qc)
-        self.variables[z_code] = var
+        #self.variables[z_code] = var
         var = Variable(parameter_code,parameter_value,parameter_qc)
-        self.variables[parameter_code] = var
+        #self.variables[parameter_code] = var
 
         #create parameter list for the line 
         if z_code not in  self.parameters:
@@ -102,7 +102,7 @@ class Line:
     def add_parameter(self, parameter_code, parameter_value, parameter_qc):
         'add parameter'
         var = Variable(parameter_code,parameter_value,parameter_qc)
-        self.variables[parameter_code] = var
+        #self.variables[parameter_code] = var
         
         #parameter list 
         if parameter_code not in  self.parameters:

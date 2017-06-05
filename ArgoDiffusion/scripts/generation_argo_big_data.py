@@ -232,13 +232,13 @@ class Argo:
                     tmp_row = [cruise, station_val, date_val, longitude, latitude]
                     
                     line = station.levels[level]
-                    for par in self.model.parameters:
-                        if par in line.parameters:
-                            tmp_row.append(line.variables[par].value)
-                            tmp_row.append(line.variables[par].qc)
-                        else:
-                            tmp_row.append(None)
-                            tmp_row.append(None)
+                    #for par in self.model.parameters:
+                        #if par in line.parameters:
+                            #tmp_row.append(line.variables[par].value)
+                            #tmp_row.append(line.variables[par].qc)
+                        #else:
+                            #tmp_row.append(None)
+                            #tmp_row.append(None)
                     writer.writerow(tmp_row)
         except Exception, e:
             print repr(e)
