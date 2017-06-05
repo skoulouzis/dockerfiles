@@ -56,7 +56,6 @@ class Argo:
             # loop on select files
             for argofile in list_files:
                 self.read_file(argofile)
-              
             #build parameters labels
             label_parameters = self.build_parameter_labels()
             #create odv file
@@ -103,7 +102,6 @@ class Argo:
                             
                             if self.begin_date < station_date < self.end_date :                                
                                 self.model.add_data_line(row)
-                                print row
 
                                 
         finally:

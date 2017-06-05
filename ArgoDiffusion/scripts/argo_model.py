@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-
-
 class ArgoModel:
     description = 'argo model file class'
     
@@ -36,7 +34,7 @@ class ArgoModel:
         z_code = row [9]    
         z_value = row [10]    
         z_qc = row [11]  
-        station.add_data_line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
+        #station.add_data_line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
         
         if z_code not in  self.parameters:
             self.parameters.append(z_code)
