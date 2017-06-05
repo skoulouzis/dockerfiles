@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+from klepto.archives import *
+
+
 class ArgoModel:
     description = 'argo model file class'
     
@@ -66,14 +69,14 @@ class Station:
             line.add_parameter(parameter_code, parameter_value,parameter_qc)
         else:
             line = Line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
-            self.levels[z_value] = line
-        
+            self.levels[z_value] = line        
         #create parameter list for the station 
         if z_code not in  self.parameters:
             self.parameters.append(z_code)
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
-
+        print len(self.levels)
+            
     def getSize(self):
         return len(self.levels)
  
@@ -86,11 +89,13 @@ class Line:
         'init'
         self.parameters = []
         
-        #self.variables = {}
+        #self.variables = file_archive('/tmp/vars.tmp')
+        
+        self.variables = {}
         var = Variable(z_code,z_value,z_qc)
-        #self.variables[z_code] = var
+        self.variables[z_code] = var
         var = Variable(parameter_code,parameter_value,parameter_qc)
-        #self.variables[parameter_code] = var
+        self.variables[parameter_code] = var
 
         #create parameter list for the line 
         if z_code not in  self.parameters:
@@ -102,8 +107,11 @@ class Line:
     def add_parameter(self, parameter_code, parameter_value, parameter_qc):
         'add parameter'
         var = Variable(parameter_code,parameter_value,parameter_qc)
-        #self.variables[parameter_code] = var
+        self.variables[parameter_code] = var
         
+        #self.variables.pop(parameter_code)
+        #self.variables.dump()
+
         #parameter list 
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)

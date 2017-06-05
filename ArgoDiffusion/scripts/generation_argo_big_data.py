@@ -56,8 +56,10 @@ class Argo:
             # loop on select files
             for argofile in list_files:
                 self.read_file(argofile)
+              
             #build parameters labels
             label_parameters = self.build_parameter_labels()
+              
             #create odv file
             self.write_csv_odv(label_parameters)
     
@@ -100,9 +102,9 @@ class Argo:
                             station_date = row [2]
                             station_date = time.strptime(station_date, date_format)
                             
-                            if self.begin_date < station_date < self.end_date :                                
+                            if self.begin_date < station_date < self.end_date :
+                                #print row
                                 self.model.add_data_line(row)
-
                                 
         finally:
             fargofile.close()
@@ -232,13 +234,13 @@ class Argo:
                     tmp_row = [cruise, station_val, date_val, longitude, latitude]
                     
                     line = station.levels[level]
-                    #for par in self.model.parameters:
-                        #if par in line.parameters:
-                            #tmp_row.append(line.variables[par].value)
-                            #tmp_row.append(line.variables[par].qc)
-                        #else:
-                            #tmp_row.append(None)
-                            #tmp_row.append(None)
+                    for par in self.model.parameters:
+                        if par in line.parameters:
+                            tmp_row.append(line.variables[par].value)
+                            tmp_row.append(line.variables[par].qc)
+                        else:
+                            tmp_row.append(None)
+                            tmp_row.append(None)
                     writer.writerow(tmp_row)
         except Exception, e:
             print repr(e)
