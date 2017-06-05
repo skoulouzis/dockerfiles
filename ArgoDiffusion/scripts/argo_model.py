@@ -48,7 +48,7 @@ class ArgoModel:
         
         
         
-        if len(self.stations)%1000 == 0:
+        if len(self.stations)%500 == 0:
             print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
             print "Station id: %s" %(station_id)
             self.stations.dump()
