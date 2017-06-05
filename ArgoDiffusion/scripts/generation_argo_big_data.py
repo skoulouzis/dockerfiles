@@ -17,6 +17,9 @@ print_time_format = '%a, %d %b %Y %H:%M:%S'
 date_format = '%Y-%m-%dT%H:%M:%SZ'
 mont_time_format = '%Y%m'
 
+
+os.remove("/tmp/stations.tmp")
+
 class Argo:
     
     def __init__(self):
