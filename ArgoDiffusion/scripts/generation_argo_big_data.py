@@ -18,7 +18,11 @@ date_format = '%Y-%m-%dT%H:%M:%SZ'
 mont_time_format = '%Y%m'
 
 
-os.remove("/tmp/stations.tmp")
+try:
+    os.remove("/tmp/stations.tmp")
+except OSError:
+    pass
+
 
 class Argo:
     
