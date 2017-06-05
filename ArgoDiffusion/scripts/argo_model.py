@@ -19,6 +19,7 @@ class ArgoModel:
         
         #test if station exists
         station_id = row[0]
+        print "Station id: %s" %(station_id)
         if station_id in self.stations:
             #select station
             station = self.stations[station_id]
@@ -30,7 +31,7 @@ class ArgoModel:
             longitude = row [4]    
             station = Station(station_id, platform_code, station_date, latitude, longitude)
             #save new station in dict
-            #self.stations[station_id] = station
+            self.stations[station_id] = station
         
         #add z and parameter data 
         parameter_code = row [6]    
@@ -48,10 +49,10 @@ class ArgoModel:
         
         
         
-        #if len(self.stations)%3000 == 0:
-            #print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
-            #self.stations.dump()
-            #self.stations.clear()
+        if len(self.stations)%1000 == 0:
+            print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
+            self.stations.dump()
+            self.stations.clear()
             #self.stations.dump()
             #print len(self.stations.archive)
             #del self.stations
