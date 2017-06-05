@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from klepto.archives import *
+#from klepto.archives import *
 
 
 class ArgoModel:
@@ -43,6 +43,8 @@ class ArgoModel:
             self.parameters.append(z_code)
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
+        if len(self.stations)%100 == 0:
+            print "stations: %s" %(len(self.stations))
 
 
 
@@ -75,7 +77,6 @@ class Station:
             self.parameters.append(z_code)
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
-        print len(self.parameters)
             
     def getSize(self):
         return len(self.levels)
