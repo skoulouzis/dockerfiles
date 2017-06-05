@@ -9,7 +9,7 @@ class ArgoModel:
     def __init__(self):
         'init'
         #self.stations = {}
-        self.stations = file_archive('/tmp/stations.tmp')
+        self.stations = file_archive('/mnt/data/stations.tmp')
         #self.stations.archive.clear()
         self.parameters = []
 
@@ -51,6 +51,7 @@ class ArgoModel:
         if len(self.stations)%500 == 0:
             print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
             print "Station id: %s" %(station_id)
+            
             self.stations.dump()
             self.stations.clear()
 
