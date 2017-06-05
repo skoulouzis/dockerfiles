@@ -45,9 +45,10 @@ class ArgoModel:
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
-        if len(self.stations)%1000 == 0:
+        if len(self.stations)%2000 == 0:
             print len(self.stations)
             self.stations.dump()
+            del self.stations
 
 
 
@@ -92,9 +93,7 @@ class Line:
     def __init__(self, parameter_code, parameter_value, parameter_qc,z_code,z_value,z_qc):
         'init'
         self.parameters = []
-        
-        #self.variables = file_archive('/tmp/vars.tmp')
-        
+                
         self.variables = {}
         var = Variable(z_code,z_value,z_qc)
         self.variables[z_code] = var
@@ -113,11 +112,8 @@ class Line:
         var = Variable(parameter_code,parameter_value,parameter_qc)
         self.variables[parameter_code] = var
         
-        #self.variables.pop(parameter_code)
-        #self.variables.dump()
-
         #parameter list 
-        if parameter_code not in  self.parameters:
+        if parameter_code not in self.parameters:
             self.parameters.append(parameter_code)
 
 

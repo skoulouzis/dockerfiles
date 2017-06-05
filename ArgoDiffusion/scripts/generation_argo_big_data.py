@@ -7,6 +7,7 @@ import sys
 import os.path
 import psutil
 import argo_model
+from klepto.archives import *
 
 
 sys.settrace 
@@ -213,8 +214,14 @@ class Argo:
             writer.writerow(header)
             
             #build the data lines and write
-            for station_id in self.model.stations:
-                station = self.model.stations[station_id]
+            dump_stations = file_archive('/tmp/stations.tmp')
+            dump_stations.load()
+            if len(dump_stations)==0:
+                dump_stations = self.model.stations
+                
+            for station_id in dump_stations:
+                #print station_id.station_id
+                station = dump_stations[station_id]
                 
                 for idx, level in enumerate(station.levels):
                     #first line, header
