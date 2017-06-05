@@ -59,7 +59,6 @@ class Argo:
               
             #build parameters labels
             label_parameters = self.build_parameter_labels()
-            print len(label_parameters)
             #create odv file
             self.write_csv_odv(label_parameters)
     
@@ -104,6 +103,7 @@ class Argo:
                             
                             if self.begin_date < station_date < self.end_date :                                
                                 self.model.add_data_line(row)
+                                print row
 
                                 
         finally:
