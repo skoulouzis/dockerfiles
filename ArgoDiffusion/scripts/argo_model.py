@@ -19,7 +19,6 @@ class ArgoModel:
         
         #test if station exists
         station_id = row[0]
-        print "Station id: %s" %(station_id)
         if station_id in self.stations:
             #select station
             station = self.stations[station_id]
@@ -51,8 +50,9 @@ class ArgoModel:
         
         if len(self.stations)%1000 == 0:
             print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
-            self.stations.dump()
-            self.stations.clear()
+            print "Station id: %s" %(station_id)
+            #self.stations.dump()
+            #self.stations.clear()
             #self.stations.dump()
             #print len(self.stations.archive)
             #del self.stations
