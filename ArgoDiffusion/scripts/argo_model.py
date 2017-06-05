@@ -69,7 +69,7 @@ class Station:
         else:
             line = Line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
             self.levels[z_value] = line
-
+        
         #create parameter list for the station 
         if z_code not in  self.parameters:
             self.parameters.append(z_code)

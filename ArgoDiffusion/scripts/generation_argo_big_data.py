@@ -59,7 +59,7 @@ class Argo:
               
             #build parameters labels
             label_parameters = self.build_parameter_labels()
-              
+            print len(label_parameters)
             #create odv file
             self.write_csv_odv(label_parameters)
     
@@ -86,8 +86,6 @@ class Argo:
             reader = csv.reader(fargofile, dialect='in')
             rownum = 0
             for row in reader:
-                print row
-                print argofile
                 rownum += 1
                 #first line, header   
                 if (rownum == 1) or (not row [3]):
@@ -104,9 +102,9 @@ class Argo:
                             station_date = row [2]
                             station_date = time.strptime(station_date, date_format)
                             
-                            if self.begin_date < station_date < self.end_date :
-                                #print row
+                            if self.begin_date < station_date < self.end_date :                                
                                 self.model.add_data_line(row)
+
                                 
         finally:
             fargofile.close()
