@@ -45,10 +45,10 @@ class ArgoModel:
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
-        if len(self.stations)%2000 == 0:
+        if len(self.stations)%200 == 0:
             print len(self.stations)
-            self.stations.dump()
-            del self.stations
+            #self.stations.dump()
+            #del self.stations
 
 
 
