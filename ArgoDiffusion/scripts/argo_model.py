@@ -10,6 +10,7 @@ class ArgoModel:
         'init'
         #self.stations = {}
         self.stations = file_archive('/tmp/stations.tmp')
+        #self.stations.archive.clear()
         self.parameters = []
 
 
@@ -45,9 +46,14 @@ class ArgoModel:
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
-        if len(self.stations)%200 == 0:
-            print len(self.stations)
+        
+        
+        if len(self.stations)%100 == 0:
+            print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
             #self.stations.dump()
+            #self.stations.clear()
+            #self.stations.dump()
+            #print len(self.stations.archive)
             #del self.stations
 
 
