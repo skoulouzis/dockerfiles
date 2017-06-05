@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#from klepto.archives import *
+from klepto.archives import *
 
 
 class ArgoModel:
@@ -8,7 +8,8 @@ class ArgoModel:
     
     def __init__(self):
         'init'
-        self.stations = {}
+        #self.stations = {}
+        self.stations = file_archive('/tmp/stations.tmp')
         self.parameters = []
 
 
@@ -43,8 +44,9 @@ class ArgoModel:
             self.parameters.append(z_code)
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
-        if len(self.stations)%100 == 0:
-            print "stations: %s" %(len(self.stations))
+        
+        if len(self.stations)%3000 == 0:
+            self.stations.dump()
 
 
 
