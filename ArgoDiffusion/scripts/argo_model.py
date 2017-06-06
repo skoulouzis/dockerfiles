@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 from klepto.archives import *
+import threading
+import time
+
 
 
 class ArgoModel:
@@ -9,10 +12,16 @@ class ArgoModel:
     def __init__(self):
         'init'
         #self.stations = {}
-        self.stations = file_archive('/mnt/data/stations.tmp')
+        self.stations = file_archive('/tmp/stations.tmp', cached=True)
         #self.stations.archive.clear()
         self.parameters = []
-
+        self.d = None
+        
+            
+    def dump(self):
+        print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
+        self.stations.dump()
+        self.stations.clear()
 
     def add_data_line(self, row):
         'add data line in model'
@@ -30,7 +39,6 @@ class ArgoModel:
             longitude = row [4]    
             station = Station(station_id, platform_code, station_date, latitude, longitude)
             #save new station in dict
-            self.stations[station_id] = station
         
         #add z and parameter data 
         parameter_code = row [6]    
@@ -41,20 +49,23 @@ class ArgoModel:
         z_qc = row [11]  
         station.add_data_line(parameter_code, parameter_value,parameter_qc,z_code,z_value,z_qc)
         
+        self.stations[station_id] = station
+        
         if z_code not in  self.parameters:
             self.parameters.append(z_code)
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
         
-        
-        if len(self.stations)%500 == 0:
-            print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
-            print "Station id: %s" %(station_id)
+        #if len(self.stations)%300 == 0:
+            #self.dump()
+            #if self.d != None:
+                #self.d.join()
+                
+            #self.d = threading.Thread(name='daemon', target=self.dump)
+            #self.d.setDaemon(True)
+            #self.d.start()
             
-            self.stations.dump()
-            self.stations.clear()
-
 
 
 class Station:

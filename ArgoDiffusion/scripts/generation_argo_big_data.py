@@ -62,16 +62,10 @@ class Argo:
                         
             
             # loop on select files
-            list_len = len(list_files)
-            counter = 0;
             for argofile in list_files:
-                ++counter
-                if counter >= list_len:
-                    self.read_file(argofile,True)
-                else:
-                    self.read_file(argofile,False)
+                self.read_file(argofile)
                     
-              
+            self.model.dump()
             #build parameters labels
             label_parameters = self.build_parameter_labels()
               
@@ -94,7 +88,7 @@ class Argo:
         return out_data
     
     
-    def read_file(self, argofile, dump):
+    def read_file(self, argofile):
         try:
             fargofile = open(argofile, 'r')
             csv.register_dialect('in', delimiter=',')
@@ -119,8 +113,6 @@ class Argo:
                             
                             if self.begin_date < station_date < self.end_date :
                                 self.model.add_data_line(row)
-                                if dump:
-                                    self.model.dump
                                 
         finally:
             fargofile.close()
@@ -231,9 +223,11 @@ class Argo:
             #build the data lines and write
             dump_stations = file_archive('/tmp/stations.tmp')
             dump_stations.load()
+            
             if len(dump_stations)==0:
                 dump_stations = self.model.stations
                 
+            
             for station_id in dump_stations:
                 #print station_id.station_id
                 station = dump_stations[station_id]
