@@ -57,8 +57,8 @@ class ArgoModel:
             self.parameters.append(parameter_code)
         
         
-        #if len(self.stations)%300 == 0:
-            #self.dump()
+        if len(self.stations)%3000 == 0:
+            self.dump()
             #if self.d != None:
                 #self.d.join()
                 
