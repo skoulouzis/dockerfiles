@@ -51,7 +51,11 @@ function parse_dist_result() {
     if [ -z "$last_ssh_line" ] ; then
         num_of_nodes=$((num_of_nodes - 1))
     fi
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes , \"executing_node\":\"$MY_IP\""}"
+    
+    if [ "$output_file_size" -gt "86" ]; then
+        echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes , \"executing_node\":\"$MY_IP\""}"
+    fi
+    
 }
 
 
@@ -95,9 +99,10 @@ function parseResult() {
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
     output_file_size=$(wc -c <"$output_file")
-    
-    conf=`jq . $1`
-#     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
+    if [ "$output_file_size" -gt "86" ]; then
+        conf=`jq . $1`
+        echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
+    fi
 }
 
 
@@ -121,7 +126,6 @@ function run_parameter_sweep() {
                     if [ "$count" -ge "400" ]; then                        
                         newConf $1 $i $j $NEXT_DATE $parameters
                         run configuration_new.json
-                        cat /mnt/data/data_argo.txt
                         count=0
                     fi
                 done <physical_parameter_keys.txt
