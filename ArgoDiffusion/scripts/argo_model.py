@@ -18,10 +18,10 @@ class ArgoModel:
         self.d = None
         
             
-    def dump(self):
-        print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
-        self.stations.dump()
-        self.stations.clear()
+    #def dump(self):
+        #print "in mem: %s , in file: %s" %(len(self.stations),len(self.stations.archive))
+        #self.stations.dump()
+        #self.stations.clear()
 
     def add_data_line(self, row):
         'add data line in model'

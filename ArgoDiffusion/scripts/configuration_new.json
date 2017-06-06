@@ -4,9 +4,9 @@
         "output_file": "/mnt/data/data_argo.txt",
         "bounding_box":{          
                 "geospatial_lat_min": -10,
-                "geospatial_lat_max": 52,
+                "geospatial_lat_max": -9,
                 "geospatial_lon_min": -50,
-                "geospatial_lon_max": 171
+                "geospatial_lon_max": -30
         },
         "time_range": {
 

@@ -65,7 +65,7 @@ class Argo:
             for argofile in list_files:
                 self.read_file(argofile)
                     
-            self.model.dump()
+            #self.model.dump()
             #build parameters labels
             label_parameters = self.build_parameter_labels()
               
