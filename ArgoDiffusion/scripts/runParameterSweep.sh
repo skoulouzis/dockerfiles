@@ -39,7 +39,6 @@ function parse_dist_result() {
     execution_time=`bc <<< "scale = 3; ($execution_time / 1000)"`
 
     num_of_params=`jq -r '.parameters[]' $1 | wc -l`
-    echo $num_of_params
     input_folder=`jq -r .input_folder $1`
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
@@ -223,7 +222,8 @@ function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-        python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
+#         echo python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task
+#         python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
     q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
@@ -232,7 +232,7 @@ function send_messages() {
         q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
-    parse_dist_result configuration_new.json 
+    parse_dist_result configuration_new.json
 }
 
 
@@ -304,7 +304,7 @@ function run_parameter_sweep_distributed_rabbit() {
                     fi
                 done <physical_parameter_keys.txt
                 newConf $1 $i $j $NEXT_DATE $parameters
-                run configuration_new.json                
+                run configuration_new.json              
             done        
             newConf $1 $i $j $MAX_DATE $parameters
             run configuration_new.json              
