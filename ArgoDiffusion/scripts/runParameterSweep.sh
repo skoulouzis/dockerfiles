@@ -97,8 +97,7 @@ function parseResult() {
     output_file_size=$(wc -c <"$output_file")
     
     conf=`jq . $1`
-    echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
-#     rm $WORK_DIR/$FILTER_RESULT_FILE
+#     echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
 }
 
 
@@ -122,6 +121,7 @@ function run_parameter_sweep() {
                     if [ "$count" -ge "400" ]; then                        
                         newConf $1 $i $j $NEXT_DATE $parameters
                         run configuration_new.json
+                        cat /mnt/data/data_argo.txt
                         count=0
                     fi
                 done <physical_parameter_keys.txt
