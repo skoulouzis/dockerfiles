@@ -2,7 +2,7 @@
 
 from klepto.archives import *
 import threading
-import time
+import sys
 
 
 
@@ -57,8 +57,8 @@ class ArgoModel:
             self.parameters.append(parameter_code)
         
         
-        if len(self.stations) >= 4000:
-            return
+        if len(self.stations) >= 10:
+            sys.exit(0)
             #self.dump()
             #if self.d != None:
                 #self.d.join()
