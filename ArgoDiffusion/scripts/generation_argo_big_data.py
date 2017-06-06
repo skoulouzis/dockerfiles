@@ -221,11 +221,11 @@ class Argo:
             writer.writerow(header)
             
             #build the data lines and write
-            dump_stations = file_archive('/tmp/stations.tmp')
-            dump_stations.load()
+            #dump_stations = file_archive('/tmp/stations.tmp')
+            #dump_stations.load()
             
-            if len(dump_stations)==0:
-                dump_stations = self.model.stations
+            #if len(dump_stations)==0:
+            dump_stations = self.model.stations
                 
             
             for station_id in dump_stations:

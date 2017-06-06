@@ -11,8 +11,8 @@ class ArgoModel:
     
     def __init__(self):
         'init'
-        #self.stations = {}
-        self.stations = file_archive('/tmp/stations.tmp', cached=True)
+        self.stations = {}
+        #self.stations = file_archive('/tmp/stations.tmp', cached=True)
         #self.stations.archive.clear()
         self.parameters = []
         self.d = None
@@ -57,8 +57,8 @@ class ArgoModel:
             self.parameters.append(parameter_code)
         
         
-        if len(self.stations)%2000 == 0:
-            self.dump()
+        #if len(self.stations)%2000 == 0:
+            #self.dump()
             #if self.d != None:
                 #self.d.join()
                 
