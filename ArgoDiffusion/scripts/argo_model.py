@@ -56,8 +56,14 @@ class ArgoModel:
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
-        
-        if len(self.stations) >= 10:
+        print len(self.stations)
+        if len(self.stations) >= 4000:
+            out_data = {}
+            out_data['status'] = "exit"
+            out_data['num_of_stations'] = len(self.stations)
+            out_data['date'] = time.strftime(date_format, start_time)
+            out_data = json.dumps(out_data)
+            print out_data
             sys.exit(0)
             #self.dump()
             #if self.d != None:

@@ -20,12 +20,13 @@ class ArgoRpcClient(object):
         if self.corr_id == props.correlation_id:
             self.response = body
 
-    def call(self, conf_file):
+    def call(self, resp_file):
         self.response = None
         self.corr_id = str(uuid.uuid4())
-        with open(conf_file) as json_data:
+        with open(resp_file) as json_data:
             conf = json.load(json_data)
         conf_data  = json.dumps(conf)
+        
         self.channel.basic_publish(exchange='',
                                    routing_key='argo_rpc_queue',
                                    properties=pika.BasicProperties(
@@ -40,10 +41,10 @@ class ArgoRpcClient(object):
 
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]
-conf_file = sys.argv[3]
+resp_file = sys.argv[3]
 
 
 argo_rpc = ArgoRpcClient()
 
-response = argo_rpc.call(conf_file)
-print response
+response = argo_rpc.call(resp_file)
+#print response

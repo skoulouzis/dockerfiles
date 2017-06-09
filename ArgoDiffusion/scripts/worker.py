@@ -13,7 +13,7 @@ from time import sleep
 def threaded_function(args):
     while not done:
         connection.process_data_events()
-        sleep(5)
+        sleep(0.5)
         
         
 def randomword():
@@ -30,22 +30,28 @@ def execute(data):
     
     generation_argo_big_data.config_file = rand_name
     argo = Argo()
+    out = data
+    #sleep(1)
     out = argo.run()
     return out
-
-
-#def parse_output(output):
     
-    
+
+def send_done():
+    message = "done"
+    channel.basic_publish(exchange='',
+                        routing_key='task_queue_done',
+                        body=message,
+                        properties=pika.BasicProperties(
+                            delivery_mode = 2, # make message persistent
+                        ))
     
 
 def callback(ch, method, properties, body):
-    print body
     n = str(body)
     response = execute(n)
-    #parse_output(response)
+    print response
     ch.basic_ack(delivery_tag = method.delivery_tag)
-
+    send_done()
 
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]
@@ -60,6 +66,7 @@ done = False
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(callback, queue='task_queue')
+done_queue = channel.queue_declare(queue='task_queue_done', durable=True)
 
 thread = Thread(target = threaded_function, args = (1, ))
 thread.start()

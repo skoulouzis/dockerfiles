@@ -19,7 +19,7 @@ done = False
 def threaded_function(args):
     while not done:
         connection.process_data_events()
-        sleep(5)
+        sleep(0.5)
         
 
 def randomword():
@@ -27,15 +27,16 @@ def randomword():
 
 def execute(data):
     tempfile.gettempdir() 
-    f = tempfile.NamedTemporaryFile(delete=False)
-    rand_name = randomword();
-    rand_name+=".json.out"
-    with open(rand_name, 'w') as outfile:
-        outfile.write(str(data))
+    #f = tempfile.NamedTemporaryFile(delete=False)
+    #rand_name = randomword();
+    #rand_name+=".json.out"
+    #with open(rand_name, 'w') as outfile:
+        #outfile.write(str(data))
     
-    generation_argo_big_data.config_file = rand_name
-    argo = Argo()
-    out = argo.run()
+    #generation_argo_big_data.config_file = rand_name
+    #argo = Argo()
+    #out = argo.run()
+    out = data
     return out
 
 def on_request(ch, method, props, body):

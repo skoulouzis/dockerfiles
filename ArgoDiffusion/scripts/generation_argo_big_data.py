@@ -110,7 +110,6 @@ class Argo:
                             #date
                             station_date = row [2]
                             station_date = time.strptime(station_date, date_format)
-                            
                             if self.begin_date < station_date < self.end_date :
                                 self.model.add_data_line(row)
                                 

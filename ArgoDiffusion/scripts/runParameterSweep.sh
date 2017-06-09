@@ -14,10 +14,14 @@ function newConf() {
 #     cat configuration_new.json
 }
 
-
+function dbg(){
+    if [ "$DBG" = true ] ; then
+        echo $1 $2
+    fi
+}
 
 function parse_dist_result() {
-    
+        
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
     if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
@@ -43,18 +47,24 @@ function parse_dist_result() {
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
     output_file_size=$(wc -c <"$output_file")
-    
-    conf=`jq . $1`
+     
+    conf=$(jq . $1)
+        
     num_of_nodes=`wc -l $SSH_FILE | awk '{print $1}'`
     last_ssh_line=`tail -1  $SSH_FILE`
     if [ -z "$last_ssh_line" ] ; then
         num_of_nodes=$((num_of_nodes - 1))
     fi
     
-    if [ "$output_file_size" -gt "86" ]; then
+#     dbg ${FUNCNAME[0]} "execution_time: "$execution_time
+    if (( $(echo "$execution_time > 2" |bc -l) )); then
         echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes , \"executing_node\":\"$MY_IP\""}"
     fi
     
+#     dbg ${FUNCNAME[0]} "output_file_size: "$output_file_size
+#     if [ "$output_file_size" -gt "86" ]; then
+        echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$EXECUTION_DATE\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes , \"executing_node\":\"$MY_IP\""}"
+#     fi
 }
 
 
@@ -98,10 +108,10 @@ function parseResult() {
     dataset_size=`du -sb $input_folder/ | awk '{print $1}'`
     output_file=`jq -r .output_file $1`
     output_file_size=$(wc -c <"$output_file")
-    if [ "$output_file_size" -gt "86" ]; then
-        conf=`jq . $1`
+#     if [ "$output_file_size" -gt "86" ]; then
+        conf=$(jq . $1)
         echo "{" \"area\": $area, \"time_coverage\": $time_coverage, \"num_of_params\": $num_of_params, \"dataset_size\": $dataset_size, \"output_file_size\": $output_file_size, \"execution_time\": $execution_time,\"execution_date\": \"$date\" , \"configuration\": $conf, \"num_of_nodes\":$num_of_nodes, \"executing_node\":\"$ip\""}"
-    fi
+#     fi
 }
 
 
@@ -168,16 +178,12 @@ function run_new_conf() {
                     fi
                 done <physical_parameter_keys.txt
                 newConf $1 $i $j $NEXT_DATE $parameters
-                run configuration_new.json
             done
             newConf $1 $i $j $MAX_DATE $parameters
-            run configuration_new.json            
         done
         newConf $1 $i $MAX_LON $MAX_DATE $parameters
-        run configuration_new.json                
     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
-    run configuration_new.json      
 }
 
 function block() {
@@ -188,6 +194,7 @@ function block() {
         do
             extra_mils=$((extra_mils+100))
             sleep 0.1
+            dbg ${FUNCNAME[0]} "extra_mils: "$extra_mils
         done
     done < $SSH_FILE
     END_EXECUTION=$(($(date +%s%N)/1000000))
@@ -198,7 +205,6 @@ function block() {
 function run() {
     FILTER_RESULT_FILE=`date +%s | sha256sum | base64 | head -c 8 ; echo`.out
     python $WORK_DIR/generation_argo_big_data.py $1 &> $WORK_DIR/$FILTER_RESULT_FILE
-#     ssh $MASTER_IP "rm /tmp/$MY_IP.run" < /dev/null
     parseResult $1 $WORK_DIR/$FILTER_RESULT_FILE
 }
 
@@ -210,11 +216,12 @@ function run_ssh() {
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
         node_ip=`echo $node | awk -F "@" '{print $2}'`
         touch /tmp/$node_ip.run
-        ssh $node -i $KEY_PATH "screen -L -dmS argoBenchmark bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
+        ssh $node -i $KEY_PATH "screen -L -dmS worker bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
         ssh_count=$((ssh_count+1))
+        exit
     done < $SSH_FILE
     block
-    parse_dist_result configuration_new.json
+    parse_dist_result "configuration_new.json"
 }
 
 function send_messages() {
@@ -222,17 +229,35 @@ function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
-#         echo python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task
-#         python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
+#         dbg ${FUNCNAME[0]} "New task: "$ssh_count"_"configuration_new.json
+        python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
         ssh_count=$((ssh_count+1))
     done < $SSH_FILE
-    q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
+    sleep 1
+    q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task_queue`
+#     dbg ${FUNCNAME[0]} "Waiting for tasks. task_queue: "$q_size
+    count=0
     while [ $q_size -ge 1 ]
     do
-        q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json no_task`
+        q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task_queue`
+        count=$((count+1))
+    done
+    
+    q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json done_task_queue`
+#     dbg ${FUNCNAME[0]} "Waiting for tasks. done_task_queue: "$q_size
+    count=0
+    while [ $q_size -ge 1 ]
+    do
+        python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json consume
+        q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json done_task_queue`
+        count=$((count+1))
     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
-    parse_dist_result configuration_new.json
+    END_EXECUTION=$((END_EXECUTION-1000))
+#     dbg ${FUNCNAME[0]} "Done with tasks @: "$END_EXECUTION
+    cont=`cat configuration_new.json`
+    ls_out=`ls configuration_new.json`
+    parse_dist_result "configuration_new.json"
 }
 
 
@@ -258,27 +283,30 @@ function run_parameter_sweep_distributed_ssh() {
                         newConf $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         run_ssh
-                        sleep 0.5
                         count_all=$((count_all+1))
                         count=0
                     fi
                 done <physical_parameter_keys.txt
                 newConf $1 $i $j $NEXT_DATE $parameters
-                run configuration_new.json
+                python partitioning.py configuration_new.json $SSH_FILE
+                run_ssh
             done        
             newConf $1 $i $j $MAX_DATE $parameters
-            run configuration_new.json               
+            python partitioning.py configuration_new.json $SSH_FILE
+            run_ssh
         done
         newConf $1 $i $MAX_LON $MAX_DATE $parameters
-        run configuration_new.json          
+        python partitioning.py configuration_new.json $SSH_FILE
+        run_ssh
     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
-    run configuration_new.json      
+    python partitioning.py configuration_new.json $SSH_FILE
+    run_ssh
 }
 
 
 function run_parameter_sweep_distributed_rabbit() {
-    count_all=0
+    GLOBAL_COUNT=0
     #Set latitude
     for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
     do
@@ -299,21 +327,21 @@ function run_parameter_sweep_distributed_rabbit() {
                         newConf $1 $i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         send_messages
-                        count_all=$((count_all+1))
+                        GLOBAL_COUNT=$((GLOBAL_COUNT+1))
                         count=0
                     fi
                 done <physical_parameter_keys.txt
                 newConf $1 $i $j $NEXT_DATE $parameters
-                run configuration_new.json              
+                send_messages           
             done        
             newConf $1 $i $j $MAX_DATE $parameters
-            run configuration_new.json              
+            send_messages
         done
         newConf $1 $i $MAX_LON $MAX_DATE $parameters
-        run configuration_new.json          
+        send_messages
     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
-    run configuration_new.json    
+    send_messages
 }
 
 
@@ -351,6 +379,9 @@ fi
     
 RMQ_HOST=localhost 
 RMQ_PORT=5672
+DBG=true
+
+
 
 if [ -n "$CONF_FILE" ]; then
     source ${CONF_FILE}
