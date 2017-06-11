@@ -49,7 +49,7 @@ def send_done():
 def callback(ch, method, properties, body):
     n = str(body)
     response = execute(n)
-    print response
+    #print response
     ch.basic_ack(delivery_tag = method.delivery_tag)
     send_done()
 
