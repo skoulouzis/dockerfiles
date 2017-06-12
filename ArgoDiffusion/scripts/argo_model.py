@@ -56,7 +56,7 @@ class ArgoModel:
         if parameter_code not in  self.parameters:
             self.parameters.append(parameter_code)
         
-        print len(self.stations)
+        #print len(self.stations)
         if len(self.stations) >= 4000:
             out_data = {}
             out_data['status'] = "exit"

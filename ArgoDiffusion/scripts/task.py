@@ -16,9 +16,6 @@ rabbit_port = sys.argv[2]
 conf_file = sys.argv[3]
 op = sys.argv[4]
 
-
-
-
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host,port=int(rabbit_port)))
 channel = connection.channel()
 queue = channel.queue_declare(queue='task_queue', durable=True)
