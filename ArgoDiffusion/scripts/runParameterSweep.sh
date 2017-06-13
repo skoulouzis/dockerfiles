@@ -2,7 +2,6 @@
 
 
 function newConf() {
-    
     sed "s/\"geospatial_lat_min\": 0,/\"geospatial_lat_min\": $MIN_LAT".00",/" $1 > configuration_new.json
     sed -i "s/\"geospatial_lon_min\": 0,/\"geospatial_lon_min\": $MIN_LON".00",/" configuration_new.json
     sed -i "s/\"geospatial_lat_max\": 0,/\"geospatial_lat_max\": $2".00",/" configuration_new.json
@@ -21,7 +20,7 @@ function dbg(){
 }
 
 function parse_dist_result() {
-        
+    
     time_coverage_start=`jq -r .time_range.time_coverage_start $1`
     time_coverage_end=`jq -r .time_range.time_coverage_end $1`
     if [ -z "$time_coverage_start" ] || [ -z "$time_coverage_end" ] ; then
@@ -113,7 +112,7 @@ function parseResult() {
 
 function run_parameter_sweep() {
     #Set latitude
-    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    for (( sweep_i=$LAT_START; sweep_i<=$MAX_LAT; sweep_i=sweep_i+$STEP ))
     do
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
@@ -129,18 +128,18 @@ function run_parameter_sweep() {
                     count=$((count+1))
                     parameters=$parameters","$l
                     if [ "$count" -ge "400" ]; then                        
-                        newConf $1 $i $j $NEXT_DATE $parameters
+                        newConf $1 $sweep_i $j $NEXT_DATE $parameters
                         run configuration_new.json
                         count=0
                     fi
                 done <physical_parameter_keys.txt
-                newConf $1 $i $j $NEXT_DATE $parameters
+                newConf $1 $sweep_i $j $NEXT_DATE $parameters
                 run configuration_new.json
             done
-            newConf $1 $i $j $MAX_DATE $parameters
+            newConf $1 $sweep_i $j $MAX_DATE $parameters
             run configuration_new.json
         done
-        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        newConf $1 $sweep_i $MAX_LON $MAX_DATE $parameters
         run configuration_new.json        
     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
@@ -151,7 +150,7 @@ function run_parameter_sweep() {
 function run_new_conf() {
     #Set latitude
     count_all=0
-    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    for (( conf_i=$LAT_START; conf_i<=$MAX_LAT; conf_i=conf_i+$STEP ))
     do
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
@@ -167,17 +166,17 @@ function run_new_conf() {
                     count=$((count+1))
                     parameters=$parameters","$l
                     if [ "$count" -gt "400" ]; then
-                        newConf $1 $i $j $NEXT_DATE $parameters
+                        newConf $1 $conf_i $j $NEXT_DATE $parameters
                         mv configuration_new.json $count_all"_"configuration_new.json
                         count_all=$((count_all+1))
                         count=0
                     fi
                 done <physical_parameter_keys.txt
-                newConf $1 $i $j $NEXT_DATE $parameters
+                newConf $1 $conf_i $j $NEXT_DATE $parameters
             done
-            newConf $1 $i $j $MAX_DATE $parameters
+            newConf $1 $conf_i $j $MAX_DATE $parameters
         done
-        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        newConf $1 $conf_i $MAX_LON $MAX_DATE $parameters
     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
 }
@@ -214,7 +213,6 @@ function run_ssh() {
         touch /tmp/$node_ip.run
         ssh $node -i $KEY_PATH "screen -L -dmS worker bash ~/workspace/dockerfiles/ArgoDiffusion/scripts/runParameterSweep.sh -op=run -json_conf_file=/mnt/data/source/$ssh_count"_"configuration_new.json -maser_ip=$MY_IP" < /dev/null
         ssh_count=$((ssh_count+1))
-        exit
     done < $SSH_FILE
     block
     parse_dist_result "configuration_new.json"
@@ -224,8 +222,9 @@ function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
     
-    for i in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $i &> $WORK_DIR/$i"_".out; done
-
+    
+    for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
+        
     sleep 1
     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
     while [ $q_size -ge 1 ]
@@ -242,7 +241,6 @@ function send_messages() {
     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
     END_EXECUTION=$((END_EXECUTION-1000))
-    
     parse_dist_result "configuration_new.json"
 }
 
@@ -250,7 +248,7 @@ function send_messages() {
 function run_parameter_sweep_distributed_ssh() {
     count_all=0
     #Set latitude
-    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    for (( ssh_i=$LAT_START; ssh_i<=$MAX_LAT; ssh_i=ssh_i+$STEP ))
     do
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
@@ -266,22 +264,22 @@ function run_parameter_sweep_distributed_ssh() {
                     count=$((count+1))
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
-                        newConf $1 $i $j $NEXT_DATE $parameters
+                        newConf $1 $ssh_i $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $SSH_FILE
                         run_ssh
                         count_all=$((count_all+1))
                         count=0
                     fi
                 done <physical_parameter_keys.txt
-                newConf $1 $i $j $NEXT_DATE $parameters
+                newConf $1 $ssh_i $j $NEXT_DATE $parameters
                 python partitioning.py configuration_new.json $SSH_FILE
                 run_ssh
             done        
-            newConf $1 $i $j $MAX_DATE $parameters
+            newConf $1 $ssh_i $j $MAX_DATE $parameters
             python partitioning.py configuration_new.json $SSH_FILE
             run_ssh
         done
-        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        newConf $1 $ssh_i $MAX_LON $MAX_DATE $parameters
         python partitioning.py configuration_new.json $SSH_FILE
         run_ssh
     done
@@ -295,7 +293,7 @@ function run_parameter_sweep_distributed_rabbit() {
     GLOBAL_COUNT=0
     nodes=`python getNumberOfConsumers.py $RMQ_HOST 15672 task_queue`
     #Set latitude
-    for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
+    for (( i_rabbit=$LAT_START; i_rabbit<=$MAX_LAT; i_rabbit=i_rabbit+$STEP ))
     do
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
@@ -311,43 +309,47 @@ function run_parameter_sweep_distributed_rabbit() {
                     count=$((count+1))
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
-                        newConf $1 $i $j $NEXT_DATE $parameters
+                        newConf $1 $i_rabbit $j $NEXT_DATE $parameters
                         python partitioning.py configuration_new.json $nodes
                         send_messages
                         GLOBAL_COUNT=$((GLOBAL_COUNT+1))
                         count=0
                     fi
                 done <physical_parameter_keys.txt
-                newConf $1 $i $j $NEXT_DATE $parameters
-                send_messages           
+                newConf $1 $i_rabbit $j $NEXT_DATE $parameters
+                python partitioning.py configuration_new.json $nodes
+                send_messages        
             done        
-            newConf $1 $i $j $MAX_DATE $parameters
+            newConf $1 $i_rabbit $j $MAX_DATE $parameters
+            python partitioning.py configuration_new.json $nodes
             send_messages
         done
-        newConf $1 $i $MAX_LON $MAX_DATE $parameters
+        newConf $1 $i_rabbit $MAX_LON $MAX_DATE $parameters
+        python partitioning.py configuration_new.json $nodes
         send_messages
     done
-    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
+    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters    
+    python partitioning.py configuration_new.json $nodes
     send_messages
 }
 
 
 
 
-for i in "$@"
+for input_i in "$@"
 do
-case $i in
+case $input_i in
     -op=*|--operation=*)
-    OPERATION="${i#*=}"
+    OPERATION="${input_i#*=}"
     ;;
     -json_conf_file=*)
-    JSON_CONF_FILE="${i#*=}"
+    JSON_CONF_FILE="${input_i#*=}"
     ;;
     -conf_file=*)
-    CONF_FILE="${i#*=}"
+    CONF_FILE="${input_i#*=}"
     ;;
     -maser_ip=*)
-    MASTER_IP="${i#*=}"
+    MASTER_IP="${input_i#*=}"
     ;;    
 esac
 done
