@@ -38,9 +38,7 @@ if __name__ == '__main__':
     time_range = get_time_range(conf_file)
 
     problem_size = calculateDatesDelta(time_range['time_coverage_start'], time_range['time_coverage_end'])
-    #nodes_file  = os.environ['HOME']+"/Downloads/ssh_egi/ssh"
-    nodes_file = sys.argv[2]
-    number_of_nodes = get_num_of_nodes(nodes_file)
+    number_of_nodes = int(sys.argv[2])
     chunk_size = (problem_size)//(number_of_nodes)
     #print problem_size%number_of_nodes
 

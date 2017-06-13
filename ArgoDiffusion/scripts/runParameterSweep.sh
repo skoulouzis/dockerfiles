@@ -50,11 +50,7 @@ function parse_dist_result() {
      
     conf=$(jq . $1)
         
-    num_of_nodes=`wc -l $SSH_FILE | awk '{print $1}'`
-    last_ssh_line=`tail -1  $SSH_FILE`
-    if [ -z "$last_ssh_line" ] ; then
-        num_of_nodes=$((num_of_nodes - 1))
-    fi
+    num_of_nodes=`python getNumberOfConsumers.py $RMQ_HOST 15672 task_queue`
     
 #     dbg ${FUNCNAME[0]} "execution_time: "$execution_time
     if (( $(echo "$execution_time > 2" |bc -l) )); then
@@ -225,38 +221,28 @@ function run_ssh() {
 }
 
 function send_messages() {
-    ssh_count=0
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
-    while read node; do
-#         dbg ${FUNCNAME[0]} "New task: "$ssh_count"_"configuration_new.json
-        python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task &> $WORK_DIR/$ssh_count"_".out
-        ssh_count=$((ssh_count+1))
-    done < $SSH_FILE
+    
+    for i in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $i &> $WORK_DIR/$i"_".out; done
+
     sleep 1
-    q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task_queue`
-#     dbg ${FUNCNAME[0]} "Waiting for tasks. task_queue: "$q_size
-    count=0
+    q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
     while [ $q_size -ge 1 ]
     do
-        q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json task_queue`
+        q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
         count=$((count+1))
     done
     
-    q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json done_task_queue`
-#     dbg ${FUNCNAME[0]} "Waiting for tasks. done_task_queue: "$q_size
-    count=0
+    q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
     while [ $q_size -ge 1 ]
     do
         python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json consume
-        q_size=`python task.py $RMQ_HOST $RMQ_PORT $ssh_count"_"configuration_new.json done_task_queue`
-        count=$((count+1))
+        q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
     END_EXECUTION=$((END_EXECUTION-1000))
-#     dbg ${FUNCNAME[0]} "Done with tasks @: "$END_EXECUTION
-    cont=`cat configuration_new.json`
-    ls_out=`ls configuration_new.json`
+    
     parse_dist_result "configuration_new.json"
 }
 
@@ -307,6 +293,7 @@ function run_parameter_sweep_distributed_ssh() {
 
 function run_parameter_sweep_distributed_rabbit() {
     GLOBAL_COUNT=0
+    nodes=`python getNumberOfConsumers.py $RMQ_HOST 15672 task_queue`
     #Set latitude
     for (( i=$LAT_START; i<=$MAX_LAT; i=i+$STEP ))
     do
@@ -325,7 +312,7 @@ function run_parameter_sweep_distributed_rabbit() {
                     parameters=$parameters","$l
                     if [ "$count" -gt "200" ]; then
                         newConf $1 $i $j $NEXT_DATE $parameters
-                        python partitioning.py configuration_new.json $SSH_FILE
+                        python partitioning.py configuration_new.json $nodes
                         send_messages
                         GLOBAL_COUNT=$((GLOBAL_COUNT+1))
                         count=0
