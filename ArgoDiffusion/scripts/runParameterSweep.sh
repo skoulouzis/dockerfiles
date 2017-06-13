@@ -313,7 +313,7 @@ function run_parameter_sweep_distributed_rabbit() {
         # Set longitude
         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
         do
-            for (( k=1; k<=21; k=k+10))
+            for (( k=1; k<=21; k=k+5))
             do
                 count=0
                 date_count=0

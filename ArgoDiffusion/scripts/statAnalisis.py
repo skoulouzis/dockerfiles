@@ -90,7 +90,7 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
         "area":{ "$eq":area},
         "num_of_params":{ "$eq": max_distinct_num_of_params},
-        "time_coverage":{ "$eq":max_distinct_time_coverage}
+        "time_coverage":{ "$eq":max_distinct_time_coverage},
         })
     
     for doc in square:
@@ -109,44 +109,44 @@ def getDataFrame():
     num_of_params=[]
     execution_time=[]
     num_of_nodes = []
-    timestamp_end = []
-    timestamp_start = []
+    timestamp_array_end = []
+    timestamp_array_start = []
                                          
 
     
     #docs = db.argoBenchmark.find({});
     docs = db.argoBenchmark.find({ "num_of_nodes" : 1 })
-    #print "area,time_coverage,num_of_params,execution_time,num_of_nodes,timestamp_end"
+    print "area,time_coverage,num_of_params,timestamp_end,execution_time"
     for doc in docs:
         area.append(doc["area"])
         time_coverage.append(doc["time_coverage"])
         num_of_params.append(doc["num_of_params"])
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
-        timestamp = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_end"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
-        timestamp_end.append(int(timestamp))
+        timestamp_end = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_end"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
+        timestamp_array_end.append(int(timestamp_end))
+        timestamp_start = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_start"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
+        timestamp_array_start.append(int(timestamp_start))
         
-        timestamp = datetime.strptime(doc["configuration"]["time_range"]["time_coverage_start"], "%Y-%m-%dT%H:%M:%SZ").strftime("%s")
-        timestamp_start.append(int(timestamp))        
-        #print "%s,%s,%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], doc["execution_time"], doc["num_of_nodes"], timestamp)
+        print "%s,%s,%s,%s,%s" % (doc["area"], doc["time_coverage"], doc["num_of_params"], timestamp_end ,doc["execution_time"])
     
     #data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end,'timestamp_start':timestamp_start}   
-    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time}       
+    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'time_coverage_end':timestamp_array_end,'execution_time':execution_time}       
     return pandas.DataFrame(data)
     
     
 
-distinct_area = get_distinct_area(med_box)
-max_distinct_area = max(distinct_area)
-distinct_num_of_params = getDistinct_num_of_params(med_box)
-max_distinct_num_of_params = max(distinct_num_of_params)
-distinct_time_coverage = getDistinct_time_coverage(med_box)
-max_distinct_time_coverage = max(distinct_time_coverage)
-med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
-grouped = med.groupby(['num_of_nodes'], as_index=False)
-gm = grouped.mean()
-gm.to_csv("speed_up.csv")
-print gm
+#distinct_area = get_distinct_area(med_box)
+#max_distinct_area = max(distinct_area)
+#distinct_num_of_params = getDistinct_num_of_params(med_box)
+#max_distinct_num_of_params = max(distinct_num_of_params)
+#distinct_time_coverage = getDistinct_time_coverage(med_box)
+#max_distinct_time_coverage = max(distinct_time_coverage)
+#med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
+#grouped = med.groupby(['num_of_nodes'], as_index=False)
+#gm = grouped.mean()
+#gm.to_csv("speed_up.csv")
+#print gm
 
 #for area in distinct_area:
     #for params in distinct_num_of_params:
@@ -164,25 +164,19 @@ print gm
 
 
 
-
-
-
-    
-
-
-
-#dataframe = getDataFrame()
-#grouped = dataframe.groupby(['area', 'time_coverage','num_of_params'], as_index=False)
-#print grouped.describe()
+dataframe = getDataFrame()
+#grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
+##print grouped.describe()
 #gm = grouped.mean()
 #print gm
 
-#corr = gm.corr()
-#corr.to_csv("correlation.csv")
-##seaborn.heatmap(corr, 
-            ##xticklabels=corr.columns.values,
-            ##yticklabels=corr.columns.values)
-###seaborn.plt.show()
+corr = dataframe.corr()
+corr.to_csv("correlation.csv")
+print corr
+#seaborn.heatmap(corr, 
+            #xticklabels=corr.columns.values,
+            #yticklabels=corr.columns.values)
+##seaborn.plt.show()
 
 #model = smf.ols(formula='execution_time ~ area + time_coverage + num_of_params', data=gm)
 #model = smf.ols(formula='execution_time ~ time_coverage', data=gm)
