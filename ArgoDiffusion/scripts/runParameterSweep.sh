@@ -214,12 +214,12 @@ function run_ssh() {
 }
 
 function send_messages() {
-    local EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
-    local START_EXECUTION=$(($(date +%s%N)/1000000))
+    EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
+    START_EXECUTION=$(($(date +%s%N)/1000000))
     
     
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
-    local extra_mils=5000
+    extra_mils=5000
     sleep 5
     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
 #     echo task_queue $q_size
@@ -227,7 +227,7 @@ function send_messages() {
     do
 #         echo task_queue $q_size
         extra_mils=$((extra_mils+100))
-        sleep 0.1
+#         sleep 0.1
         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
         count=$((count+1))
     done
@@ -239,12 +239,12 @@ function send_messages() {
     do
 #         echo task_queue_done $q_size
         extra_mils=$((extra_mils+100))
-        sleep 0.1
+#         sleep 0.1
         python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json print_consume`
     done
-    local END_EXECUTION=$(($(date +%s%N)/1000000))
-    local END_EXECUTION=$((END_EXECUTION-$extra_mils))
+    END_EXECUTION=$(($(date +%s%N)/1000000))
+    END_EXECUTION=$((END_EXECUTION-extra_mils))
     parse_dist_result "configuration_new.json"
 }
 
