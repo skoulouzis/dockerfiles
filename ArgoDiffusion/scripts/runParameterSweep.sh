@@ -216,8 +216,9 @@ function send_messages() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
         
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
-    local extra_mils=5000
-    sleep 5
+    local extra_mils=10000
+#     echo "sleep 10"
+    sleep 10
     sned_index=0
     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
     do  
@@ -229,39 +230,42 @@ function send_messages() {
     done
     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
 #     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
-    echo task_queue $q_size &>> exec.out
+#     echo task_queue $q_size
     while [ $q_size -ge 1 ]
     do
-        echo task_queue $q_size &>> exec.out
+#         echo task_queue $q_size
 #         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
         q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
-        count=$((count+1))
-        extra_mils=$((extra_mils+500))
-        sleep 0.5        
+        extra_mils=$((extra_mils+100))
+        sleep 0.1
     done
-    
-    python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
-    
-    for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
-    do  
-        q_name=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_i].name`
-        if [ $q_name = "task_queue_done" ]; then
-            sned_index=$sned_i
-            break
-        fi
-    done    
-#     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json print_consume`
-    q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
-    echo task_queue_done $q_size &>> exec.out
-    while [ $q_size -ge 1 ]
-    do
-        echo task_queue_done $q_size &>> exec.out
-        extra_mils=$((extra_mils+500))
-        sleep 0.5
-        python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
-#         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json print_consume`
-        q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
-    done
+        
+#     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
+#     do  
+#         q_name=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_i].name`
+#         if [ $q_name = "task_queue_done" ]; then
+#             sned_index=$sned_i
+#             break
+#         fi
+#     done
+#     extra_mils=$((extra_mils+10000))
+#     echo "sleep 10"
+#     sleep 10
+#     python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
+#     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
+#     echo task_queue_done $q_size
+#     while [ $q_size -ge 1 ]
+#     do
+#         echo python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
+#         python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume   
+#         extra_mils=$((extra_mils+6000))
+#         sleep 6
+#         q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
+#         echo task_queue_done $q_size
+#         if [ "$q_size" -le "0" ]; then
+#             break
+#         fi
+#     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
     END_EXECUTION=$((END_EXECUTION-extra_mils))
     parse_dist_result "configuration_new.json"

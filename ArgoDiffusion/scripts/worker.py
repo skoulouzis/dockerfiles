@@ -7,6 +7,8 @@ import tempfile
 import random, string
 from threading import Thread
 from time import sleep
+import uuid
+import socket
 
 
 
@@ -37,7 +39,7 @@ def execute(data):
     
 
 def send_done():
-    message = "done"
+    message = conumer_tag
     channel.basic_publish(exchange='',
                         routing_key='task_queue_done',
                         body=message,
@@ -51,7 +53,7 @@ def callback(ch, method, properties, body):
     response = execute(n)
     #print response
     ch.basic_ack(delivery_tag = method.delivery_tag)
-    send_done()
+    #send_done()
 
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]
@@ -65,8 +67,9 @@ done = False
 
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(callback, queue='task_queue')
-done_queue = channel.queue_declare(queue='task_queue_done', durable=True)
+conumer_tag = str(socket.gethostname())+"_"+str(uuid.uuid4())
+channel.basic_consume(callback, queue='task_queue',consumer_tag=conumer_tag)
+#done_queue = channel.queue_declare(queue='task_queue_done', durable=True)
 
 thread = Thread(target = threaded_function, args = (1, ))
 thread.start()
