@@ -293,41 +293,41 @@ function run_parameter_sweep_distributed_rabbit() {
     GLOBAL_COUNT=0
     nodes=`python getNumberOfConsumers.py $RMQ_HOST 15672 task_queue`
     #Set latitude
-    for (( i_rabbit=$LAT_START; i_rabbit<=$MAX_LAT; i_rabbit=i_rabbit+$STEP ))
-    do
-        # Set longitude
-        for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
-        do
-            for (( k=1; k<=21; k=k+5))
-            do
-                count=0
-                date_count=0
-                NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
-                NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
-                parameters=9
-                while read l; do
-                    count=$((count+1))
-                    parameters=$parameters","$l
-                    if [ "$count" -gt "200" ]; then
-                        newConf $1 $i_rabbit $j $NEXT_DATE $parameters
-                        python partitioning.py configuration_new.json $nodes
-                        send_messages
-                        GLOBAL_COUNT=$((GLOBAL_COUNT+1))
-                        count=0
-                    fi
-                done <physical_parameter_keys.txt
-                newConf $1 $i_rabbit $j $NEXT_DATE $parameters
-                python partitioning.py configuration_new.json $nodes
-                send_messages        
-            done        
-            newConf $1 $i_rabbit $j $MAX_DATE $parameters
-            python partitioning.py configuration_new.json $nodes
-            send_messages
-        done
-        newConf $1 $i_rabbit $MAX_LON $MAX_DATE $parameters
-        python partitioning.py configuration_new.json $nodes
-        send_messages
-    done
+#     for (( i_rabbit=$LAT_START; i_rabbit<=$MAX_LAT; i_rabbit=i_rabbit+$STEP ))
+#     do
+#         # Set longitude
+#         for (( j=$LON_START; j<=$MAX_LON; j=j+$STEP ))
+#         do
+#             for (( k=1; k<=21; k=k+5))
+#             do
+#                 count=0
+#                 date_count=0
+#                 NEXT_DATE=$(date +"%Y-%m-%dT%H:%M:%SZ" -d "$DATE + $k year")
+#                 NEXT_DATE_SECONDS=`date -d "$NEXT_DATE" +%s`
+#                 parameters=9
+#                 while read l; do
+#                     count=$((count+1))
+#                     parameters=$parameters","$l
+#                     if [ "$count" -gt "200" ]; then
+#                         newConf $1 $i_rabbit $j $NEXT_DATE $parameters
+#                         python partitioning.py configuration_new.json $nodes
+#                         send_messages
+#                         GLOBAL_COUNT=$((GLOBAL_COUNT+1))
+#                         count=0
+#                     fi
+#                 done <physical_parameter_keys.txt
+#                 newConf $1 $i_rabbit $j $NEXT_DATE $parameters
+#                 python partitioning.py configuration_new.json $nodes
+#                 send_messages        
+#             done        
+#             newConf $1 $i_rabbit $j $MAX_DATE $parameters
+#             python partitioning.py configuration_new.json $nodes
+#             send_messages
+#         done
+#         newConf $1 $i_rabbit $MAX_LON $MAX_DATE $parameters
+#         python partitioning.py configuration_new.json $nodes
+#         send_messages
+#     done
     newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters    
     python partitioning.py configuration_new.json $nodes
     send_messages

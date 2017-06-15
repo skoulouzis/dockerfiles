@@ -6,6 +6,30 @@ from dateutil import rrule
 from time import gmtime, strftime
 
 
+class ConfigurationGenerator:
+        
+        def __init__(self):
+            
+            
+        def create_conf_file(bounding_box,time_range,parameters,subscription_user_id,subscription_id):
+            conf_data = {}
+            conf_data[input_folder_tag] = input_folder_path
+            conf_data[output_file_tag] = output_file_path
+            conf_data[metadata_file_tag] = metadata_file_path
+            conf_data[subs_date_tag] = subscription_date
+            conf_data[end_subs_date_tag] = end_subscription_date   
+            
+            conf_data[bounding_box_tag] = bounding_box
+            conf_data[time_tag] = time_range
+            conf_data[parameters_tag] = parameters
+            conf_data[subs_user_id_tag] = subscription_user_id
+            conf_data[subs_id_tag] = subscription_id
+            #conf_data[deadline_date_tag] = deadline_date
+            
+            #json_str = json.dumps(conf_data,ensure_ascii=False)
+            return conf_data
+        
+
 date_format = "%Y-%m-%dT%H:%M:%SZ"
 output_file_path ="/mnt/data/data_argo.txt"
 metadata_file_path = "/mnt/data/source/ar_bigmetadata.json"
@@ -57,23 +81,7 @@ def daterange(start_date, end_date):
         
       
 
-def create_conf_file(bounding_box,time_range,parameters,subscription_user_id,subscription_id):
-    conf_data = {}
-    conf_data[input_folder_tag] = input_folder_path
-    conf_data[output_file_tag] = output_file_path
-    conf_data[metadata_file_tag] = metadata_file_path
-    conf_data[subs_date_tag] = subscription_date
-    conf_data[end_subs_date_tag] = end_subscription_date   
-    
-    conf_data[bounding_box_tag] = bounding_box
-    conf_data[time_tag] = time_range
-    conf_data[parameters_tag] = parameters
-    conf_data[subs_user_id_tag] = subscription_user_id
-    conf_data[subs_id_tag] = subscription_id
-    #conf_data[deadline_date_tag] = deadline_date
-    
-    #json_str = json.dumps(conf_data,ensure_ascii=False)
-    return conf_data
+
 
 def write_file(file_name,data):
     with open(file_name, 'w') as outfile:
