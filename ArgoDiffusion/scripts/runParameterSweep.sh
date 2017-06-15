@@ -217,7 +217,6 @@ function send_messages() {
         
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
     local extra_mils=10000
-#     echo "sleep 10"
     sleep 10
     sned_index=0
     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
@@ -236,8 +235,8 @@ function send_messages() {
 #         echo task_queue $q_size
 #         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
         q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
-        extra_mils=$((extra_mils+100))
-        sleep 0.1
+#         extra_mils=$((extra_mils+100))
+#         sleep 0.1
     done
         
 #     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
