@@ -187,8 +187,8 @@ function block() {
             dbg ${FUNCNAME[0]} "extra_mils: "$extra_mils
         done
     done < $SSH_FILE
-    local END_EXECUTION=$(($(date +%s%N)/1000000))
-    local END_EXECUTION=$((END_EXECUTION-extra_mils))
+    END_EXECUTION=$(($(date +%s%N)/1000000))
+    END_EXECUTION=$((END_EXECUTION-extra_mils))
 }
 
 
@@ -200,8 +200,8 @@ function run() {
 
 function run_ssh() {
     local ssh_count=0
-    local EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
-    local START_EXECUTION=$(($(date +%s%N)/1000000))
+    EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
+    START_EXECUTION=$(($(date +%s%N)/1000000))
     while read node; do
         scp -i $KEY_PATH $ssh_count"_"configuration_new.json $node:/mnt/data/source &> /dev/null   
         local node_ip=`echo $node | awk -F "@" '{print $2}'`
@@ -219,7 +219,7 @@ function send_messages() {
     
     
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
-    extra_mils=5000
+    local extra_mils=5000
     sleep 5
     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
 #     echo task_queue $q_size
