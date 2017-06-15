@@ -214,8 +214,7 @@ function run_ssh() {
 function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
-    
-    
+        
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
     local extra_mils=5000
     sleep 5
@@ -230,10 +229,10 @@ function send_messages() {
     done
     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
 #     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
-#     echo task_queue $q_size
+    echo task_queue $q_size &>> exec.out
     while [ $q_size -ge 1 ]
     do
-#         echo task_queue $q_size
+        echo task_queue $q_size &>> exec.out
 #         q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
         q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
         count=$((count+1))
@@ -253,10 +252,10 @@ function send_messages() {
     done    
 #     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json print_consume`
     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
-#     echo task_queue_done $q_size
+    echo task_queue_done $q_size &>> exec.out
     while [ $q_size -ge 1 ]
     do
-#         echo task_queue_done $q_size
+        echo task_queue_done $q_size &>> exec.out
         extra_mils=$((extra_mils+500))
         sleep 0.5
         python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json consume
@@ -303,13 +302,8 @@ function run_parameter_sweep_distributed_ssh() {
             python partitioning.py configuration_new.json $SSH_FILE
             run_ssh
         done
-        newConf $1 $ssh_i $MAX_LON $MAX_DATE $parameters
-        python partitioning.py configuration_new.json $SSH_FILE
-        run_ssh
     done
-    newConf $1 $MAX_LAT $MAX_LON $MAX_DATE $parameters
-    python partitioning.py configuration_new.json $SSH_FILE
-    run_ssh
+    parse_dist_result "configuration_new.json"
 }
 
 
