@@ -267,6 +267,7 @@ function send_messages() {
 #     done
     END_EXECUTION=$(($(date +%s%N)/1000000))
     END_EXECUTION=$((END_EXECUTION-extra_mils))
+    echo $extra_mils
     parse_dist_result "configuration_new.json"
 }
 
