@@ -216,8 +216,8 @@ function send_messages() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
         
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
-    local extra_mils=10000
-    sleep 10
+    local extra_mils=6000
+    sleep 6
     sned_index=0
     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
     do  
