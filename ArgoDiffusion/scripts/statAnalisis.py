@@ -97,8 +97,8 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         "configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
         "area":{ "$eq":area},
         "num_of_params":{ "$eq": max_distinct_num_of_params},
-        "time_coverage":{ "$eq":max_distinct_time_coverage},
-        "num_of_nodes":{ "$eq":8}
+        "time_coverage":{ "$eq":max_distinct_time_coverage}
+        #"num_of_nodes":{ "$eq":1}
         #"execution_date":{ "$lte":exec_end }  
         #"execution_date":{ "$gte":exec_start }       
     
@@ -132,9 +132,12 @@ def getDataFrame():
     timestamp_array_start = []
                                          
 
-    
+    date = datetime.strptime("2017-06-16T00:00:00Z", date_format) # Before that date we where making a lot of mistakes in measurments 
     #docs = db.argoBenchmark.find({});
-    docs = db.argoBenchmark.find({ "num_of_nodes" : 1 })
+    docs = db.argoBenchmark.find({ "num_of_nodes":{ "$eq":1},
+                                   "execution_date":{ "$gte":date }  
+        
+        })
     print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,execution_date"
     for doc in docs:
         area.append(doc["area"])
@@ -169,10 +172,10 @@ max_distinct_num_of_params = max(distinct_num_of_params)
 distinct_time_coverage = getDistinct_time_coverage(med_box)
 max_distinct_time_coverage = max(distinct_time_coverage)
 med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
-#grouped = med.groupby(['num_of_nodes'], as_index=False)
-#gm = grouped.mean()
-#gm.to_csv("speed_up.csv")
-#print gm
+grouped = med.groupby(['num_of_nodes'], as_index=False)
+gm = grouped.mean()
+gm.to_csv("speed_up.csv")
+print gm
 
 
 
