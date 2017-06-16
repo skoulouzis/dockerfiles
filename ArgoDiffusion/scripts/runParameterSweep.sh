@@ -267,6 +267,8 @@ function send_messages() {
 #             break
 #         fi
 #     done
+    curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since
+    date +%Y-%m-%dT%H:%M:%SZ 
     END_EXECUTION=$(($(date +%s%N)/1000000))
     END_EXECUTION=$((END_EXECUTION-extra_mils))
     parse_dist_result "configuration_new.json"
