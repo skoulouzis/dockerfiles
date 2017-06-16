@@ -214,7 +214,7 @@ function run_ssh() {
 function send_messages() {
     EXECUTION_DATE=`date +%Y-%m-%dT%H:%M:%SZ`
     START_EXECUTION=$(($(date +%s%N)/1000000))
-        
+    
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
     local extra_mils=20000
     sleep 20
@@ -227,6 +227,8 @@ function send_messages() {
             break
         fi
     done
+    curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since
+    echo $EXECUTION_DATE
     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
 #     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
 #     echo task_queue $q_size
