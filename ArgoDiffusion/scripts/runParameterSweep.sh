@@ -216,7 +216,7 @@ function send_messages() {
     START_EXECUTION=$(($(date +%s%N)/1000000))
     
     for new_file in $( ls *_configuration_new.json); do python task.py $RMQ_HOST $RMQ_PORT $new_file task &> $WORK_DIR/$new_file"_".out; done
-    local extra_mils=20000
+    local extra_mils=0
     sleep 20
     sned_index=0
     for (( sned_i=0; sned_i<=$NUMBER_OF_NODES; sned_i++ ))
@@ -267,10 +267,11 @@ function send_messages() {
 #             break
 #         fi
 #     done
-    curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since
-    date +%Y-%m-%dT%H:%M:%SZ 
-    END_EXECUTION=$(($(date +%s%N)/1000000))
-    END_EXECUTION=$((END_EXECUTION-extra_mils))
+    END_EXECUTION=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since`
+    END_EXECUTION=`date --date="$END_EXECUTION" +"%s"`
+    
+#     END_EXECUTION=$(($(date +%s%N)/1000000))
+#     END_EXECUTION=$((END_EXECUTION-extra_mils))
     parse_dist_result "configuration_new.json"
 }
 
