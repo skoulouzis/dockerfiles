@@ -227,8 +227,6 @@ function send_messages() {
             break
         fi
     done
-    curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since
-    echo $EXECUTION_DATE
     q_size=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].messages`
 #     q_size=`python task.py $RMQ_HOST $RMQ_PORT 0_configuration_new.json task_queue`
 #     echo task_queue $q_size
@@ -267,10 +265,9 @@ function send_messages() {
 #             break
 #         fi
 #     done
-    END_EXECUTION=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since`
-    END_EXECUTION=`date --date="$END_EXECUTION" +"%s"`
-    
-#     END_EXECUTION=$(($(date +%s%N)/1000000))
+    idle_since=`curl -s -u guest:guest http://$RMQ_HOST:15672/api/queues/ | jq -r .[$sned_index].idle_since`
+    END_EXECUTION=`date --date="$idle_since" +"%s"`
+    END_EXECUTION=$(($(date +%s%N)/1000000))
 #     END_EXECUTION=$((END_EXECUTION-extra_mils))
     parse_dist_result "configuration_new.json"
 }
