@@ -34,7 +34,7 @@ now = datetime.now()
 deadline_date = now + timedelta(hours=1)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
-coordinates_step = 5
+coordinates_step = 4
 bounding_box = {const.lon_min_tag:-1, const.lon_max_tag:9,
 const.lat_min_tag:7, const.lat_max_tag:11}
 
