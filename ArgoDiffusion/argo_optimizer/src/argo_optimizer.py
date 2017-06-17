@@ -93,13 +93,12 @@ if __name__ == "__main__":
                 print out
                 db.mark_task_done(task)
                 done_listener = None
-#                break
-    elif op != None and op == "init_task":
-        tasks = generate_tasks()
-        ranked_tasks = sch.rank_tasks(tasks)
-        db.import_tasks(ranked_tasks)
-        print len(ranked_tasks)
-        print db.get_num_of_docs()
+        elif op != None and op == "init_task":
+            tasks = generate_tasks()
+            print "Created %s tasks" % len(tasks)
+            ranked_tasks = sch.rank_tasks(tasks)
+            db.import_tasks(ranked_tasks)
+            print "Imported %s tasks " % db.get_num_of_docs()
     
     
     
