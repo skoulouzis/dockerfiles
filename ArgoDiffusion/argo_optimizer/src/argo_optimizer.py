@@ -69,7 +69,7 @@ if __name__ == "__main__":
             worker.consume()
         elif op != None and op == "master":
             num_of_nodes = submitter.get_number_of_consumers()
-            tasks_per_node = 1
+            tasks_per_node = 2
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
@@ -94,12 +94,12 @@ if __name__ == "__main__":
                 db.mark_task_done(task)
                 done_listener = None
 #                break
-        elif op != None and op == "init_task":
-            tasks = generate_tasks()
-            ranked_tasks = sch.rank_tasks(tasks)
-            db.import_tasks(ranked_tasks)
-            print len(ranked_tasks)
-            print db.get_num_of_docs()
+    elif op != None and op == "init_task":
+        tasks = generate_tasks()
+        ranked_tasks = sch.rank_tasks(tasks)
+        db.import_tasks(ranked_tasks)
+        print len(ranked_tasks)
+        print db.get_num_of_docs()
     
     
     
