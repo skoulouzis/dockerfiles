@@ -17,7 +17,6 @@ from util.util import *
 conf = ConfigurationGenerator()
 const = Constants()
 sch = Scheduler()
-db = DBHelper("localhost", 27017)
 partitioner = Partitioner()
 util = Util()
 
@@ -67,6 +66,7 @@ if __name__ == "__main__":
             worker = Worker(sys.argv[2], sys.argv[3], "task_queue")
             worker.consume()
         elif op != None and op == "master":
+            db = DBHelper("localhost", 27017)
             submitter = Submitter("localhost", 5672, "task_queue")
             num_of_nodes = submitter.get_number_of_consumers()
             tasks_per_node = 2
