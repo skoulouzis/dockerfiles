@@ -35,11 +35,12 @@ def execute(data):
     out = data
     #sleep(1)
     out = argo.run()
+    print out
     return out
     
 
-def send_done():
-    message = conumer_tag
+def send_done(response):
+    message = response
     channel.basic_publish(exchange='',
                         routing_key='task_queue_done',
                         body=message,
@@ -53,7 +54,7 @@ def callback(ch, method, properties, body):
     response = execute(n)
     #print response
     ch.basic_ack(delivery_tag = method.delivery_tag)
-    #send_done()
+    send_done(response)
 
 rabbit_host = sys.argv[1]
 rabbit_port = sys.argv[2]

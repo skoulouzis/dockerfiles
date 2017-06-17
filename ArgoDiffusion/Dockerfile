@@ -1,7 +1,8 @@
-FROM centos:7
+FROM ubuntu:16.04
 
-RUN yum update -y
-RUN yum upgrade -y
+RUN apt-get update -y
+RUN apt-get upgrade -y 
+RUN apt-get install -y wget maven python tcsh expect jq  bc  python-pip python-dev build-essential libgeos-dev nmap git screen parallel
 RUN yum install -y python tcsh
 
 WORKDIR /root

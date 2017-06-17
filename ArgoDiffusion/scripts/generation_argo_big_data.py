@@ -85,6 +85,7 @@ class Argo:
         out_data['date'] = time.strftime(date_format, start_time)
         out_data['duration (seconds)'] = '%.3f' % duration
         out_data = json.dumps(out_data)
+        
         return out_data
     
     
