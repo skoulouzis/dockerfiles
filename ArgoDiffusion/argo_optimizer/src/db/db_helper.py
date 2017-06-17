@@ -37,3 +37,7 @@ class DBHelper:
         task[self.const.executed_tag] = True
         doc_id = task['_id']
         self.task_collection.update({'_id':doc_id}, task)
+        
+        
+    def get_num_of_docs(self):
+        return self.task_collection.count()

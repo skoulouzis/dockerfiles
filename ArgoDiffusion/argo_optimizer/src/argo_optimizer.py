@@ -20,7 +20,6 @@ sch = Scheduler()
 db = DBHelper("localhost", 27017)
 partitioner = Partitioner()
 submitter = Submitter("localhost", 5672, "task_queue")
-done_listener = Submitter("localhost", 5672, "task_queue_done")
 util = Util()
 
 time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2020-01-01T00:00:19Z"}
@@ -71,33 +70,34 @@ if __name__ == "__main__":
         elif op != None and op == "master":
             num_of_nodes = submitter.get_number_of_consumers()
             tasks_per_node = 1
-            start = datetime.now()
-            start_time = timeit.default_timer()
-            task = db.get_first_task()
-        #    sub_tasks = partitioner.partition_linear(task, tasks_per_node * num_of_nodes)
-            sub_tasks = partitioner.partition_log(task, tasks_per_node * num_of_nodes)
+            for i in range(0, db.get_num_of_docs(), 1):
+                start = datetime.now()
+                start_time = timeit.default_timer()
+                task = db.get_first_task()
+            #    sub_tasks = partitioner.partition_linear(task, tasks_per_node * num_of_nodes)
+                sub_tasks = partitioner.partition_log(task, tasks_per_node * num_of_nodes)
 
-            num_of_tasks = 0
-            for sub in sub_tasks:
-                submitter.submitt_task(sub)
-                num_of_tasks += 1
+                num_of_tasks = 0
+                for sub in sub_tasks:
+                    submitter.submitt_task(sub)
+                    num_of_tasks += 1
 
+                done_listener = Submitter("localhost", 5672, "task_queue_done")
+                done_listener.listen(num_of_tasks)
+                end = done_listener.last_exec_date
+                elapsed = timeit.default_timer() - start_time
 
-            done_listener.listen(num_of_tasks)
-            end = done_listener.last_exec_date
-            elapsed = timeit.default_timer() - start_time
+                executing_node = str(socket.gethostname())
 
-            executing_node = str(socket.gethostname())
-
-            out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks)
-            print out
-#            db.mark_task_done(t)
+                out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks)
+                print out
+                db.mark_task_done(task)
+                done_listener = None
+#                break
         elif op != None and op == "init_task":
             tasks = generate_tasks()
             ranked_tasks = sch.rank_tasks(tasks)
             db.import_tasks(ranked_tasks)
-    
-
     
     
     

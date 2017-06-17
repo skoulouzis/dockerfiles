@@ -1,4 +1,6 @@
 from constants import *
+from datetime import datetime
+from datetime import timedelta
 from functools import partial
 import json
 import math
@@ -80,7 +82,7 @@ class Util:
         if not (isinstance(task[self.const.end_subs_date_tag], str) or isinstance(task[self.const.end_subs_date_tag], unicode)):
             end_subs_date  = task[self.const.end_subs_date_tag].strftime(self.const.date_format)
             task[self.const.end_subs_date_tag] = end_subs_date       
-        if not (isinstance(task[self.const.deadline_date_tag], str)or isinstance(task[self.const.deadline_date_tag], unicode)):
+        if not (isinstance(task[self.const.deadline_date_tag], str) or isinstance(task[self.const.deadline_date_tag], unicode)):
             deadline_date  = task[self.const.deadline_date_tag].strftime(self.const.date_format)
             task[self.const.deadline_date_tag] = deadline_date                   
         return task
@@ -99,11 +101,11 @@ class Util:
         out_data['area'] = area
 
 
-        if (isinstance(task[self.const.time_tag][self.const.time_start_tag], str)):
+        if (isinstance(task[self.const.time_tag][self.const.time_start_tag], str) or isinstance(task[self.const.time_tag][self.const.time_start_tag], unicode)):
             start_date = datetime.strptime(task[self.const.time_tag][self.const.time_start_tag], self.const.date_format)
         else:
             start_date = task[self.const.time_tag][self.const.time_start_tag]
-        if (isinstance(task[self.const.time_tag][self.const.time_end_tag], str)):
+        if (isinstance(task[self.const.time_tag][self.const.time_end_tag], str) or isinstance(task[self.const.time_tag][self.const.time_end_tag], unicode)):
             end_date = datetime.strptime(task[self.const.time_tag][self.const.time_end_tag], self.const.date_format)
         else:
             end_date = task[self.const.time_tag][self.const.time_end_tag]
@@ -116,7 +118,7 @@ class Util:
         out_data['execution_date'] = execution_date.strftime(self.const.date_format)
         task = self.convert_dates_to_string(task)
         task = self.uid_to_string(task)
-        out_data['configuration'] = json.dumps(task)
+        out_data['configuration'] = task #json.dumps(task)
         out_data['num_of_nodes'] = num_of_nodes
         out_data['executing_node'] = executing_node
         out_data['num_of_tasks'] = num_of_tasks

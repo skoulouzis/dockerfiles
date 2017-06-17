@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import generation_argo_big_data
 from generation_argo_big_data import *
+import json
 import pika
 import socket
 import tempfile
@@ -22,7 +23,7 @@ class Worker:
         self.channel.basic_qos(prefetch_count=1)
         conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
         self.channel.basic_consume(self.callback, queue=q_name, consumer_tag=conumer_tag)
-        self.thread = Thread(target=self.threaded_function, args=(1, ))
+        self.thread = Thread(target=self.threaded_function, args=(1,))
         self.util = Util()
         self.argo = Argo()
         self.done = False
@@ -66,7 +67,9 @@ class Worker:
         ch.basic_ack(delivery_tag=method.delivery_tag)
         self.send_done(response)
         elapsed = timeit.default_timer() - start_time
-        out = self.util.build_output(body, elapsed, start, 1, str(socket.gethostname()), 1)
+        conf = json.loads(body)
+        out = self.util.build_output(conf, elapsed, start, 1, str(socket.gethostname()), 1)
+        print out
 
 
     def send_done(self, response):
