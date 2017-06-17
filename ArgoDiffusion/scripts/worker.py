@@ -36,6 +36,10 @@ def execute(data):
     #sleep(1)
     out = argo.run()
     print out
+    try:
+        os.remove(rand_name)
+    except OSError:
+        pass
     return out
     
 
