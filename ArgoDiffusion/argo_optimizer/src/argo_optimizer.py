@@ -19,7 +19,6 @@ const = Constants()
 sch = Scheduler()
 db = DBHelper("localhost", 27017)
 partitioner = Partitioner()
-submitter = Submitter("localhost", 5672, "task_queue")
 util = Util()
 
 time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2020-01-01T00:00:19Z"}
@@ -68,6 +67,7 @@ if __name__ == "__main__":
             worker = Worker(sys.argv[2], sys.argv[3], "task_queue")
             worker.consume()
         elif op != None and op == "master":
+            submitter = Submitter("localhost", 5672, "task_queue")
             num_of_nodes = submitter.get_number_of_consumers()
             tasks_per_node = 2
             for i in range(0, db.get_num_of_docs(), 1):
