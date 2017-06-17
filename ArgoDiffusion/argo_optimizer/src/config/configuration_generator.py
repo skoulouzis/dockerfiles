@@ -76,10 +76,17 @@ class ConfigurationGenerator:
         conf_list = []
         now = datetime.now()
         later = now + timedelta(minutes=10)
+        data = {}
         for i in lon_vals:
-            for j in lat_vals:         
+            if i <= bounding_box[self.const.lon_min_tag]:
+                continue
+            for j in lat_vals:
+                if j <= bounding_box[self.const.lat_min_tag]:
+                    continue                
                 for dt in rrule.rrule(rrule.YEARLY, dtstart=start_date, until=end_date):
-                    for dl in rrule.rrule(rrule.DAILY, dtstart=later, until=deadline_date):
+                    if start_date == dt:
+                        continue
+                    for dl in rrule.rrule(rrule.HOURLY, dtstart=later, until=deadline_date):                       
                         cum_param = []
                         for param in self.const.all_parameters:
                             cum_param.append(param)
@@ -102,6 +109,7 @@ class ConfigurationGenerator:
                                                         subscription_id, 
                                                         subscription_user_id)
                                 conf_list.append(data)
+                                data = {}
                         
                         input_bounding_box = {self.const.lon_min_tag: bounding_box[self.const.lon_min_tag], self.const.lon_max_tag:i,
                         self.const.lat_min_tag:bounding_box[self.const.lat_min_tag], self.const.lat_max_tag:j}
@@ -202,7 +210,7 @@ class ConfigurationGenerator:
                                 input_params, 
                                 subscription_id, 
                                 subscription_user_id)
-        conf_list.append(data)   
+        conf_list.append(data)     
         return conf_list
             
         

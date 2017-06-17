@@ -32,7 +32,7 @@ subscription_date = "2017-04-10T13:28:06Z"
 end_subscription_date = "2018-04-10T13:28:06Z"
 now = datetime.now()    
 
-deadline_date = now + timedelta(hours=7)
+deadline_date = now + timedelta(hours=1)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
 coordinates_step = 5
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         op = sys.argv[1]
         if op != None and op == "worker":
-            worker = Worker("localhost", 5672, "task_queue")
+            worker = Worker(sys.argv[2], sys.argv[3], "task_queue")
             worker.consume()
         elif op != None and op == "master":
             num_of_nodes = submitter.get_number_of_consumers()
@@ -98,7 +98,8 @@ if __name__ == "__main__":
             tasks = generate_tasks()
             ranked_tasks = sch.rank_tasks(tasks)
             db.import_tasks(ranked_tasks)
-    
+            print len(ranked_tasks)
+            print db.get_num_of_docs()
     
     
     
