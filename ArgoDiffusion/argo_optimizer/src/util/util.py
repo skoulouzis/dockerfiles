@@ -1,12 +1,16 @@
 from constants import *
 from functools import partial
+import json
 import math
+import os
 import pyproj
 from pyproj import Proj
+import random
 import shapely
 from shapely.geometry import shape
 from shapely.geometry.polygon import Polygon
 import shapely.ops as ops
+import string
 import sys
 
 
@@ -28,10 +32,10 @@ class Util:
     #Code from http://stackoverflow.com/questions/13148037/calculating-area-from-lat-lon-polygons-in-python
     def get_area(self, lat_min, lat_max, lon_min, lon_max):
         co = {"type": "Polygon", "coordinates": [
-            [(lon_min, lat_max),
-            (lon_min, lat_min),
-            (lon_max, lat_min),
-            (lon_max, lat_max)]]}   
+            [(float(lon_min), lat_max),
+            (float(lon_min), float(lat_min)),
+            (float(lon_max), float(lat_min)),
+            (float(lon_max), float(lat_max))]]}   
             
         lon, lat = zip(*co['coordinates'][0])
         from pyproj import Proj
@@ -42,10 +46,10 @@ class Util:
         return shape(cop).area
     
     def get_area(self, box):
-        lon_min = box[self.const.lon_min_tag]
-        lon_max = box[self.const.lon_max_tag]
-        lat_min = box[self.const.lat_min_tag]
-        lat_max = box[self.const.lat_max_tag]
+        lon_min = float(box[self.const.lon_min_tag])
+        lon_max = float(box[self.const.lon_max_tag])
+        lat_min = float(box[self.const.lat_min_tag])
+        lat_max = float(box[self.const.lat_max_tag])
         co = {"type": "Polygon", "coordinates": [
             [(lon_min, lat_max),
             (lon_min, lat_min),
@@ -88,7 +92,10 @@ class Util:
     
     def build_output(self, task, elapsed, execution_date, num_of_nodes, executing_node, num_of_tasks):
         out_data = {}
-        area = self.get_area(task[self.const.bounding_box_tag])
+        if (isinstance(task[self.const.bounding_box_tag][self.const.lon_min_tag], str)):
+            self.get_area(task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lon_min_tag], task[self.const.bounding_box_tag][self.const.lon_max_tag])
+        else:
+            area = self.get_area(task[self.const.bounding_box_tag])
         out_data['area'] = area
 
 
@@ -104,7 +111,7 @@ class Util:
         out_data[self.const.time_tag] = self.get_time_delta(start_date, end_date).total_seconds()
 
         out_data[self.const.parameters_tag] = len(task[self.const.parameters_tag])
-        out_data['dataset_size'] = get_size(input_folder_path)
+        out_data['dataset_size'] = self.get_size(task[self.const.input_folder_tag])
         out_data['execution_time'] = elapsed #'%.3f' % elapsed.total_seconds()
         out_data['execution_date'] = execution_date.strftime(self.const.date_format)
         task = self.convert_dates_to_string(task)
@@ -114,3 +121,15 @@ class Util:
         out_data['executing_node'] = executing_node
         out_data['num_of_tasks'] = num_of_tasks
         return json.dumps(out_data)    
+    
+    def get_size(self, start_path):
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(start_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+        return total_size
+    
+
+    def randomword(self):
+        return ''.join(random.choice(string.lowercase) for i in range(5))    
