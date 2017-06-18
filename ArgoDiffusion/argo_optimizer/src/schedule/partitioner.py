@@ -40,6 +40,7 @@ class Partitioner:
         end_date = task[self.const.time_tag][self.const.time_end_tag]
         problem_size = self.util.get_time_delta(start_date, end_date)
         problem_size = problem_size.total_seconds()
+        
         chunk_size = problem_size
         start_chunk = start_date
         end_chunk = None

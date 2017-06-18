@@ -26,6 +26,7 @@ class Submitter:
         self.const = Constants()
         self.util = Util()
         self.last_exec_date = datetime(10, 1, 1)
+        self.finised_tasks = {}
         
         
     
@@ -80,6 +81,7 @@ class Submitter:
         
     def callback(self, channel, method, properties, body):
         channel.basic_ack(delivery_tag=method.delivery_tag)
+        resp = {}
         resp = json.loads(str(body))
         if 'date' in resp:
             key = 'date'
@@ -87,7 +89,17 @@ class Submitter:
             key = 'execution_date' 
         exec_date = datetime.strptime(resp[key], self.const.date_format)
         if exec_date > self.last_exec_date:
-            self.last_exec_date = exec_date            
+            self.last_exec_date = exec_date
+        
+        _id = resp['configuration']['_id']
+        if _id in self.finised_tasks:
+            sub_tasks = self.finised_tasks[_id]
+            sub_tasks.append(resp)
+        else:
+            sub_tasks = []
+            sub_tasks.append(resp)
+            self.finised_tasks[_id] = sub_tasks
+        
                 
         self.num_of_meesages -= 1
         if self.num_of_meesages <= 0:
@@ -99,14 +111,6 @@ class Submitter:
         self.num_of_meesages = num_of_meesages 
         self.channel.basic_consume(self.callback, queue=self.q_name)
         self.channel.start_consuming()
-#        try:
-#            queue_state = self.channel.queue_declare(self.q_name, durable=True, passive=True)
-#            queue_empty = queue_state.method.message_count == 0
-#            if not queue_empty:
-#                method, properties, body = self.channel.basic_get(queue, no_ack=True)
-#                self.callback_func(channel, method, properties, body)
-#        finally:
-#            self.channel.close()
         
     def get_number_of_consumers(self):
         q = self.get_q()

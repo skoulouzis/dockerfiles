@@ -10,7 +10,7 @@ class Scheduler:
         self.const = Constants()
         self.util = Util()
         self.params_len_weight = 0
-        self.ttf_weight = 1
+        self.ttf_weight = 0.1
         self.time_range_weight = 1
         self.area_weight = 0.2
         self.now = datetime.now()
