@@ -36,7 +36,8 @@ deadline_date = str(deadline_date.strftime(const.date_format))
 coordinates_step = 4
 bounding_box = {const.lon_min_tag:-1, const.lon_max_tag:9,
 const.lat_min_tag:7, const.lat_max_tag:11}
-
+partition_type = "linear"
+tasks_per_node = 1
     
 
 
@@ -67,7 +68,7 @@ if __name__ == "__main__":
             worker.consume()
         elif op != None and op == "master":
             db = DBHelper("localhost", 27017)
-            tasks_per_node = 1
+            
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
@@ -82,8 +83,11 @@ if __name__ == "__main__":
                 submitter = Submitter("localhost", 5672, "task_queue")
                 num_of_nodes = submitter.get_number_of_consumers()                
                 total_num_of_tasks_req = tasks_per_node * num_of_nodes
-            #    sub_tasks = partitioner.partition_linear(task, tasks_per_node * num_of_nodes)
-                sub_tasks = partitioner.partition_log(task,total_num_of_tasks_req)
+                if partition_type == "log":
+                    sub_tasks = partitioner.partition_log(task,total_num_of_tasks_req)
+                elif  partition_type == "linear":
+                    sub_tasks = partitioner.partition_linear(task, total_num_of_tasks_req)
+
 #                print "Asked: %s, created: %s" % (total_num_of_tasks_req, len(sub_tasks))
                 num_of_tasks = 0
                 
@@ -102,7 +106,7 @@ if __name__ == "__main__":
 
                 executing_node = str(socket.gethostname())
 
-                out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks)
+                out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks,partition_type)
                 print out
 #                db.mark_task_done(task)
                 break

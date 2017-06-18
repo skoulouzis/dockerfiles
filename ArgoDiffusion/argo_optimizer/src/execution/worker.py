@@ -66,7 +66,7 @@ class Worker:
         ch.basic_ack(delivery_tag=method.delivery_tag)
         elapsed = timeit.default_timer() - start_time
         conf = json.loads(body)
-        out = self.util.build_output(conf, elapsed, start, 1, str(socket.gethostname()), 1)
+        out = self.util.build_output(conf, elapsed, start, 1, str(socket.gethostname()), 1,None)
         self.send_done(out)
         print out
 

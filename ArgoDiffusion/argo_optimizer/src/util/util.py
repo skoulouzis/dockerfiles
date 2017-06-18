@@ -92,7 +92,7 @@ class Util:
         task['_id'] = str(task['_id'])
         return task
     
-    def build_output(self, task, elapsed, execution_date, num_of_nodes, executing_node, num_of_tasks):
+    def build_output(self, task, elapsed, execution_date, num_of_nodes, executing_node, num_of_tasks, partition_type):
         out_data = {}
         if (isinstance(task[self.const.bounding_box_tag][self.const.lon_min_tag], str)):
             self.get_area(task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lon_min_tag], task[self.const.bounding_box_tag][self.const.lon_max_tag])
@@ -122,6 +122,8 @@ class Util:
         out_data['num_of_nodes'] = num_of_nodes
         out_data['executing_node'] = executing_node
         out_data['num_of_tasks'] = num_of_tasks
+        if partition_type!=None or not partition_type:
+            out_data['partition_type'] = partition_type
         return json.dumps(out_data)    
     
     def get_size(self, start_path):
