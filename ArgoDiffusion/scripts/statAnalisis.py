@@ -86,8 +86,8 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
     num_of_nodes = []
     
    
-    exec_start = datetime.strptime("2017-06-18T20:00:00Z", date_format)
-    exec_end = datetime.strptime("2017-06-18T19:00:00Z", date_format)
+    exec_start = datetime.strptime("2017-06-18T21:00:00Z", date_format)
+    exec_end = datetime.strptime("2017-06-18T21:59:00Z", date_format)
 
     
     square = db.argoBenchmark.find({
@@ -98,7 +98,7 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         #"area":{ "$eq":area},
         #"num_of_params":{ "$eq": max_distinct_num_of_params},
         #"time_coverage":{ "$eq":max_distinct_time_coverage},
-        "num_of_nodes":{ "$eq":1},
+        "num_of_nodes":{ "$eq":8},
         "execution_date":{ "$lte":exec_end }  ,
         "execution_date":{ "$gte":exec_start }       
     
