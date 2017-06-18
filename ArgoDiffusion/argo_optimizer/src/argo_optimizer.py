@@ -158,8 +158,8 @@ if __name__ == "__main__":
 #                wait_for_output(num_of_tasks)
                     
                 db.mark_task_done(task)
-#                if total_num_of_tasks >= 2:
-#                    break
+                if total_num_of_tasks >= 30:
+                    break
             time.sleep(30)
             get_missed_deadlines(total_num_of_tasks)
             
