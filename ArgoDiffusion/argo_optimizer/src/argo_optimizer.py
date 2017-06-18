@@ -71,8 +71,8 @@ if __name__ == "__main__":
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
-#                task = db.get_first_task()
-                task = db.get_last_task()
+                task = db.get_first_task()
+#                task = db.get_last_task()
                 submitter = Submitter("localhost", 5672, "task_queue")
                 num_of_nodes = submitter.get_number_of_consumers()                
                 total_num_of_tasks_req = tasks_per_node * num_of_nodes
