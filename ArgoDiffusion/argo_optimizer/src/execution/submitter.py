@@ -16,8 +16,11 @@ class Submitter:
         self.rabbit_host = rabbit_host
         self.user = 'guest'
         self.password = 'guest'
-        self.rest_api_port = "15672"
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
+        self.rest_api_port = "15672"      
+        self.connection = pika.BlockingConnection(
+                                                  pika.ConnectionParameters(
+                                                  host=rabbit_host, 
+                                                  port=int(rabbit_port)))
         self.channel = self.connection.channel()
         self.queue = self.channel.queue_declare(queue=q_name, durable=True)
         self.const = Constants()
@@ -42,12 +45,12 @@ class Submitter:
     def get_q_size(self):
         q = self.get_q()
         return int(q['messages'])
-    
+
     def get_idle_since(self):
         q = self.get_q()
         if 'idle_since' in q:
             return datetime.strptime(q['idle_since'], self.const.date_format)  
-            
+
     def get_q(self):
         url = "http://" + self.rabbit_host + ":" + self.rest_api_port + "/api/queues/"
         response = requests.get(url, auth=HTTPBasicAuth(self.user, self.password))
@@ -78,10 +81,14 @@ class Submitter:
     def callback(self, channel, method, properties, body):
         channel.basic_ack(delivery_tag=method.delivery_tag)
         resp = json.loads(str(body))
-        exec_date = datetime.strptime(resp['date'], self.const.date_format)
+        if 'date' in resp:
+            key = 'date'
+        elif 'execution_date' in resp:
+            key = 'execution_date' 
+        exec_date = datetime.strptime(resp[key], self.const.date_format)
         if exec_date > self.last_exec_date:
-            self.last_exec_date = exec_date
-             
+            self.last_exec_date = exec_date            
+                
         self.num_of_meesages -= 1
         if self.num_of_meesages <= 0:
             channel.close()

@@ -23,20 +23,19 @@ class Worker:
         self.channel.basic_qos(prefetch_count=1)
         conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
         self.channel.basic_consume(self.callback, queue=q_name, consumer_tag=conumer_tag)
-        self.thread = Thread(target=self.threaded_function, args=(1,))
+        self.thread = Thread(target=self.threaded_function, args=(1, ))
         self.util = Util()
         self.argo = Argo()
         self.done = False
         
     def execute(self, data):
-        
         rand_name = self.util.randomword();
         rand_name = tempfile.gettempdir() + "/" + rand_name + ".json.out"
         with open(rand_name, 'w') as outfile:
             outfile.write(str(data))
-
+            
         generation_argo_big_data.config_file = rand_name
-       
+        
         out = data
         out = self.argo.run()
         try:
@@ -65,10 +64,10 @@ class Worker:
         n = str(body)
         response = self.execute(n)
         ch.basic_ack(delivery_tag=method.delivery_tag)
-        self.send_done(response)
         elapsed = timeit.default_timer() - start_time
         conf = json.loads(body)
         out = self.util.build_output(conf, elapsed, start, 1, str(socket.gethostname()), 1)
+        self.send_done(out)
         print out
 
 

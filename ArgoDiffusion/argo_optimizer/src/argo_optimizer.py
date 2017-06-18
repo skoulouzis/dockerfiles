@@ -67,19 +67,25 @@ if __name__ == "__main__":
             worker.consume()
         elif op != None and op == "master":
             db = DBHelper("localhost", 27017)
-            submitter = Submitter("localhost", 5672, "task_queue")
+            
             num_of_nodes = submitter.get_number_of_consumers()
             tasks_per_node = 2
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
                 task = db.get_first_task()
+                total_num_of_tasks_req = tasks_per_node * num_of_nodes
             #    sub_tasks = partitioner.partition_linear(task, tasks_per_node * num_of_nodes)
-                sub_tasks = partitioner.partition_log(task, tasks_per_node * num_of_nodes)
-
+                sub_tasks = partitioner.partition_log(task,total_num_of_tasks_req)
+#                print "Asked: %s, created: %s" % (total_num_of_tasks_req, len(sub_tasks))
                 num_of_tasks = 0
+                submitter = Submitter("localhost", 5672, "task_queue")
                 for sub in sub_tasks:
-                    submitter.submitt_task(sub)
+                    try:
+                        submitter.submitt_task(sub)
+                    except pika.exceptions.ChannelClosed:
+                        submitter = Submitter("localhost", 5672, "task_queue")
+                        submitter.submitt_task(sub)
                     num_of_tasks += 1
 
                 done_listener = Submitter("localhost", 5672, "task_queue_done")
@@ -91,14 +97,14 @@ if __name__ == "__main__":
 
                 out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks)
                 print out
-                db.mark_task_done(task)
-                done_listener = None
-        elif op != None and op == "init_task":
-            tasks = generate_tasks()
-            print "Created %s tasks" % len(tasks)
-            ranked_tasks = sch.rank_tasks(tasks)
-            db.import_tasks(ranked_tasks)
-            print "Imported %s tasks " % db.get_num_of_docs()
+#                db.mark_task_done(task)
+                break
+elif op != None and op == "init_task":
+    tasks = generate_tasks()
+    print "Created %s tasks" % len(tasks)
+    ranked_tasks = sch.rank_tasks(tasks)
+    db.import_tasks(ranked_tasks)
+    print "Imported %s tasks " % db.get_num_of_docs()
     
     
     
