@@ -72,9 +72,9 @@ if __name__ == "__main__":
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
-#                task = db.get_first_task()
+                task = db.get_first_task()
 #                task = db.get_last_task()
-                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2004-01-01T00:00:19Z"}
+#                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2004-01-01T00:00:19Z"}
                 tasks = db.get_tasks_in_time_range(test_time_range)
                 task = tasks[0]
                 
@@ -88,7 +88,6 @@ if __name__ == "__main__":
                 elif  partition_type == "linear":
                     sub_tasks = partitioner.partition_linear(task, total_num_of_tasks_req)
 
-#                print "Asked: %s, created: %s" % (total_num_of_tasks_req, len(sub_tasks))
                 num_of_tasks = 0
                 
                 for sub in sub_tasks:
@@ -108,8 +107,7 @@ if __name__ == "__main__":
 
                 out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks,partition_type)
                 print out
-#                db.mark_task_done(task)
-                break
+                db.mark_task_done(task)
     elif op != None and op == "init_task":
         tasks = generate_tasks()
         print "Created %s tasks" % len(tasks)
