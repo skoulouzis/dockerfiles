@@ -73,8 +73,8 @@ if __name__ == "__main__":
                 start = datetime.now()
                 start_time = timeit.default_timer()
 #                task = db.get_first_task()ObjectId("")
-#                task = db.get_task_by_id('594582074186716deb086c24')
-                task = db.get_task_by_id('59458056b33a4045901a7fa9')
+                task = db.get_task_by_id('594582074186716deb086c24')
+#                task = db.get_task_by_id('59458056b33a4045901a7fa9')
 #                task = db.get_last_task()
 #                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2004-01-01T00:00:19Z"}
 #                tasks = db.get_tasks_in_time_range(test_time_range)
