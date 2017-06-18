@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from util.constants import *
 from util.util import *
 
@@ -42,8 +43,10 @@ class Partitioner:
         chunk_size = problem_size
         start_chunk = start_date
         end_chunk = None
+        dev = 2
         for i in range(0, int(num_of_tasks), 1):
-            chunk_size = (chunk_size) // (2)
+            chunk_size = (chunk_size) // (dev)
+#            dev += 0.5
             if chunk_size <= 0:
                 break
             
