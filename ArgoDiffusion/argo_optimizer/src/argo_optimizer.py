@@ -75,11 +75,9 @@ if __name__ == "__main__":
 #                task = db.get_first_task()
 #                task = db.get_task_by_id('594582074186716deb086c24')
 #                task = db.get_last_task()
-                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2006-01-01T00:00:19Z"}
+                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2007-01-01T00:00:19Z"}
                 tasks = db.get_tasks_in_time_range(test_time_range)
-                task = tasks[0]
-                
-                 
+                task = tasks[0]   
                 
                 submitter = Submitter("localhost", 5672, "task_queue")
                 num_of_nodes = submitter.get_number_of_consumers()                

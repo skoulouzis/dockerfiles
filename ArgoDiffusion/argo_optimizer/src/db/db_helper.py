@@ -50,9 +50,9 @@ class DBHelper:
                      
         return self.task_collection.find({
                                          self.const.time_tag + "." + 
-                                         self.const.time_end_tag:{"$eq":time_end},
+                                         self.const.time_end_tag:{"$gte":time_end},
                                          self.const.time_tag + "." + 
-                                         self.const.time_start_tag:{"$eq":time_start}
+                                         self.const.time_start_tag:{"$lte":time_start}
                                          })                                   
             
     def get_task_by_id(self, id):
