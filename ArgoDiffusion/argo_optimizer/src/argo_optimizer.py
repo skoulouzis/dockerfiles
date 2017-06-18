@@ -20,7 +20,7 @@ sch = Scheduler()
 partitioner = Partitioner()
 util = Util()
 
-time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2020-01-01T00:00:19Z"}
+time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2007-01-01T00:00:19Z"}
 subscription_user_id = "1"
 subscription_id = "1"
 output_file_path = "/mnt/data/data_argo.txt"
@@ -33,9 +33,9 @@ now = datetime.now()
 deadline_date = now + timedelta(hours=1)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
-coordinates_step = 4
-bounding_box = {const.lon_min_tag:-1, const.lon_max_tag:9,
-const.lat_min_tag:7, const.lat_max_tag:11}
+coordinates_step = 3
+bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
+const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 1
     
@@ -72,7 +72,9 @@ if __name__ == "__main__":
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
-                task = db.get_first_task()
+#                task = db.get_first_task()ObjectId("")
+#                task = db.get_task_by_id('594582074186716deb086c24')
+                task = db.get_task_by_id('59458056b33a4045901a7fa9')
 #                task = db.get_last_task()
 #                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2004-01-01T00:00:19Z"}
 #                tasks = db.get_tasks_in_time_range(test_time_range)
@@ -108,12 +110,14 @@ if __name__ == "__main__":
                 out = util.build_output(task, elapsed, start, num_of_nodes, executing_node, num_of_tasks,partition_type)
                 print out
                 db.mark_task_done(task)
-    elif op != None and op == "init_task":
-        tasks = generate_tasks()
-        print "Created %s tasks" % len(tasks)
-        ranked_tasks = sch.rank_tasks(tasks)
-        db.import_tasks(ranked_tasks)
-        print "Imported %s tasks " % db.get_num_of_docs()
+                break
+        elif op != None and op == "init_task":
+            db = DBHelper("localhost", 27017)
+            tasks = generate_tasks()
+            print "Created %s tasks" % len(tasks)
+            ranked_tasks = sch.rank_tasks(tasks)
+            db.import_tasks(ranked_tasks)
+            print "Imported %s tasks " % db.get_num_of_docs()
     
     
     

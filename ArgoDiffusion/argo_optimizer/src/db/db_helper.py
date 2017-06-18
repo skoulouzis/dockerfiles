@@ -5,6 +5,7 @@ from pymongo import Connection
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir) 
 from util.constants import *
+from bson.objectid import ObjectId
 
 class DBHelper:
     
@@ -54,6 +55,9 @@ class DBHelper:
                                          self.const.time_start_tag:{"$eq":time_start}
                                          })                                   
             
+    def get_task_by_id(self, id):
+        return self.task_collection.find_one({"_id": ObjectId(id)})
+        
     def delete_task(self, task):
         self.task_collection.delete(task)
 
