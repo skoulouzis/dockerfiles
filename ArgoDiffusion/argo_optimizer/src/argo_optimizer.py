@@ -67,19 +67,20 @@ if __name__ == "__main__":
             worker.consume()
         elif op != None and op == "master":
             db = DBHelper("localhost", 27017)
-            
-            num_of_nodes = submitter.get_number_of_consumers()
             tasks_per_node = 2
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
-                task = db.get_first_task()
+#                task = db.get_first_task()
+                task = db.get_last_task()
+                submitter = Submitter("localhost", 5672, "task_queue")
+                num_of_nodes = submitter.get_number_of_consumers()                
                 total_num_of_tasks_req = tasks_per_node * num_of_nodes
             #    sub_tasks = partitioner.partition_linear(task, tasks_per_node * num_of_nodes)
                 sub_tasks = partitioner.partition_log(task,total_num_of_tasks_req)
 #                print "Asked: %s, created: %s" % (total_num_of_tasks_req, len(sub_tasks))
                 num_of_tasks = 0
-                submitter = Submitter("localhost", 5672, "task_queue")
+                
                 for sub in sub_tasks:
                     try:
                         submitter.submitt_task(sub)

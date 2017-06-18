@@ -28,7 +28,15 @@ class DBHelper:
                                              {"$or":[
                                              {self.const.executed_tag: {"$exists": False}},
                                              {self.const.executed_tag: {"$eq": False}}]}, 
-                                             sort=[(self.const.execution_rank_tag, 1)])
+                                             sort=[(self.const.execution_rank_tag, pymongo.ASCENDING)])
+                                             
+    def get_last_task(self):
+        return self.task_collection.find_one(
+    
+                                             {"$or":[
+                                             {self.const.executed_tag: {"$exists": False}},
+                                             {self.const.executed_tag: {"$eq": False}}]}, 
+                                             sort=[(self.const.execution_rank_tag, pymongo.DESCENDING)])                                             
             
     def delete_task(self, task):
         self.task_collection.delete(task)

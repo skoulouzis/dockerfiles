@@ -43,7 +43,7 @@ class Partitioner:
         start_chunk = start_date
         end_chunk = None
         for i in range(0, int(num_of_tasks), 1):
-            chunk_size = (chunk_size) // (2)
+            chunk_size = (chunk_size) // (1.2)
             if chunk_size <= 0:
                 break
             
