@@ -110,9 +110,9 @@ class Util:
         else:
             end_date = task[self.const.time_tag][self.const.time_end_tag]
 
-        out_data[self.const.time_tag] = self.get_time_delta(start_date, end_date).total_seconds()
+        out_data['time_coverage'] = self.get_time_delta(start_date, end_date).total_seconds()
 
-        out_data[self.const.parameters_tag] = len(task[self.const.parameters_tag])
+        out_data['num_of_params'] = len(task[self.const.parameters_tag])
         out_data['dataset_size'] = self.get_size(task[self.const.input_folder_tag])
         out_data['execution_time'] = elapsed #'%.3f' % elapsed.total_seconds()
         out_data['execution_date'] = execution_date.strftime(self.const.date_format)
