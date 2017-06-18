@@ -67,7 +67,7 @@ if __name__ == "__main__":
             worker.consume()
         elif op != None and op == "master":
             db = DBHelper("localhost", 27017)
-            tasks_per_node = 2
+            tasks_per_node = 1
             for i in range(0, db.get_num_of_docs(), 1):
                 start = datetime.now()
                 start_time = timeit.default_timer()
@@ -106,12 +106,12 @@ if __name__ == "__main__":
                 print out
 #                db.mark_task_done(task)
                 break
-elif op != None and op == "init_task":
-    tasks = generate_tasks()
-    print "Created %s tasks" % len(tasks)
-    ranked_tasks = sch.rank_tasks(tasks)
-    db.import_tasks(ranked_tasks)
-    print "Imported %s tasks " % db.get_num_of_docs()
+    elif op != None and op == "init_task":
+        tasks = generate_tasks()
+        print "Created %s tasks" % len(tasks)
+        ranked_tasks = sch.rank_tasks(tasks)
+        db.import_tasks(ranked_tasks)
+        print "Imported %s tasks " % db.get_num_of_docs()
     
     
     
