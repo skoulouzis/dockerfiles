@@ -111,8 +111,7 @@ class Monitor:
         cmd = "screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672"
         subprocess.call(cmd, shell=True)
         self.node_index += 1
-        print "will start %s"%line
-        print "self.node_index: %s"%self.node_index
-        if self.node_index-1 > self.max_nodes or not line or line.isspace:
+        if self.node_index > self.max_nodes:
+            print "reset index"
             self.node_index = 1
         
