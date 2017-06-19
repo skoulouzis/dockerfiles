@@ -90,8 +90,8 @@ class Monitor:
         out = self.util.build_deadline_output(task, sub_tasks, self.threshold)     
         print json.dumps(out)
         time_to_deadline = int(out['time_to_deadline'])
-        if time_to_deadline <= self.threshold:
-            self.provision_worker()
+#        if time_to_deadline <= self.threshold:
+#            self.provision_worker()
         
         if self.num_of_meesages > 0:
             self.num_of_meesages -= 1
@@ -109,7 +109,7 @@ class Monitor:
         return int(q['consumers'])
     
     def provision_worker(self):
-        if self.nodes_started < (self.max_nodes * 2):
+        if self.nodes_started <= (self.max_nodes * 2):
             line = linecache.getline(self.list_of_nodes, self.node_index)
             line = line.rstrip()
 
