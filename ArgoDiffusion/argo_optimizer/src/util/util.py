@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from constants import *
 from datetime import datetime
 from datetime import timedelta
@@ -14,7 +15,6 @@ from shapely.geometry.polygon import Polygon
 import shapely.ops as ops
 import string
 import sys
-from bson.objectid import ObjectId
 
 
 class Util:
@@ -123,7 +123,7 @@ class Util:
         out_data['num_of_nodes'] = num_of_nodes
         out_data['executing_node'] = executing_node
         out_data['num_of_tasks'] = num_of_tasks        
-        if partition_type!=None or not partition_type:
+        if partition_type != None or not partition_type:
             out_data['partition_type'] = partition_type
         return json.dumps(out_data)    
     
@@ -139,14 +139,14 @@ class Util:
     def randomword(self):
         return ''.join(random.choice(string.lowercase) for i in range(5))
     
-    def build_deadline_output(self, task,sub_tasks):
+    def build_deadline_output(self, task, sub_tasks, threshold):
         time_coverage = 0
         last_exec_date = datetime(10, 1, 1)
         if (isinstance(task[self.const.bounding_box_tag][self.const.lon_min_tag], str)):
             area = self.get_area(task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lon_min_tag], task[self.const.bounding_box_tag][self.const.lon_max_tag])
         else:
             area = self.get_area(task[self.const.bounding_box_tag])
-        num_of_params =  len(task[self.const.parameters_tag])
+        num_of_params = len(task[self.const.parameters_tag])
         if (isinstance(task[self.const.time_tag][self.const.time_start_tag], str) or isinstance(task[self.const.time_tag][self.const.time_start_tag], unicode)):
             start_date = datetime.strptime(task[self.const.time_tag][self.const.time_start_tag], self.const.date_format)
         else:
@@ -177,9 +177,11 @@ class Util:
         out_data['execution_rank']  = execution_rank
         out_data['area']  = area
         out_data['num_of_params']  = num_of_params
-        out_data['time_coverage']  = time_coverage     
+        out_data['time_coverage']  = time_coverage  
+        if not (threshold is None):
+            out_data['threshold']  = threshold      
         return out_data
     
-    def get_num_of_lines_in_file(self,file_path):
+    def get_num_of_lines_in_file(self, file_path):
         with open(file_path) as f:
             return sum(1 for _ in f)    
