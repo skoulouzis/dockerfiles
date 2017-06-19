@@ -69,7 +69,7 @@ class Worker:
             except exceptions.ConnectionClosed():
                 self.init_connection()
                 self.connection.process_data_events()
-            sleep(0.5)
+            sleep(10)
             
     def callback(self, ch, method, properties, body):
         start_time = timeit.default_timer()

@@ -27,12 +27,12 @@ class Scheduler:
         ttf = self.util.get_time_delta(self.now, task[self.const.deadline_date_tag])
         ttf_sec = ttf.total_seconds()
         time_range = self.util.get_time_delta(task[self.const.time_tag][self.const.time_start_tag], 
-                                                task[self.const.time_tag][self.const.time_end_tag])
+                                              task[self.const.time_tag][self.const.time_end_tag])
         time_range_sec = time_range.total_seconds()
         area = self.util.get_area(task[self.const.bounding_box_tag])
         
         params_comp = (float(params_len) * self.params_len_weight)
-        deadline_comp = (float(ttf_sec) * self.ttf_weight)
+        deadline_comp = 1 / (float(ttf_sec) * self.ttf_weight)
         time_range_comp = (float(time_range_sec) * self.time_range_weight)
         area_comp = (float(area) * self.area_weight)
 

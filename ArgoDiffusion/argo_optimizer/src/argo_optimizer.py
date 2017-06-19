@@ -29,6 +29,8 @@ input_folder_path = "/mnt/data/data_argo/"
 subscription_date = "2017-04-10T13:28:06Z"
 end_subscription_date = "2018-04-10T13:28:06Z"
 now = datetime.now()    
+list_of_nodes = "/mnt/data/source/ssh.8"
+
 
 deadline_date = now + timedelta(hours=1)
 deadline_date = str(deadline_date.strftime(const.date_format))
@@ -38,7 +40,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 4
-task_limit = 100
+task_limit = 50
     
 
 
@@ -157,6 +159,7 @@ if __name__ == "__main__":
 #                wait_for_output(num_of_tasks)
                     
                 db.mark_task_done(task)
+                
                 if total_num_of_tasks >= task_limit:
                     break
             time.sleep(30)
