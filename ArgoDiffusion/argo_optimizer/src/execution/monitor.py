@@ -87,6 +87,13 @@ class Monitor:
         sub_tasks = []
         sub_tasks.append(resp)
         task = self.db.get_task_by_id(_id)
+        if self.prev_threshold == -1:
+            self.prev_threshold = time_to_deadline
+            self.threshold = time_to_deadline
+        else:
+            diff = time_to_deadline - self.prev_threshold
+            self.threshold = self.prev_threshold - diff
+        
         out = self.util.build_deadline_output(task, sub_tasks, self.threshold, self.nodes_started)     
         print json.dumps(out)
         time_to_deadline = int(out['time_to_deadline'])

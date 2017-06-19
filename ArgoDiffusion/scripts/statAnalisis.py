@@ -94,16 +94,17 @@ def get_deadlines():
     
         })
     
-    print "time_to_deadline,execution_rank,area,execution_date,time_coverage,deadline_date,num_of_params,threshold"
+    print "time_to_deadline,execution_rank,area,execution_date,time_coverage,deadline_date,num_of_params,threshold,nodes_started"
     for doc in square:        
-        print "%s,%s,%s,%s,%s,%s,%s,%s" % (doc["time_to_deadline"],
+        print "%s,%s,%s,%s,%s,%s,%s,%s,%s" % (doc["time_to_deadline"],
                                      doc['execution_rank'],
                                      doc['area'],
                                      doc["execution_date"],
                                      doc['time_coverage'],
                                      doc["deadline_date"],
                                      doc["num_of_params"],
-                                     doc["threshold"])
+                                     doc["threshold"],
+                                     doc['nodes_started'])
     
 
 
