@@ -87,6 +87,7 @@ class Monitor:
         _id = resp['configuration']['_id']
         sub_tasks = []
         sub_tasks.append(resp)
+        time_to_deadline = int(out['time_to_deadline'])
         task = self.db.get_task_by_id(_id)
         if self.prev_threshold == -1:
             self.prev_threshold = time_to_deadline
@@ -97,7 +98,7 @@ class Monitor:
         
         out = self.util.build_deadline_output(task, sub_tasks, self.threshold, self.nodes_started)     
         print json.dumps(out)
-        time_to_deadline = int(out['time_to_deadline'])
+        
         if time_to_deadline <= self.threshold:
             self.provision_worker()
         
