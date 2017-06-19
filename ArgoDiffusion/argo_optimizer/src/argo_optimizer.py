@@ -21,7 +21,7 @@ sch = Scheduler()
 partitioner = Partitioner()
 util = Util()
 
-time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2005-01-01T00:00:19Z"}
+time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2003-01-01T00:00:19Z"}
 subscription_user_id = "1"
 subscription_id = "1"
 output_file_path = "/mnt/data/data_argo.txt"

@@ -22,10 +22,12 @@ class Worker:
         self.rabbit_host = rabbit_host
         self.rabbit_port = rabbit_port
         self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
+        try:
+            self.init_connection()
+        except exceptions.ConnectionClosed():
+            self.init_connection()
         
-        self.init_connection()
-        
-        self.thread = Thread(target=self.threaded_function, args=(1,))
+        self.thread = Thread(target=self.threaded_function, args=(1, ))
         self.util = Util()
         self.argo = Argo()
         self.done = False
