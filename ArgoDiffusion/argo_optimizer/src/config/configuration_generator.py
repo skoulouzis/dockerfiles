@@ -75,7 +75,7 @@ class ConfigurationGenerator:
         
         conf_list = []
         now = datetime.now()
-        later = now + timedelta(minutes=10)
+        later = now + timedelta(minutes=5)
         data = {}
         for i in lon_vals:
             if i <= bounding_box[self.const.lon_min_tag]:
