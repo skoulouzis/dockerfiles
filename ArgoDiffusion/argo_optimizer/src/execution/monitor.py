@@ -3,6 +3,8 @@ from datetime import timedelta
 from db.db_helper import *
 import json
 import linecache
+from os.path import expanduser
+import paramiko
 import pika
 from pika import exceptions
 import requests
@@ -11,8 +13,7 @@ import socket
 from util.constants import *
 from util.util import *
 import uuid
-import subprocess
-import paramiko
+
 
 class Monitor:
     
@@ -35,7 +36,7 @@ class Monitor:
         self.db = DBHelper("localhost", 27017)
         self.list_of_nodes = list_of_nodes
         self.node_index = 2
-        self.threshold = 200
+        self.threshold = 300
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         
     def init_connection(self):
@@ -112,12 +113,12 @@ class Monitor:
         
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(line, username='vm_user', key_filename='~/.ssh/id_rsa')
+        home = expanduser("~")
+        ssh.connect(line, username='vm_user', key_filename=home + '/.ssh/id_rsa')
         
-        stdin, stdout, stderr = ssh.exec_command("screen -ls")
-        stdout.read()
-                
-        cmd = "ssh vm_user@"+line+" \"screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672\""
+        stdin, stdout, stderr = ssh.exec_command("screen -L -dmS rabbit_worker python /home/vm_user/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672")
+        out = stdout.read()
+        
         self.node_index += 1
         if self.node_index > self.max_nodes:
             self.node_index = 1
