@@ -149,11 +149,22 @@ def getDataFrame():
                                    "execution_date":{ "$gte":date }  
         
         })
+
     print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,execution_date"
     for doc in docs:
+        time_key='time_coverage'
+        if 'time_coverage' in doc:
+            time_key = 'time_coverage'
+        elif 'time_range' in doc:
+            time_key = 'time_range'    
+        num_of_params_key = 'num_of_params'
+        if 'parameters' in doc:
+            num_of_params_key = 'parameters'
+        elif 'num_of_params' in doc:
+            num_of_params_key = 'num_of_params'            
         area.append(doc["area"])
-        time_coverage.append(doc["time_coverage"])
-        num_of_params.append(doc["num_of_params"])
+        time_coverage.append(doc[time_key])
+        num_of_params.append(doc[num_of_params_key])
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
         timestamp_end = doc["configuration"]["time_range"]["time_coverage_end"].strftime("%s")
@@ -163,9 +174,9 @@ def getDataFrame():
         
         print "%s,%s,%s,%s,%s,%s,%s,%s" % (doc["num_of_nodes"],
                                      doc["execution_time"],
-                                     doc["time_coverage"],
+                                     doc[time_key],
                                      doc["area"],
-                                     doc["num_of_params"],
+                                     doc[num_of_params_key],
                                      doc["configuration"]["time_range"]["time_coverage_start"],
                                      doc["configuration"]["time_range"]["time_coverage_end"],
                                      doc["execution_date"])
@@ -176,35 +187,35 @@ def getDataFrame():
     
     
 
-distinct_area = get_distinct_area(med_box)
-max_distinct_area = max(distinct_area)
-distinct_num_of_params = getDistinct_num_of_params(med_box)
-max_distinct_num_of_params = max(distinct_num_of_params)
-distinct_time_coverage = getDistinct_time_coverage(med_box)
-max_distinct_time_coverage = max(distinct_time_coverage)
-max_distinct_time_coverage = 252460800
+#distinct_area = get_distinct_area(med_box)
+#max_distinct_area = max(distinct_area)
+#distinct_num_of_params = getDistinct_num_of_params(med_box)
+#max_distinct_num_of_params = max(distinct_num_of_params)
+#distinct_time_coverage = getDistinct_time_coverage(med_box)
+#max_distinct_time_coverage = max(distinct_time_coverage)
+#max_distinct_time_coverage = 252460800
 
-med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
-grouped = med.groupby(['num_of_nodes'], as_index=False)
-gm = grouped.mean()
-gm.to_csv("speed_up.csv")
-print gm
-
-
-
-
-
-
-
-#dataframe = getDataFrame()
-#grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
-##print grouped.describe()
+#med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
+#grouped = med.groupby(['num_of_nodes'], as_index=False)
 #gm = grouped.mean()
+#gm.to_csv("speed_up.csv")
 #print gm
 
-#corr = dataframe.corr()
-#corr.to_csv("correlation.csv")
-#print corr
+
+
+
+
+
+
+dataframe = getDataFrame()
+grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
+#print grouped.describe()
+gm = grouped.mean()
+print gm
+
+corr = dataframe.corr()
+corr.to_csv("correlation.csv")
+print corr
 #seaborn.heatmap(corr, 
             #xticklabels=corr.columns.values,
             #yticklabels=corr.columns.values)

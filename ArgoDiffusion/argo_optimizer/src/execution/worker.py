@@ -19,6 +19,7 @@ class Worker:
     def __init__(self, rabbit_host, rabbit_port, q_name):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
         self.channel = self.connection.channel()
+        self.channel.confirm_delivery()
         self.channel.queue_declare(queue=q_name, durable=True)
         self.channel.basic_qos(prefetch_count=1)
         conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
@@ -72,10 +73,19 @@ class Worker:
 
     def send_done(self, response):
         message = response
-        self.channel.basic_publish(exchange='',
-                                   routing_key='task_queue_done',
-                                   body=message,
-                                   properties=pika.BasicProperties(
-                                   delivery_mode=2, # make message persistent
-                                   ))
+        sent = self.channel.basic_publish(exchange='',
+                                          routing_key='task_queue_done',
+                                          body=message,
+                                          properties=pika.BasicProperties(
+                                          delivery_mode=2,
+                                          ))
+        while not(sent):
+            sent = self.channel.basic_publish(exchange='',
+                                              routing_key='task_queue_done',
+                                              body=message,
+                                              properties=pika.BasicProperties(
+                                              delivery_mode=2,
+                                              ))
+                        
+      
     

@@ -38,7 +38,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 4
-task_limit = 10
+task_limit = 100
     
 
 
@@ -70,7 +70,6 @@ def get_missed_deadlines(total_num_of_tasks):
     done_listener = Submitter("localhost", 5672, "task_queue_done")
     done_listener.listen(total_num_of_tasks)
     finised_tasks = done_listener.finised_tasks
-    
     for task_id in finised_tasks:
         last_exec_date = datetime(10, 1, 1)
         sub_tasks = finised_tasks[task_id]
@@ -95,7 +94,6 @@ def get_missed_deadlines(total_num_of_tasks):
 
         for sub in sub_tasks:
             exec_date = datetime.strptime(sub['execution_date'], const.date_format)
-            print "id: %s, exec_date: %s"%(task_id,exec_date)
         if exec_date > last_exec_date:
             last_exec_date = exec_date
             deadline = sub['configuration']['deadline_date']
@@ -158,7 +156,7 @@ if __name__ == "__main__":
 
 #                wait_for_output(num_of_tasks)
                     
-#                db.mark_task_done(task)
+                db.mark_task_done(task)
                 if total_num_of_tasks >= task_limit:
                     break
             time.sleep(30)
