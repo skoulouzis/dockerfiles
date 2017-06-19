@@ -87,11 +87,11 @@ class Monitor:
         sub_tasks = []
         sub_tasks.append(resp)
         task = self.db.get_task_by_id(_id)
-        out = self.util.build_deadline_output(task, sub_tasks, self.threshold)     
+        out = self.util.build_deadline_output(task, sub_tasks, self.threshold, self.nodes_started)     
         print json.dumps(out)
         time_to_deadline = int(out['time_to_deadline'])
-#        if time_to_deadline <= self.threshold:
-#            self.provision_worker()
+        if time_to_deadline <= self.threshold:
+            self.provision_worker()
         
         if self.num_of_meesages > 0:
             self.num_of_meesages -= 1

@@ -139,7 +139,7 @@ class Util:
     def randomword(self):
         return ''.join(random.choice(string.lowercase) for i in range(5))
     
-    def build_deadline_output(self, task, sub_tasks, threshold):
+    def build_deadline_output(self, task, sub_tasks, threshold, nodes_started):
         time_coverage = 0
         last_exec_date = datetime(10, 1, 1)
         if (isinstance(task[self.const.bounding_box_tag][self.const.lon_min_tag], str)):
@@ -180,6 +180,8 @@ class Util:
         out_data['time_coverage']  = time_coverage  
         if not (threshold is None):
             out_data['threshold']  = threshold
+        if not (nodes_started is None):
+            out_data['nodes_started']  = nodes_started            
         return out_data
     
     def get_num_of_lines_in_file(self, file_path):

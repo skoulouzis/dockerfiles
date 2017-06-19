@@ -83,14 +83,14 @@ def getDistinct_time_coverage(bounding_box):
 def get_deadlines():
     connection = Connection('localhost', 27017)
     db = connection.drip    
-   
-    exec_start = datetime.strptime("2017-06-18T23:40:00Z", date_format)
-    exec_end = datetime.strptime("2017-06-18T00:00:00Z", date_format)
+    
+    #exec_start = datetime.strptime("2017-06-19T21:14:53Z", date_format)
+    #exec_end = datetime.strptime("2017-06-19T21:35:43Z", date_format)
 
     
     square = db.argo_deadline.find({
-        "execution_date":{ "$lte":exec_end }  ,
-        "execution_date":{ "$gte":exec_start }       
+        #"execution_date":{ "$lte":exec_end }  ,
+        #"execution_date":{ "$gte":exec_start }       
     
         })
     
@@ -102,7 +102,7 @@ def get_deadlines():
                                      doc["execution_date"],
                                      doc['time_coverage'],
                                      doc["deadline_date"],
-                                     doc["num_of_params"]
+                                     doc["num_of_params"],
                                      doc["threshold"])
     
 
