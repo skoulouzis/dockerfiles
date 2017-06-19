@@ -77,7 +77,36 @@ def getDistinct_time_coverage(bounding_box):
     }).distinct("time_coverage")  
     
     return distinct_time_coverage
+
+
+
+def get_deadlines():
+    connection = Connection('localhost', 27017)
+    db = connection.drip    
+   
+    exec_start = datetime.strptime("2017-06-18T23:40:00Z", date_format)
+    exec_end = datetime.strptime("2017-06-18T00:00:00Z", date_format)
+
     
+    square = db.argo_deadline.find({
+        "execution_date":{ "$lte":exec_end }  ,
+        "execution_date":{ "$gte":exec_start }       
+    
+        })
+    
+    print "time_to_deadline,execution_rank,area,execution_date,time_coverage,deadline_date,num_of_params,threshold"
+    for doc in square:        
+        print "%s,%s,%s,%s,%s,%s,%s,%s" % (doc["time_to_deadline"],
+                                     doc['execution_rank'],
+                                     doc['area'],
+                                     doc["execution_date"],
+                                     doc['time_coverage'],
+                                     doc["deadline_date"],
+                                     doc["num_of_params"]
+                                     doc["threshold"])
+    
+
+
 
 def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_coverage):
     connection = Connection('localhost', 27017)
@@ -167,7 +196,7 @@ def getDataFrame():
         num_of_params.append(doc[num_of_params_key])
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
-        timestamp_end = doc["configuration"]["time_range"]["time_coverage_end"].strftime("%s")
+        timestamp_endget_deadlines = doc["configuration"]["time_range"]["time_coverage_end"].strftime("%s")
         timestamp_array_end.append(int(timestamp_end))
         timestamp_start = doc["configuration"]["time_range"]["time_coverage_start"].strftime("%s")
         timestamp_array_start.append(int(timestamp_start))
@@ -202,20 +231,15 @@ def getDataFrame():
 #print gm
 
 
+#dataframe = getDataFrame()
+#grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
+##print grouped.describe()
+#gm = grouped.mean()
+#print gm
 
-
-
-
-
-dataframe = getDataFrame()
-grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
-#print grouped.describe()
-gm = grouped.mean()
-print gm
-
-corr = dataframe.corr()
-corr.to_csv("correlation.csv")
-print corr
+#corr = dataframe.corr()
+#corr.to_csv("correlation.csv")
+#print corr
 #seaborn.heatmap(corr, 
             #xticklabels=corr.columns.values,
             #yticklabels=corr.columns.values)
@@ -242,4 +266,7 @@ print corr
 ##ax.set_xlabel("time_coverage Level")
 ##ax.set_title("Linear Regression")
 ##plt.show()
+
+
+get_deadlines()
 
