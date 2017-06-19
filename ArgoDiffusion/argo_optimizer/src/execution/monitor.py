@@ -36,7 +36,7 @@ class Monitor:
         self.db = DBHelper("localhost", 27017)
         self.list_of_nodes = list_of_nodes
         self.node_index = 2
-        self.threshold = 250
+        self.threshold = 180
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         self.nodes_started = 0
         self.prev_threshold = -1
@@ -90,14 +90,7 @@ class Monitor:
         task = self.db.get_task_by_id(_id)
         out = self.util.build_deadline_output(task, sub_tasks, self.threshold, self.nodes_started)     
         time_to_deadline = int(out['time_to_deadline'])
-        
-        if self.prev_threshold == -1:
-            self.prev_threshold = time_to_deadline
-            self.threshold = time_to_deadline
-        else:
-            diff = time_to_deadline - self.prev_threshold
-            self.threshold = self.prev_threshold - diff
-        
+                   
 
         print json.dumps(out)
         
