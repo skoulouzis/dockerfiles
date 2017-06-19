@@ -39,6 +39,7 @@ class Monitor:
         self.threshold = 250
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         self.nodes_started = 0
+        self.prev_threshold = -1
         
     def init_connection(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.rabbit_host, port=int(self.rabbit_port)))
