@@ -34,7 +34,7 @@ class Monitor:
         self.db = DBHelper("localhost", 27017)
         self.list_of_nodes = list_of_nodes
         self.node_index = 2
-        self.threshold = 100
+        self.threshold = 200
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         
     def init_connection(self):
@@ -107,8 +107,9 @@ class Monitor:
     
     def provision_worker(self):
         line = linecache.getline(self.list_of_nodes, self.node_index)
-        line = line.rstrip()        
-        cmd = "screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker "+line+" 5672 &>/dev/null"
+        line = line.rstrip()
+        cmd = "screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker "+line+" 5672"
+        print "Will run: '%s'" %cmd
         subprocess.call(cmd, shell=True)
         self.node_index += 1
         if self.node_index > self.max_nodes:
