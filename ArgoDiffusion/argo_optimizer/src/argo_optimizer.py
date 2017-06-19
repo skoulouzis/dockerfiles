@@ -38,7 +38,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 4
-task_limit = 10:
+task_limit = 10
     
 
 
