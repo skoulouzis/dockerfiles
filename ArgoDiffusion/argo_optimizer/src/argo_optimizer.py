@@ -33,7 +33,7 @@ now = datetime.now()
 list_of_nodes = "/mnt/data/source/ssh.8"
 
 
-deadline_date = now + timedelta(minutes=2)
+deadline_date = now + timedelta(minutes=10)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
 coordinates_step = 4
@@ -41,7 +41,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 1
-task_limit = 5
+task_limit = 50
     
 
 
