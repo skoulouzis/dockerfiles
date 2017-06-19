@@ -36,7 +36,7 @@ class Monitor:
         self.db = DBHelper("localhost", 27017)
         self.list_of_nodes = list_of_nodes
         self.node_index = 2
-        self.threshold = 300
+        self.threshold = 250
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         self.nodes_started = 0
         
