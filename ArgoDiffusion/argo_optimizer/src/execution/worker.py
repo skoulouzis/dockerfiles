@@ -22,7 +22,7 @@ class Worker:
         self.rabbit_port = rabbit_port
         self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
         
-        init_connection()
+        self.init_connection()
         
         self.thread = Thread(target=self.threaded_function, args=(1,))
         self.util = Util()
@@ -67,7 +67,7 @@ class Worker:
             try:
                 self.connection.process_data_events()
             except exceptions.ConnectionClosed():
-                init_connection()
+                self.init_connection()
                 self.connection.process_data_events()
             sleep(0.5)
             
