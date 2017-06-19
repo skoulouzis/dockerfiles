@@ -40,7 +40,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 4
-task_limit = 50
+task_limit = 30
     
 
 
@@ -69,10 +69,11 @@ def generate_tasks():
     return tasks
 
 def get_missed_deadlines(total_num_of_tasks):
-    print "Wating for %s of tasks" %(total_num_of_tasks)
+#    print "Wating for %s of tasks" %(total_num_of_tasks)
     done_listener = Submitter("localhost", 5672, "task_queue_done")
     done_listener.listen(total_num_of_tasks)
     finised_tasks = done_listener.finised_tasks
+#    print "finised_tasks:  %s" %(len(finised_tasks))
     for task_id in finised_tasks:
         last_exec_date = datetime(10, 1, 1)
         sub_tasks = finised_tasks[task_id]
@@ -163,7 +164,7 @@ if __name__ == "__main__":
                 
                 if total_num_of_tasks >= task_limit:
                     break
-            time.sleep(30)
+            time.sleep(2)
             get_missed_deadlines(total_num_of_tasks)
             
         elif op != None and op == "init_task":

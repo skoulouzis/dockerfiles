@@ -4,6 +4,7 @@ import generation_argo_big_data
 from generation_argo_big_data import *
 import json
 import pika
+from pika import exceptions
 import socket
 import tempfile
 from threading import Thread
@@ -28,6 +29,7 @@ class Worker:
         self.util = Util()
         self.argo = Argo()
         self.done = False
+        self.done_count = 0
         
     
     def init_connection(self):
@@ -37,6 +39,7 @@ class Worker:
         self.channel.queue_declare(queue=self.q_name, durable=True)
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=self.conumer_tag)
+#        self.queue_done = self.channel.queue_declare(queue='task_queue_done', durable=True)
         
     def execute(self, data):
         rand_name = self.util.randomword();
@@ -86,6 +89,7 @@ class Worker:
 
     def send_done(self, response):
         message = response
+        self.done_count += 1
         sent = self.channel.basic_publish(exchange='',
                                           routing_key='task_queue_done',
                                           body=message,
@@ -93,6 +97,7 @@ class Worker:
                                           delivery_mode=2,
                                           ))
         while not(sent):
+            self.done_count += 1
             sent = self.channel.basic_publish(exchange='',
                                               routing_key='task_queue_done',
                                               body=message,

@@ -2,34 +2,43 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import pika
+from pika import exceptions
 import requests
 from requests.auth import HTTPBasicAuth
+import socket
 from util.constants import *
 from util.util import *
+import uuid
 
 
 class Submitter:
     
     def __init__(self, rabbit_host, rabbit_port, q_name):
         self.q_name = q_name
+        self.rabbit_port = rabbit_port
         self.num_of_meesages = 0
         self.rabbit_host = rabbit_host
         self.user = 'guest'
         self.password = 'guest'
-        self.rest_api_port = "15672"      
-        self.connection = pika.BlockingConnection(
-                                                  pika.ConnectionParameters(
-                                                  host=rabbit_host, 
-                                                  port=int(rabbit_port)))
-        self.channel = self.connection.channel()
-        self.queue = self.channel.queue_declare(queue=q_name, durable=True)
+        self.rest_api_port = "15672"
+        
+        self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
+        self.init_connection()
+            
         self.const = Constants()
         self.util = Util()
         self.last_exec_date = datetime(10, 1, 1)
         self.finised_tasks = {}
         
         
-    
+    def init_connection(self):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.rabbit_host, port=int(self.rabbit_port)))
+        self.channel = self.connection.channel()
+        self.channel.confirm_delivery()
+        self.channel.queue_declare(queue=self.q_name, durable=True)
+        self.channel.basic_qos(prefetch_count=1)
+        self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=self.conumer_tag)
+        
     def submitt_task(self, task):
         task = self.util.convert_dates_to_string(task)
         task = self.util.uid_to_string(task)
@@ -101,15 +110,14 @@ class Submitter:
             self.finised_tasks[_id] = sub_tasks
         
         self.num_of_meesages -= 1
-        print "Task id: %s finised_tasks: %s left: %s" % (_id, (len(self.finised_tasks)), self.num_of_meesages)                
+#        print "Task id: %s finised_tasks: %s left: %s" % (_id, (len(self.finised_tasks)), self.num_of_meesages)                
         if self.num_of_meesages <= 0:
             channel.close()
             return
         
         
     def listen(self, num_of_meesages):
-        self.num_of_meesages = num_of_meesages 
-        self.channel.basic_consume(self.callback, queue=self.q_name)
+        self.num_of_meesages = num_of_meesages
         self.channel.start_consuming()
         
     def get_number_of_consumers(self):
