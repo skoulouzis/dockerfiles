@@ -97,6 +97,7 @@ if __name__ == "__main__":
                 task = db.get_first_task()
                 if task is None:
                     continue
+                print task['execution_rank']
 #                task = db.get_task_by_id('594582074186716deb086c24')
 #                task = db.get_last_task()
 #                test_time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2007-01-01T00:00:19Z"}
@@ -111,15 +112,15 @@ if __name__ == "__main__":
                 elif  partition_type == "linear":
                     sub_tasks = partitioner.partition_linear(task, total_num_of_tasks_req)
 
-                num_of_tasks = 0
-                for sub in sub_tasks:
-                    try:
-                        submitter.submitt_task(sub)
-                    except pika.exceptions.ChannelClosed:
-                        submitter = Submitter("localhost", 5672, "task_queue")
-                        submitter.submitt_task(sub)
-                    num_of_tasks += 1
-                    total_num_of_tasks += 1
+#                num_of_tasks = 0
+#                for sub in sub_tasks:
+#                    try:
+#                        submitter.submitt_task(sub)
+#                    except pika.exceptions.ChannelClosed:
+#                        submitter = Submitter("localhost", 5672, "task_queue")
+#                        submitter.submitt_task(sub)
+#                    num_of_tasks += 1
+#                    total_num_of_tasks += 1
                 
 #                wait_for_output(num_of_tasks)
                 
