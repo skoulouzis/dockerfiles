@@ -21,7 +21,7 @@ sch = Scheduler()
 partitioner = Partitioner()
 util = Util()
 
-time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2004-01-01T00:00:19Z"}
+time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2005-01-01T00:00:19Z"}
 subscription_user_id = "1"
 subscription_id = "1"
 output_file_path = "/mnt/data/data_argo.txt"
@@ -33,7 +33,7 @@ now = datetime.now()
 list_of_nodes = "/mnt/data/source/ssh.8"
 
 
-deadline_date = now + timedelta(minutes=10)
+deadline_date = now + timedelta(minutes=3)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
 coordinates_step = 4
