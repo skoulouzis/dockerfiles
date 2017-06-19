@@ -12,6 +12,7 @@ from util.constants import *
 from util.util import *
 import uuid
 import subprocess
+import paramiko
 
 class Monitor:
     
@@ -108,9 +109,15 @@ class Monitor:
     def provision_worker(self):
         line = linecache.getline(self.list_of_nodes, self.node_index)
         line = line.rstrip()
+        
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(line, username='vm_user', key_filename='~/.ssh/id_rsa')
+        
+        stdin, stdout, stderr = ssh.exec_command("screen -ls")
+        stdout.read()
+                
         cmd = "ssh vm_user@"+line+" \"screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672\""
-        print cmd
-#        subprocess.call(cmd, shell=True)
         self.node_index += 1
         if self.node_index > self.max_nodes:
             self.node_index = 1
