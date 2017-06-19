@@ -1,6 +1,8 @@
 from datetime import datetime
 from datetime import timedelta
+from db.db_helper import *
 import json
+import linecache
 import pika
 from pika import exceptions
 import requests
@@ -9,12 +11,11 @@ import socket
 from util.constants import *
 from util.util import *
 import uuid
-from db.db_helper import *
-
+import subprocess
 
 class Monitor:
     
-    def __init__(self, rabbit_host, rabbit_port, q_name):
+    def __init__(self, rabbit_host, rabbit_port, q_name, list_of_nodes):
         self.q_name = q_name
         self.rabbit_port = rabbit_port
         self.num_of_meesages = 0
@@ -31,7 +32,10 @@ class Monitor:
         self.last_exec_date = datetime(10, 1, 1)
         self.finised_tasks = {}
         self.db = DBHelper("localhost", 27017)
-        
+        self.list_of_nodes = list_of_nodes
+        self.node_index = 1
+        self.threshold = 100
+        self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
         
     def init_connection(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.rabbit_host, port=int(self.rabbit_port)))
@@ -80,8 +84,11 @@ class Monitor:
         sub_tasks = []
         sub_tasks.append(resp)
         task = self.db.get_task_by_id(_id)
-        out = self.util.build_deadline_output(task,sub_tasks)        
+        out = self.util.build_deadline_output(task, sub_tasks)        
         print json.dumps(out)
+        time_to_deadline = int(out['time_to_deadline'])
+        if time_to_deadline <= self.threshold:
+            self.provision_worker()
         
         if self.num_of_meesages > 0:
             self.num_of_meesages -= 1
@@ -97,3 +104,14 @@ class Monitor:
     def get_number_of_consumers(self):
         q = self.get_q()
         return int(q['consumers'])
+    
+    def provision_worker(self):
+        line = linecache.getline(self.list_of_nodes, self.node_index)
+        line = line.rstrip()        
+        cmd = "screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672"
+#        cmd = "screen -L -dmS rabbit_worker python --version"
+        subprocess.call(cmd, shell=True)
+        self.node_index += 1
+        if self.node_index-1 > self.max_nodes or not line or line.isspace:
+            self.node_index = 1
+        

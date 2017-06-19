@@ -131,7 +131,7 @@ if __name__ == "__main__":
 #            get_missed_deadlines(total_num_of_tasks)
         
         elif op != None and op == "monitor":
-            mon = Monitor("localhost", 5672, "task_queue_done")
+            mon = Monitor("localhost", 5672, "task_queue_done",list_of_nodes)
             mon.monitor(-1)
         elif op != None and op == "init_task":
             db = DBHelper("localhost", 27017)

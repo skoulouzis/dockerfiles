@@ -1,0 +1,82 @@
+Python 2.7.12
+Python 2.7.12
+Python 2.7.12
+Python 2.7.12
+Traceback (most recent call last):
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py", line 89, in <module>
+    worker.consume()
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 63, in consume
+    self.channel.start_consuming()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 1681, in start_consuming
+    self.connection.process_data_events(time_limit=None)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 647, in process_data_events
+    self._flush_output(common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 420, in _flush_output
+    result.reason_text)
+pika.exceptions.ConnectionClosed: (320, "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'")
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 801, in __bootstrap_inner
+    self.run()
+  File "/usr/lib/python2.7/threading.py", line 754, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 71, in threaded_function
+    self.connection.process_data_events()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 650, in process_data_events
+    self._flush_output(timer.is_ready, common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 395, in _flush_output
+    raise exceptions.ConnectionClosed()
+ConnectionClosed
+
+Traceback (most recent call last):
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py", line 89, in <module>
+    worker.consume()
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 63, in consume
+    self.channel.start_consuming()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 1681, in start_consuming
+    self.connection.process_data_events(time_limit=None)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 647, in process_data_events
+    self._flush_output(common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 420, in _flush_output
+    result.reason_text)
+pika.exceptions.ConnectionClosed: (320, "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'")
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 801, in __bootstrap_inner
+    self.run()
+  File "/usr/lib/python2.7/threading.py", line 754, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 71, in threaded_function
+    self.connection.process_data_events()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 650, in process_data_events
+    self._flush_output(timer.is_ready, common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 395, in _flush_output
+    raise exceptions.ConnectionClosed()
+ConnectionClosed
+
+Traceback (most recent call last):
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py", line 89, in <module>
+    worker.consume()
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 63, in consume
+    self.channel.start_consuming()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 1681, in start_consuming
+    self.connection.process_data_events(time_limit=None)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 647, in process_data_events
+    self._flush_output(common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 420, in _flush_output
+    result.reason_text)
+pika.exceptions.ConnectionClosed: (320, "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'")
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 801, in __bootstrap_inner
+    self.run()
+  File "/usr/lib/python2.7/threading.py", line 754, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/home/alogo/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/execution/worker.py", line 71, in threaded_function
+    self.connection.process_data_events()
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 650, in process_data_events
+    self._flush_output(timer.is_ready, common_terminator)
+  File "/usr/lib/python2.7/dist-packages/pika/adapters/blocking_connection.py", line 395, in _flush_output
+    raise exceptions.ConnectionClosed()
+ConnectionClosed
+

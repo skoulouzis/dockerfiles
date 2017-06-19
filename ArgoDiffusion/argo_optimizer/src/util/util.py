@@ -179,3 +179,7 @@ class Util:
         out_data['num_of_params']  = num_of_params
         out_data['time_coverage']  = time_coverage     
         return out_data
+    
+    def get_num_of_lines_in_file(self,file_path):
+        with open(file_path) as f:
+            return sum(1 for _ in f)    
