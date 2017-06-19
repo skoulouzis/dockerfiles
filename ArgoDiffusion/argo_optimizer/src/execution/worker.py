@@ -17,17 +17,26 @@ import uuid
 class Worker:
     
     def __init__(self, rabbit_host, rabbit_port, q_name):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=int(rabbit_port)))
-        self.channel = self.connection.channel()
-        self.channel.confirm_delivery()
-        self.channel.queue_declare(queue=q_name, durable=True)
-        self.channel.basic_qos(prefetch_count=1)
-        conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
-        self.channel.basic_consume(self.callback, queue=q_name, consumer_tag=conumer_tag)
+        self.q_name = q_name
+        self.rabbit_host = rabbit_host
+        self.rabbit_port = rabbit_port
+        self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
+        
+        init_connection()
+        
         self.thread = Thread(target=self.threaded_function, args=(1,))
         self.util = Util()
         self.argo = Argo()
         self.done = False
+        
+    
+    def init_connection(self):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.rabbit_host, port=int(self.rabbit_port)))
+        self.channel = self.connection.channel()
+        self.channel.confirm_delivery()
+        self.channel.queue_declare(queue=self.q_name, durable=True)
+        self.channel.basic_qos(prefetch_count=1)
+        self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=conumer_tag)
         
     def execute(self, data):
         rand_name = self.util.randomword();
@@ -55,7 +64,11 @@ class Worker:
     
     def threaded_function(self, args):
         while not self.done:
-            self.connection.process_data_events()
+            try:
+                self.connection.process_data_events()
+            except exceptions.ConnectionClosed():
+                init_connection()
+                self.connection.process_data_events()
             sleep(0.5)
             
     def callback(self, ch, method, properties, body):
