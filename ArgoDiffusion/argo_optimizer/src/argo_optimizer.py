@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
 #                wait_for_output(num_of_tasks)
                     
-                db.mark_task_done(task)
+#                db.mark_task_done(task)
                 if total_num_of_tasks >= task_limit:
                     break
             time.sleep(30)
