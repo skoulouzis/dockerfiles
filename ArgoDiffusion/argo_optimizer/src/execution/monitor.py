@@ -108,10 +108,9 @@ class Monitor:
     def provision_worker(self):
         line = linecache.getline(self.list_of_nodes, self.node_index)
         line = line.rstrip()
-        cmd = "ssh vm_user@147.228.242.1 screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672"
+        cmd = "ssh vm_user@"+line+" \"screen -L -dmS rabbit_worker python ~/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672\""
         subprocess.call(cmd, shell=True)
         self.node_index += 1
         if self.node_index > self.max_nodes:
-            print "reset index"
             self.node_index = 1
         
