@@ -69,6 +69,7 @@ def generate_tasks():
     return tasks
 
 def get_missed_deadlines(total_num_of_tasks):
+    print "Wating for %s of tasks" %(total_num_of_tasks)
     done_listener = Submitter("localhost", 5672, "task_queue_done")
     done_listener.listen(total_num_of_tasks)
     finised_tasks = done_listener.finised_tasks

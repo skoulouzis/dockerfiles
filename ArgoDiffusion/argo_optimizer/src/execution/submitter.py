@@ -100,8 +100,8 @@ class Submitter:
             sub_tasks.append(resp)
             self.finised_tasks[_id] = sub_tasks
         
-                
         self.num_of_meesages -= 1
+        print "Task id: %s finised_tasks: %s left: %s" % (_id, (len(self.finised_tasks)), self.num_of_meesages)                
         if self.num_of_meesages <= 0:
             channel.close()
             return
