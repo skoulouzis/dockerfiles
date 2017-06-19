@@ -38,6 +38,7 @@ class Monitor:
         self.node_index = 2
         self.threshold = 300
         self.max_nodes = self.util.get_num_of_lines_in_file(self.list_of_nodes)
+        self.nodes_started = 0
         
     def init_connection(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.rabbit_host, port=int(self.rabbit_port)))
@@ -86,7 +87,7 @@ class Monitor:
         sub_tasks = []
         sub_tasks.append(resp)
         task = self.db.get_task_by_id(_id)
-        out = self.util.build_deadline_output(task, sub_tasks,self.threshold)     
+        out = self.util.build_deadline_output(task, sub_tasks, self.threshold)     
         print json.dumps(out)
         time_to_deadline = int(out['time_to_deadline'])
         if time_to_deadline <= self.threshold:
@@ -108,18 +109,20 @@ class Monitor:
         return int(q['consumers'])
     
     def provision_worker(self):
-        line = linecache.getline(self.list_of_nodes, self.node_index)
-        line = line.rstrip()
-        
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        home = expanduser("~")
-        ssh.connect(line, username='vm_user', key_filename=home + '/.ssh/id_rsa')
-        
-        stdin, stdout, stderr = ssh.exec_command("screen -L -dmS rabbit_worker python /home/vm_user/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672")
-        out = stdout.read()
-        
-        self.node_index += 1
-        if self.node_index > self.max_nodes:
-            self.node_index = 1
+        if self.nodes_started < (self.max_nodes * 2):
+            line = linecache.getline(self.list_of_nodes, self.node_index)
+            line = line.rstrip()
+
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            home = expanduser("~")
+            ssh.connect(line, username='vm_user', key_filename=home + '/.ssh/id_rsa')
+
+            stdin, stdout, stderr = ssh.exec_command("screen -L -dmS rabbit_worker python /home/vm_user/workspace/dockerfiles/ArgoDiffusion/argo_optimizer/src/argo_optimizer.py worker 147.228.242.1 5672")
+            out = stdout.read()
+            self.nodes_started += 1
+
+            self.node_index += 1
+            if self.node_index > self.max_nodes:
+                self.node_index = 1
         
