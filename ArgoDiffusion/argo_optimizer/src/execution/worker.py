@@ -36,7 +36,7 @@ class Worker:
         self.channel.confirm_delivery()
         self.channel.queue_declare(queue=self.q_name, durable=True)
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=conumer_tag)
+        self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=self.conumer_tag)
         
     def execute(self, data):
         rand_name = self.util.randomword();
