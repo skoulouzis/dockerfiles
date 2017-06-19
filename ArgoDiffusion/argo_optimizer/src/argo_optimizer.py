@@ -33,7 +33,7 @@ now = datetime.now()
 list_of_nodes = "/mnt/data/source/ssh.8"
 
 
-deadline_date = now + timedelta(minutes=3)
+deadline_date = now + timedelta(minutes=2)
 deadline_date = str(deadline_date.strftime(const.date_format))
 
 coordinates_step = 4
