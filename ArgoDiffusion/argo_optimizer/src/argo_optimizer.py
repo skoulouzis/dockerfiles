@@ -38,6 +38,7 @@ bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "log"
 tasks_per_node = 4
+task_limit = 10:
     
 
 
@@ -158,7 +159,7 @@ if __name__ == "__main__":
 #                wait_for_output(num_of_tasks)
                     
                 db.mark_task_done(task)
-                if total_num_of_tasks >= 20:
+                if total_num_of_tasks >= task_limit:
                     break
             time.sleep(30)
             get_missed_deadlines(total_num_of_tasks)
