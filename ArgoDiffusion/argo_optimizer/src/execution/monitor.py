@@ -9,9 +9,10 @@ import socket
 from util.constants import *
 from util.util import *
 import uuid
+from db.db_helper import *
 
 
-class Submitter:
+class Monitor:
     
     def __init__(self, rabbit_host, rabbit_port, q_name):
         self.q_name = q_name
@@ -29,6 +30,7 @@ class Submitter:
         self.util = Util()
         self.last_exec_date = datetime(10, 1, 1)
         self.finised_tasks = {}
+        self.db = DBHelper("localhost", 27017)
         
         
     def init_connection(self):
@@ -38,18 +40,6 @@ class Submitter:
         self.channel.queue_declare(queue=self.q_name, durable=True)
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(self.callback, queue=self.q_name, consumer_tag=self.conumer_tag)
-        
-    def submitt_task(self, task):
-        task = self.util.convert_dates_to_string(task)
-        task = self.util.uid_to_string(task)
-        message = json.dumps(task)
-        self.channel.basic_publish(exchange='',
-                                   routing_key=self.q_name,
-                                   body=message,
-                                   properties=pika.BasicProperties(
-                                   delivery_mode=2, # make message persistent
-                                   ))
-
 
         
     def get_q_size(self):
@@ -69,21 +59,7 @@ class Submitter:
                 if doc['name'] == self.q_name:
                     return doc
                     
-                    
-                    
-#    def get_q_size(self):
-#        res = self.channel.queue_declare(
-##                                         callback=self.print_callback,
-#                                         queue=self.q_name,
-#                                         durable=True,
-#                                         exclusive=False,
-#                                         auto_delete=False,
-#                                         passive=True
-#                                         )
-#        return res.method.message_count
-
-
-
+    
     def delete_q(self):
         self.channel.queue_delete(queue=self.q_name)
         
@@ -101,13 +77,12 @@ class Submitter:
             self.last_exec_date = exec_date
         
         _id = resp['configuration']['_id']
-        if _id in self.finised_tasks:
-            sub_tasks = self.finised_tasks[_id]
-            sub_tasks.append(resp)
-        else:
-            sub_tasks = []
-            sub_tasks.append(resp)
-            self.finised_tasks[_id] = sub_tasks
+        sub_tasks = []
+        sub_tasks.append(resp)
+        task = self.db.get_task_by_id(_id)
+        out = self.util.build_deadline_output(task,sub_tasks)        
+        print json.dumps(out)
+        
         if self.num_of_meesages > 0:
             self.num_of_meesages -= 1
             if self.num_of_meesages <= 0:
@@ -115,7 +90,7 @@ class Submitter:
                 return
            
         
-    def listen(self, num_of_meesages):
+    def monitor(self, num_of_meesages):
         self.num_of_meesages = num_of_meesages
         self.channel.start_consuming()
         

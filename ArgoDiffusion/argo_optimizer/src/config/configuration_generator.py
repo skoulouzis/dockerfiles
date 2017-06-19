@@ -86,7 +86,7 @@ class ConfigurationGenerator:
                 for dt in rrule.rrule(rrule.YEARLY, dtstart=start_date, until=end_date):
                     if start_date == dt:
                         continue
-                    for dl in rrule.rrule(rrule.HOURLY, dtstart=later, until=deadline_date):                       
+                    for dl in rrule.rrule(rrule.MINUTELY, dtstart=later, until=deadline_date):                       
                         cum_param = []
                         for param in self.const.all_parameters:
                             cum_param.append(param)

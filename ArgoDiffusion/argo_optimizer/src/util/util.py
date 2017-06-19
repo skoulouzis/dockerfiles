@@ -14,6 +14,7 @@ from shapely.geometry.polygon import Polygon
 import shapely.ops as ops
 import string
 import sys
+from bson.objectid import ObjectId
 
 
 class Util:
@@ -136,4 +137,45 @@ class Util:
     
 
     def randomword(self):
-        return ''.join(random.choice(string.lowercase) for i in range(5))    
+        return ''.join(random.choice(string.lowercase) for i in range(5))
+    
+    def build_deadline_output(self, task,sub_tasks):
+        time_coverage = 0
+        last_exec_date = datetime(10, 1, 1)
+        if (isinstance(task[self.const.bounding_box_tag][self.const.lon_min_tag], str)):
+            area = self.get_area(task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lat_min_tag], task[self.const.bounding_box_tag][self.const.lon_min_tag], task[self.const.bounding_box_tag][self.const.lon_max_tag])
+        else:
+            area = self.get_area(task[self.const.bounding_box_tag])
+        num_of_params =  len(task[self.const.parameters_tag])
+        if (isinstance(task[self.const.time_tag][self.const.time_start_tag], str) or isinstance(task[self.const.time_tag][self.const.time_start_tag], unicode)):
+            start_date = datetime.strptime(task[self.const.time_tag][self.const.time_start_tag], self.const.date_format)
+        else:
+            start_date = task[self.const.time_tag][self.const.time_start_tag]
+        if (isinstance(task[self.const.time_tag][self.const.time_end_tag], str) or isinstance(task[self.const.time_tag][self.const.time_end_tag], unicode)):
+            end_date = datetime.strptime(task[self.const.time_tag][self.const.time_end_tag], self.const.date_format)
+        else:
+            end_date = task[self.const.time_tag][self.const.time_end_tag]
+
+        time_coverage = self.get_time_delta(start_date, end_date).total_seconds()
+
+        for sub in sub_tasks:
+            exec_date = datetime.strptime(sub['execution_date'], self.const.date_format)
+        if exec_date > last_exec_date:
+            last_exec_date = exec_date
+            deadline = sub['configuration']['deadline_date']
+        if (isinstance(deadline, str) or isinstance(deadline, unicode)): 
+            deadline = datetime.strptime(deadline, self.const.date_format)
+            execution_rank = sub['configuration']['execution_rank']
+            
+        diff = deadline - last_exec_date
+        out_data = {}
+        _id = task['_id']
+        out_data['_id'] = str(_id)
+        out_data['execution_date'] = last_exec_date.strftime(self.const.date_format)
+        out_data['deadline_date'] = deadline.strftime(self.const.date_format)
+        out_data['time_to_deadline'] = diff.total_seconds()
+        out_data['execution_rank']  = execution_rank
+        out_data['area']  = area
+        out_data['num_of_params']  = num_of_params
+        out_data['time_coverage']  = time_coverage     
+        return out_data
