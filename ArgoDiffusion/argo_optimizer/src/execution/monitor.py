@@ -95,7 +95,7 @@ class Monitor:
         
         if time_to_deadline <= self.threshold:
             self.provision_worker()
-            self.threshold = time_to_deadline + 10
+            self.threshold = time_to_deadline + 40
         
         if self.num_of_meesages > 0:
             self.num_of_meesages -= 1

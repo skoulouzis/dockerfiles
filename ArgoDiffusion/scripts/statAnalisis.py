@@ -180,7 +180,7 @@ def getDataFrame():
         
         })
 
-    print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,execution_date"
+    print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,timestamp_end,execution_date"
     for doc in docs:
         time_key='time_coverage'
         if 'time_coverage' in doc:
@@ -197,23 +197,24 @@ def getDataFrame():
         num_of_params.append(doc[num_of_params_key])
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
-        timestamp_endget_deadlines = doc["configuration"]["time_range"]["time_coverage_end"].strftime("%s")
+        timestamp_end = (doc["configuration"]["time_range"]["time_coverage_end"]-datetime(1970,1,1)).total_seconds()
         timestamp_array_end.append(int(timestamp_end))
         timestamp_start = doc["configuration"]["time_range"]["time_coverage_start"].strftime("%s")
         timestamp_array_start.append(int(timestamp_start))
         
-        print "%s,%s,%s,%s,%s,%s,%s,%s" % (doc["num_of_nodes"],
+        print "%s,%s,%s,%s,%s,%s,%s,%s,%s" % (doc["num_of_nodes"],
                                      doc["execution_time"],
                                      doc[time_key],
                                      doc["area"],
                                      doc[num_of_params_key],
                                      doc["configuration"]["time_range"]["time_coverage_start"],
                                      doc["configuration"]["time_range"]["time_coverage_end"],
+                                     timestamp_end,
                                      doc["execution_date"])
     
-    #data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end,'timestamp_start':timestamp_start}   
-    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'time_coverage_end':timestamp_array_end,'execution_time':execution_time}       
-    return pandas.DataFrame(data)
+    data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end,'timestamp_start':timestamp_start}   
+    #data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'time_coverage_end':timestamp_array_end,'execution_time':execution_time}       
+    #return pandas.DataFrame(data)
     
     
 
@@ -232,9 +233,9 @@ def getDataFrame():
 #print gm
 
 
-#dataframe = getDataFrame()
+dataframe = getDataFrame()
 #grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
-##print grouped.describe()
+#print grouped.describe()
 #gm = grouped.mean()
 #print gm
 
@@ -269,5 +270,5 @@ def getDataFrame():
 ##plt.show()
 
 
-get_deadlines()
+#get_deadlines()
 

@@ -187,3 +187,13 @@ class Util:
     def get_num_of_lines_in_file(self, file_path):
         with open(file_path) as f:
             return sum(1 for _ in f)    
+        
+        
+    def print_task_stats(self,task):
+        ttf = self.get_time_delta( datetime.now(), task[self.const.deadline_date_tag])
+        ttf_sec = ttf.total_seconds()                    
+        time_range = self.get_time_delta(task[self.const.time_tag][self.const.time_start_tag], 
+                                              task[self.const.time_tag][self.const.time_end_tag])
+        time_range_sec = time_range.total_seconds()
+        area = self.get_area(task[self.const.bounding_box_tag])
+        print "%s,%s,%s,%s,%s"%(task['execution_rank'],len(task[self.const.parameters_tag]),ttf_sec,time_range_sec,area)
