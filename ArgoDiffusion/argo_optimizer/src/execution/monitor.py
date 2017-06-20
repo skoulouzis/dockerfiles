@@ -93,7 +93,7 @@ class Monitor:
                 
         if time_to_deadline > self.threshold:
             self.provision_worker()
-            self.threshold = time_to_deadline + 20
+            self.threshold = time_to_deadline + 30
         
         out = self.util.build_deadline_output(task, sub_tasks, self.threshold, self.nodes_started)
         print json.dumps(out)            
