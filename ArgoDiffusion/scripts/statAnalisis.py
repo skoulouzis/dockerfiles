@@ -233,7 +233,7 @@ def getDataFrame():
 #print gm
 
 
-dataframe = getDataFrame()
+#dataframe = getDataFrame()
 #grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
 #print grouped.describe()
 #gm = grouped.mean()
@@ -270,5 +270,5 @@ dataframe = getDataFrame()
 ##plt.show()
 
 
-#get_deadlines()
+get_deadlines()
 
