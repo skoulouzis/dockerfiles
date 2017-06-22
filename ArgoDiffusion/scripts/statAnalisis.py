@@ -179,7 +179,8 @@ def getDataFrame():
                                    "execution_date":{ "$gte":date }  
         
         })
-
+    
+   
     print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,timestamp_end,execution_date"
     for doc in docs:
         time_key='time_coverage'
@@ -212,6 +213,7 @@ def getDataFrame():
                                      timestamp_end,
                                      doc["execution_date"])
     
+    print len(execution_time)
     data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'execution_time':execution_time,'num_of_nodes':num_of_nodes,'timestamp_end':timestamp_end,'timestamp_start':timestamp_start}   
     #data = {'area': area, 'time_coverage': time_coverage,'num_of_params':num_of_params,'time_coverage_end':timestamp_array_end,'execution_time':execution_time}       
     #return pandas.DataFrame(data)
@@ -233,7 +235,7 @@ def getDataFrame():
 #print gm
 
 
-#dataframe = getDataFrame()
+dataframe = getDataFrame()
 #grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
 #print grouped.describe()
 #gm = grouped.mean()
@@ -270,5 +272,5 @@ def getDataFrame():
 ##plt.show()
 
 
-get_deadlines()
+#get_deadlines()
 

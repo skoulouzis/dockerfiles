@@ -21,7 +21,7 @@ sch = Scheduler()
 partitioner = Partitioner()
 util = Util()
 
-time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2003-01-01T00:00:19Z"}
+time_range = {const.time_start_tag:"1999-01-01T00:00:19Z", const.time_end_tag:"2017-01-01T00:00:19Z"}
 subscription_user_id = "1"
 subscription_id = "1"
 output_file_path = "/mnt/data/data_argo.txt"
@@ -39,8 +39,8 @@ deadline_date = str(deadline_date.strftime(const.date_format))
 coordinates_step = 4
 bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
-partition_type = "log"
-tasks_per_node = 1
+partition_type = "linear"
+tasks_per_node = 16
 task_limit = 100
     
 
@@ -121,13 +121,13 @@ if __name__ == "__main__":
                     num_of_tasks += 1
                     total_num_of_tasks += 1
                 
-#                wait_for_output(num_of_tasks)
+                wait_for_output(num_of_tasks)
+                break
                 
+#                db.mark_task_done(task)
                 
-                db.mark_task_done(task)
-                
-                if total_num_of_tasks >= task_limit:
-                    break
+#                if total_num_of_tasks >= task_limit:
+#                    break
 #            get_missed_deadlines(total_num_of_tasks)
         
         elif op != None and op == "monitor":
