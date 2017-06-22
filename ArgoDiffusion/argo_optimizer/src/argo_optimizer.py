@@ -40,7 +40,7 @@ coordinates_step = 4
 bounding_box = {const.lon_min_tag:-2, const.lon_max_tag:10,
 const.lat_min_tag:6, const.lat_max_tag:12}
 partition_type = "linear"
-tasks_per_node = 16
+tasks_per_node = 1
 task_limit = 100
     
 

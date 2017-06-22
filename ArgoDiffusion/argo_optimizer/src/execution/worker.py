@@ -86,7 +86,7 @@ class Worker:
         start = datetime.now()
         out = self.util.build_output(conf, elapsed, start, 1, str(socket.gethostname()), 1, None)
         self.send_done(out)
-#        print out
+        print out
 
 
     def send_done(self, response):
