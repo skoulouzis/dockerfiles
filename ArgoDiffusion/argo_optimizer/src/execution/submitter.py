@@ -22,7 +22,7 @@ class Submitter:
         self.password = 'guest'
         self.rest_api_port = "15672"
         
-        self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
+        self.conumer_tag = str(socket.gethostname()) + "_submitter_" + str(uuid.uuid4())
         self.init_connection()
             
         self.const = Constants()

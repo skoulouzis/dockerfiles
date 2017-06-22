@@ -21,7 +21,7 @@ class Worker:
         self.q_name = q_name
         self.rabbit_host = rabbit_host
         self.rabbit_port = rabbit_port
-        self.conumer_tag = str(socket.gethostname()) + "_" + str(uuid.uuid4())
+        self.conumer_tag = str(socket.gethostname()) + "_worker_" + str(uuid.uuid4())
         try:
             self.init_connection()
         except exceptions.ConnectionClosed():
