@@ -116,8 +116,8 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
     num_of_nodes = []
     
    
-    exec_start = datetime.strptime("2017-06-18T23:40:00Z", date_format)
-    exec_end = datetime.strptime("2017-06-18T00:00:00Z", date_format)
+    #exec_start = datetime.strptime("2017-06-18T23:40:00Z", date_format)
+    #exec_end = datetime.strptime("2017-06-18T00:00:00Z", date_format)
 
     
     square = db.argoBenchmark.find({
@@ -127,10 +127,10 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         #"configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
         #"area":{ "$eq":area},
         #"num_of_params":{ "$eq": max_distinct_num_of_params},
-        "time_coverage":{ "$eq":max_distinct_time_coverage},
-        "num_of_nodes":{ "$eq":8},
-        "execution_date":{ "$lte":exec_end }  ,
-        "execution_date":{ "$gte":exec_start }       
+        #"time_coverage":{ "$eq":max_distinct_time_coverage},
+        #"num_of_nodes":{ "$eq":1},
+        #"execution_date":{ "$lte":exec_end }  ,
+        #"execution_date":{ "$gte":exec_start }       
     
         })
     
@@ -220,22 +220,24 @@ def getDataFrame():
     
     
 
-#distinct_area = get_distinct_area(med_box)
+distinct_area = get_distinct_area(med_box)
 #max_distinct_area = max(distinct_area)
-#distinct_num_of_params = getDistinct_num_of_params(med_box)
+max_distinct_area = 122423334.10417336
+distinct_num_of_params = getDistinct_num_of_params(med_box)
 #max_distinct_num_of_params = max(distinct_num_of_params)
-#distinct_time_coverage = getDistinct_time_coverage(med_box)
+max_distinct_num_of_params = 412
+distinct_time_coverage = getDistinct_time_coverage(med_box)
 #max_distinct_time_coverage = max(distinct_time_coverage)
-#max_distinct_time_coverage = 252460800
+max_distinct_time_coverage = 252460800
 
-#med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
+med = get_area(med_box,max_distinct_area,max_distinct_num_of_params,max_distinct_time_coverage)
 #grouped = med.groupby(['num_of_nodes'], as_index=False)
 #gm = grouped.mean()
 #gm.to_csv("speed_up.csv")
 #print gm
 
 
-dataframe = getDataFrame()
+#dataframe = getDataFrame()
 #grouped = dataframe.groupby(['area', 'time_coverage','time_coverage_end','num_of_params'], as_index=False)
 #print grouped.describe()
 #gm = grouped.mean()
