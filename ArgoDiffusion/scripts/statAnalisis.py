@@ -116,25 +116,27 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
     num_of_nodes = []
     
    
-    #exec_start = datetime.strptime("2017-06-18T23:40:00Z", date_format)
-    #exec_end = datetime.strptime("2017-06-18T00:00:00Z", date_format)
+    exec_start = datetime.strptime("2017-06-18T22:30:00Z", date_format)
+    exec_end = datetime.strptime("2017-06-18T23:40:00Z", date_format)
 
     
     square = db.argoBenchmark.find({
+        "configuration._id":{ "$eq":'594582074186716deb086b3e'},
+        "partition_type":{ "$eq":None},
         #"configuration.bounding_box.geospatial_lon_max":{ "$lte":bounding_box['geospatial_lon_max']},
         #"configuration.bounding_box.geospatial_lon_min":{ "$gte":bounding_box['geospatial_lon_min']},
         #"configuration.bounding_box.geospatial_lat_min":{ "$gte":bounding_box['geospatial_lat_min']},
         #"configuration.bounding_box.geospatial_lat_max":{ "$lte":bounding_box['geospatial_lat_max']},
         #"area":{ "$eq":area},
         #"num_of_params":{ "$eq": max_distinct_num_of_params},
-        #"time_coverage":{ "$eq":max_distinct_time_coverage},
-        #"num_of_nodes":{ "$eq":1},
-        #"execution_date":{ "$lte":exec_end }  ,
-        #"execution_date":{ "$gte":exec_start }       
+        #"time_coverage":{ "$eq":max_distinct_time_coverage}
+        "num_of_nodes":{ "$eq":1},
+        "execution_date":{ "$lte":exec_end } ,
+        "execution_date":{ "$gte":exec_start }       
     
         })
     
-    print "num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,execution_date"
+    print "id,num_of_nodes,execution_time,time_coverage,area,num_of_params,time_coverage_start,time_coverage_end,execution_date"
     for doc in square:
         execution_time.append(doc["execution_time"])
         num_of_nodes.append(doc["num_of_nodes"])
@@ -149,7 +151,8 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
         elif 'num_of_params' in doc:
             num_of_params_key = 'num_of_params'
         
-        print "%s,%s,%s,%s,%s,%s,%s,%s" % (doc["num_of_nodes"],
+        print "%s,%s,%s,%s,%s,%s,%s,%s,%s" % (doc['configuration']['_id'],
+                                        doc["num_of_nodes"],
                                      doc["execution_time"],
                                      doc[time_key],
                                      doc["area"],
@@ -157,7 +160,7 @@ def get_area(bounding_box,area,max_distinct_num_of_params,max_distinct_time_cove
                                      doc["configuration"]["time_range"]["time_coverage_start"],
                                      doc["configuration"]["time_range"]["time_coverage_end"],
                                      doc["execution_date"])
-    
+    print len(execution_time)
     data = {'execution_time':execution_time,'num_of_nodes':num_of_nodes}
     return pandas.DataFrame(data)
     
@@ -220,13 +223,13 @@ def getDataFrame():
     
     
 
-distinct_area = get_distinct_area(med_box)
+#distinct_area = get_distinct_area(med_box)
 #max_distinct_area = max(distinct_area)
 max_distinct_area = 122423334.10417336
-distinct_num_of_params = getDistinct_num_of_params(med_box)
+#distinct_num_of_params = getDistinct_num_of_params(med_box)
 #max_distinct_num_of_params = max(distinct_num_of_params)
 max_distinct_num_of_params = 412
-distinct_time_coverage = getDistinct_time_coverage(med_box)
+#distinct_time_coverage = getDistinct_time_coverage(med_box)
 #max_distinct_time_coverage = max(distinct_time_coverage)
 max_distinct_time_coverage = 252460800
 
