@@ -13,6 +13,7 @@ class DBHelper:
         self.connection = Connection(host, port)
         self.drip_db = self.connection.drip
         self.task_collection = self.drip_db["tasks"]
+        self.deadline_res_collection = self.drip_db["argo_deadline"]
         self.const = Constants()
         self.task_collection.create_index([(self.const.execution_rank_tag, pymongo.DESCENDING)],
                                           unique=False)
@@ -69,3 +70,19 @@ class DBHelper:
 
     def get_num_of_docs(self):
         return self.task_collection.count() 
+    
+    def save_deadline_res(self, res):
+        _id = res["_id"]
+        deadline_res =  self.deadline_res_collection.find_one({"_id": ObjectId(_id)})
+        if deadline_res is None:
+            res['_id'] = ObjectId(_id)
+            self.deadline_res_collection.insert(res)
+        else:
+            stored_exec_date = deadline_res['execution_date']
+            res_exec_date = res['execution_date']
+            exec_date = stored_exec_date
+            if res_exec_date > stored_exec_date: 
+                exec_date = res_exec_date
+            deadline_res['execution_date'] = exec_date
+            self.deadline_res_collection.update({'_id':_id}, deadline_res)
+            
