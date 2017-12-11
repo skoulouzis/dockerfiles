@@ -1,0 +1,19 @@
+httpproxy:
+  image: jupyter/configurable-http-proxy
+  environment:
+    CONFIGPROXY_AUTH_TOKEN: 716238957362948752139417234
+  container_name:  tmpnb-proxy
+  net: "host"
+  command: --default-target http://127.0.0.1:9999
+  ports:
+    - 8000:8000
+
+tmpnb_orchestrate:
+  image: jupyter/tmpnb
+  net: "host"
+  container_name: tmpnb_orchestrate
+  environment:
+    CONFIGPROXY_AUTH_TOKEN: 123
+  volumes:
+    - /var/run/docker.sock:/docker.sock
+  command: python orchestrate.py --command='jupyter notebook --no-browser --port {port} --ip=0.0.0.0 --NotebookApp.base_url=/{base_path} --NotebookApp.port_retries=0 --NotebookApp.token="" --NotebookApp.disable_check_xsrf=True'
