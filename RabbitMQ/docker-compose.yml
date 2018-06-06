@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  rabbitMQ:
+    image: rabbitmq:3-management
+    environment:
+        RABBITMQ_VM_MEMORY_HIGH_WATERMARK: 0.2    
+        RABBITMQ_DEFAULT_USER: RABBITMQ_DEFAULT_USER
+        RABBITMQ_DEFAULT_PASS: RABBITMQ_DEFAULT_USER
+        #RABBITMQ_SSL_CERTFILE: /etc/rabbitmq/tls/server/cert.pem
+        #RABBITMQ_SSL_KEYFILE: /etc/rabbitmq/tls/server/key.pem
+        #RABBITMQ_SSL_CACERTFILE: /etc/rabbitmq/tls/testca/cacert.pem
+    ports:
+      - 8083:15672
+      
+      
+     
