@@ -1,0 +1,46 @@
+version: '3.1'
+
+services:
+  zookeeper:
+    image: zookeeper
+    #deploy:
+        #restart_policy:
+            #condition: on-failure 
+
+  nimbus:
+    image: storm
+    command: bash -c "sed -ie \"s/^# storm.zookeeper.servers:/ storm.zookeeper.servers:/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^#     - \\\"server1\\\"/     - \\\"zookeeper\\\"/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^# nimbus.seeds:\ \[\\\"host1\\\", \\\"host2\\\", \\\"host3\\\"\]/ nimbus.seeds:\ \[\\\"nimbus\\\"\]/\" /apache-storm-1.2.1/conf/storm.yaml && cat /apache-storm-1.2.1/conf/storm.yaml && storm nimbus"
+    environment:
+        ZOOKEEPR_HOST: zookeeper
+    depends_on:
+      - zookeeper
+    ports:
+      - 6627:6627
+
+#worker 
+  supervisor:
+    image: storm
+    command: bash -c "sed -ie \"s/^# storm.zookeeper.servers:/ storm.zookeeper.servers:/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^#     - \\\"server1\\\"/     - \\\"zookeeper\\\"/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^# nimbus.seeds:\ \[\\\"host1\\\", \\\"host2\\\", \\\"host3\\\"\]/ nimbus.seeds:\ \[\\\"nimbus\\\"\]/\" /apache-storm-1.2.1/conf/storm.yaml && cat /apache-storm-1.2.1/conf/storm.yaml && storm supervisor"
+    depends_on:
+      - nimbus
+      - zookeeper
+    environment:
+        ZOOKEEPR_HOST: zookeeper  
+        NIMBUS_HOST: nimbus
+    #deploy:
+        #restart_policy:
+            #condition: on-failure
+            
+            
+  ui:
+    image: storm
+    command: bash -c "sed -ie \"s/^# storm.zookeeper.servers:/ storm.zookeeper.servers:/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^#     - \\\"server1\\\"/     - \\\"zookeeper\\\"/\" /apache-storm-1.2.1/conf/storm.yaml && sed -ie \"s/^# nimbus.seeds:\ \[\\\"host1\\\", \\\"host2\\\", \\\"host3\\\"\]/ nimbus.seeds:\ \[\\\"nimbus\\\"\]/\" /apache-storm-1.2.1/conf/storm.yaml && cat /apache-storm-1.2.1/conf/storm.yaml &&  storm ui"
+    depends_on:
+      - nimbus
+      - zookeeper
+      - supervisor
+    #deploy:
+        #restart_policy:
+            #condition: on-failure    
+    ports:
+      - 8080:8080
