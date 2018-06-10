@@ -1,121 +1,141 @@
 version: '3.1'
 
 services:
-  zookeeper:
-    image: zookeeper
-    deploy:
-        restart_policy:
-            condition: on-failure 
+    #zookeeper:
+        #image: zookeeper
+        #deploy:
+            #restart_policy:
+                #condition: on-failure 
+        #networks:
+            #- storm                    
 
-  nimbus:
-    image: alogo53/docker-storm
-    #command: storm nimbus
-    environment:
-        TOPOLOGY_URL: https://github.com/skoulouzis/lightning/releases/download/v0.1-beta/lightning-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-        TOPOLOGY_NAME: lightning
-        TOPOLOGY_MAIN: de.pangaea.lightning.ENVRI_NRTQualityCheck
-        TOPOLOGY_ARGS: arg1 arg2
-    depends_on:
-      - zookeeper
-    ports:
-      - 6627:6627
+    #nimbus:
+        #image: alogo53/docker-storm
+        #environment:
+            #TOPOLOGY_URL: https://github.com/skoulouzis/lightning/releases/download/v0.1-beta/lightning-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+            #TOPOLOGY_NAME: lightning
+            #TOPOLOGY_MAIN: de.pangaea.lightning.ENVRI_NRTQualityCheck
+            #TOPOLOGY_ARGS: arg1 arg2
+        #depends_on:
+            #- zookeeper
+        #ports:
+            #- 6627:6627
+        #networks:
+            #- storm              
 
-#worker 
-  supervisor:
-    image: storm
-    command: storm supervisor
-    depends_on:
-      - nimbus
-      - zookeeper
-    deploy:
-        restart_policy:
-            condition: on-failure
+##worker 
+    #supervisor:
+        #image: storm
+        #command: storm supervisor
+        #depends_on:
+            #- nimbus
+            #- zookeeper
+        #deploy:
+            #restart_policy:
+                #condition: on-failure
+        #networks:
+            #- storm               
             
             
-  ui:
-    image: storm
-    command: storm ui
-    depends_on:
-      - nimbus
-      - zookeeper
-      - supervisor
-    deploy:
-        restart_policy:
-            condition: on-failure    
-    ports:
-      - 8080:8080
+    #ui:
+        #image: storm
+        #command: storm ui
+        #depends_on:
+            #- nimbus
+            #- zookeeper
+            #- supervisor
+        #deploy:
+            #restart_policy:
+                #condition: on-failure    
+        #ports:
+            #- 8081:8080
+        #networks:
+            #- monitoring   
+            #- storm        
       
             
-  influx:
-    image: influxdb
-    volumes:
-      - influx:/var/lib/influxdb
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          cpus: "0.10"
-          memory: "128M"
-        reservations:
-          cpus: "0.05"
-          memory: "64M"
-    networks:
-      - monitoring          
+############## monitoring#####################
+    influx:
+        image: influxdb
+        environment:
+            INFLUXDB_DB: cadvisor
+        #volumes:
+            #- influx:/var/lib/influxdb
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+        networks:
+            - monitoring          
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 0.0.0.0:3000:3000
-    volumes:
-      - grafana:/var/lib/grafana
-    depends_on:
-      - influx
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          cpus: "0.10"
-          memory: "128M"
-        reservations:
-          cpus: "0.05"
-          memory: "64M"
-    networks:
-      - monitoring               
+    grafana:
+        image: alogo53/grafana-docker
+        environment:
+            DS_NAME: InfluxDB
+            DS_TYPE: InfluxDB
+            DS_ACCESS: proxy
+            DS_URL: http://influx:8086
+            DS_DB: cadvisor
+        ports:
+        - 0.0.0.0:3000:3000
+        #volumes:
+            #- grafana:/var/lib/grafana
+        depends_on:
+            - influx
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+        networks:
+            - monitoring
 
-  cadvisor:
-    image: google/cadvisor
-    hostname: '{{.Node.ID}}'
-    command: -logtostderr -docker_only -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influx:8086
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    depends_on:
-      - influx
-    deploy:
-      mode: global
-      resources:
-        limits:
-          cpus: "0.10"
-          memory: "128M"
-        reservations:
-          cpus: "0.05"
-          memory: "64M"
-    networks:
-      - monitoring          
+    cadvisor:
+        image: google/cadvisor
+        ports:
+        - 0.0.0.0:8080:8080
+        hostname: '{{.Node.ID}}'
+        command: -logtostderr -docker_only -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influx:8086
+        #volumes:
+            #- /:/rootfs:ro
+            #- /var/run:/var/run:rw
+            #- /sys:/sys:ro
+            #- /var/lib/docker/:/var/lib/docker:ro
+        depends_on:
+            - influx
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+        networks:
+            - monitoring         
 
-volumes:
-  influx:
-    driver: local
-  grafana:
-    driver: local
+#volumes:
+  #influx:
+    #driver: local
+  #grafana:
+    #driver: local
     
 networks:
-  monitoring:            
+  monitoring:           
+  storm:       
