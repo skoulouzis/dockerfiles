@@ -15,6 +15,13 @@ wget -O topology.jar $TOPOLOGY_URL
 
 storm jar topology.jar $TOPOLOGY_MAIN $TOPOLOGY_NAME arg1 arg1
 
+if [ $? -eq 0 ]; then
+    echo "topology submitted successfully"
+else
+    echo  "topology failed"
+    exit -1
+fi
+
 tail -f screenlog.0
 
 # tail -f /dev/null
