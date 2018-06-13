@@ -10,8 +10,7 @@ services:
             - storm                    
 
     nimbus:
-        image: docker-storm
-        #command: storm nimbus
+        image: alogo53/docker-storm
         environment:
             TOPOLOGY_URL: https://github.com/skoulouzis/lightning/releases/download/v0.1-beta/lightning-0.0.1-SNAPSHOT-jar-with-dependencies.jar
             TOPOLOGY_NAME: lightning
@@ -26,7 +25,7 @@ services:
 
 #worker 
     supervisor:
-        image: docker-storm
+        image: storm
         command: storm supervisor
         depends_on:
             - nimbus
@@ -39,7 +38,7 @@ services:
             
             
     ui:
-        image: docker-storm
+        image: storm
         command: storm ui
         depends_on:
             - nimbus
@@ -106,30 +105,30 @@ services:
         ##networks:
             ##- monitoring
 
-    #cadvisor:
-        #image: google/cadvisor
-        #ports:
-            #- 0.0.0.0:8080:8080
-        #hostname: '{{.Node.ID}}'
-        #command: -logtostderr -docker_only -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influx:8086
-        ##volumes:
-            ##- /:/rootfs:ro
-            ##- /var/run:/var/run:rw
-            ##- /sys:/sys:ro
-            ##- /var/lib/docker/:/var/lib/docker:ro
-        #depends_on:
-            #- influx
-        #deploy:
-            #mode: global
-            #resources:
-                #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
-                    #cpus: "0.05"
-                    #memory: "64M"
-        #networks:
-            #- monitoring         
+    cadvisor:
+        image: google/cadvisor
+        ports:
+            - 0.0.0.0:8080:8080
+        hostname: '{{.Node.ID}}'
+        command: -logtostderr -docker_only -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influx:8086
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        depends_on:
+            - influx
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+        networks:
+            - monitoring         
 
 #volumes:
   #influx:
@@ -138,5 +137,5 @@ services:
     #driver: local
     
 networks:
-  #monitoring:           
+  monitoring:           
   storm:       
