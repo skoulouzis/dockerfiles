@@ -6,8 +6,15 @@ services:
         deploy:
             restart_policy:
                 condition: on-failure 
-        networks:
-            - storm                    
+                
+    rabbit:
+        image: rabbitmq:3-management
+        deploy:
+            restart_policy:
+                condition: on-failure      
+        ports:
+            - 15672:15672         
+            - 5672:5672                
 
     nimbus:
         image: alogo53/docker-storm
@@ -16,25 +23,53 @@ services:
             TOPOLOGY_NAME: lightning
             TOPOLOGY_MAIN: de.pangaea.lightning.ENVRI_NRTQualityCheck
             TOPOLOGY_ARGS: arg1 arg2
+            INFLUX_URI: http://influx:8086
+            RABBIT_HOST: rabbit
         depends_on:
             - zookeeper
+            - rabbit
+            - influx
+        deploy:
+            restart_policy:
+                condition: on-failure              
         ports:
-            - 6627:6627
-        networks:
-            - storm              
+            - 6627:6627          
 
 #worker 
     supervisor:
         image: storm
+        environment:
+            INFLUX_URI: http://influx:8086
+            RABBIT_HOST: rabbit            
         command: storm supervisor
         depends_on:
             - nimbus
             - zookeeper
+            - rabbit
+            - influx
         deploy:
             restart_policy:
                 condition: on-failure
-        networks:
-            - storm               
+        ports:
+            - 8000:8000     
+            
+    data_reader:
+        image: data_reader
+        environment:
+            RABBIT_HOST: rabbit
+            RABBIT_PORT: 15672
+            RABBIT_USERNAME: guest
+            RABBIT_PASSWORD: guest
+            INFLUX_HOST: influx
+            INFLUX_PORT: 8086
+            INFLUX_DB: mydb
+            QUEUE_NAME: measures_quality_controlled
+        depends_on:
+            - rabbit
+            - influx
+        deploy:
+            restart_policy:
+                condition: on-failure                           
             
             
     ui:
@@ -47,63 +82,95 @@ services:
         deploy:
             restart_policy:
                 condition: on-failure    
+            placement:
+                constraints: [node.role == manager]                  
         ports:
-            - 8081:8080
-        networks:
-            #- monitoring   
-            - storm        
+            - 8081:8080     
+            
+        
       
             
 ############### monitoring#####################
-    #influx:
-        #image: influxdb
-        #environment:
-            #INFLUXDB_DB: cadvisor
-        ##volumes:
-            ##- influx:/var/lib/influxdb
-        #deploy:
-            #replicas: 1
-            #placement:
-                #constraints:
-                #- node.role == manager
-            #resources:
-                #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
-                    #cpus: "0.05"
-                    #memory: "64M"
-        #networks:
-            #- monitoring          
+    influx:
+        image: influxdb
+        environment:
+            INFLUXDB_DB: cadvisor
+        #volumes:
+            #- influx:/var/lib/influxdb
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+                    
+    rabbit-reporter :
+        image: rabbit-reporter
+        environment:
+            RABBIT_HOST: rabbit
+            RABBIT_PORT: 15672
+            RABBIT_USERNAME: guest
+            RABBIT_PASSWORD: guest
+            INFLUX_HOST: influx
+            INFLUX_PORT: 8086
+            INFLUX_DB: mydb
+        depends_on:
+            - rabbit
+            - influx                          
 
-    #grafana:
-        #image: alogo53/grafana-docker
-        #environment:
-            #DS_NAME: InfluxDB
-            #DS_TYPE: InfluxDB
-            #DS_ACCESS: proxy
-            #DS_URL: http://influx:8086
-            #DS_DB: cadvisor
-        #ports:
-        #- 0.0.0.0:3000:3000
-        ##volumes:
-            ##- grafana:/var/lib/grafana
-        #depends_on:
-            #- influx
-        #deploy:
-            #replicas: 1
-            #placement:
-                #constraints:
-                #- node.role == manager
-            #resources:
-                #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
-                    #cpus: "0.05"
-                    #memory: "64M"
-        ##networks:
-            ##- monitoring
+    grafana:
+        image: grafana-docker
+        environment:
+            DS_NAME: InfluxDB
+            DS_TYPE: InfluxDB
+            DS_ACCESS: proxy
+            DS_URL: http://influx:8086
+            DS_DB: cadvisor
+        ports:
+            - 3000:3000
+        #volumes:
+            #- grafana:/var/lib/grafana
+        depends_on:
+            - influx
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
+                    
+                    
+    chronograf:
+        image: chronograf
+        ports:
+            - 8888:8888
+        command: chronograf --influxdb-url=http://influx:8086
+        depends_on:
+            - influx
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            resources:
+                limits:
+                    cpus: "0.10"
+                    memory: "128M"
+                reservations:
+                    cpus: "0.05"
+                    memory: "64M"
 
     cadvisor:
         image: google/cadvisor
@@ -127,15 +194,39 @@ services:
                 reservations:
                     cpus: "0.05"
                     memory: "64M"
-        networks:
-            - monitoring         
+            
+            
+    #logspout:
+        #image: gliderlabs/logspout:latest
+        #networks:
+            #- logging
+        #volumes:
+            #- /etc/hostname:/etc/host_hostname:ro
+            #- /var/run/docker.sock:/var/run/docker.sock
+        #ports:
+            #- "8001:80"
+        #deploy:
+            #mode: global
+            #resources:
+                #limits:
+                    #cpus: "0.10"
+                    #memory: "128M"
+                #reservations:
+                    #cpus: "0.05"
+                    #memory: "64M"
+        #networks:
+            #- monitoring       
+            
+    #influx:
+        #image: influxdb
+        #environment:
+            #INFLUXDB_DB: mydb
+        #volumes:
+            #- influx:/var/lib/influxdb            
+          
 
 #volumes:
   #influx:
     #driver: local
   #grafana:
-    #driver: local
-    
-networks:
-  monitoring:           
-  storm:       
+    #driver: local 

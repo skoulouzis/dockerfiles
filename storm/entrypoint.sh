@@ -12,7 +12,7 @@ else
 fi
 
 wget -O topology.jar $TOPOLOGY_URL
-
+sleep 1
 storm jar topology.jar $TOPOLOGY_MAIN $TOPOLOGY_NAME arg1 arg1
 
 if [ $? -eq 0 ]; then
