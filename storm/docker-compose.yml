@@ -5,13 +5,28 @@ services:
         image: zookeeper
         deploy:
             restart_policy:
-                condition: on-failure 
+                condition: on-failure
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
+            #resources:
+                #limits:
+                    #cpus: "0.10"
+                    #memory: "128M"
+                #reservations:
+                    #cpus: "0.05"
+                    #memory: "64M"
                 
     rabbit:
         image: rabbitmq:3-management
         deploy:
             restart_policy:
-                condition: on-failure      
+                condition: on-failure
+            replicas: 1
+            placement:
+                constraints:
+                - node.role == manager
         ports:
             - 15672:15672         
             - 5672:5672                
@@ -31,7 +46,8 @@ services:
             - influx
         deploy:
             restart_policy:
-                condition: on-failure              
+                condition: on-failure
+            replicas: 1             
         ports:
             - 6627:6627          
 
@@ -54,7 +70,7 @@ services:
             - 8000:8000     
             
     data_reader:
-        image: data_reader
+        image: alogo53/observations-influx
         environment:
             RABBIT_HOST: rabbit
             RABBIT_PORT: 15672
@@ -69,23 +85,30 @@ services:
             - influx
         deploy:
             restart_policy:
-                condition: on-failure                           
+                condition: on-failure
+            replicas: 1
+            #resources:
+                #limits:
+                    #cpus: "0.05"
+                    #memory: "32M"
+                #reservations:
+                    #cpus: "0.025"
+                    #memory: "16M"
             
             
-    ui:
-        image: storm
-        command: storm ui
-        depends_on:
-            - nimbus
-            - zookeeper
-            - supervisor
-        deploy:
-            restart_policy:
-                condition: on-failure    
-            placement:
-                constraints: [node.role == manager]                  
-        ports:
-            - 8081:8080     
+    #ui:
+        #image: storm
+        #command: storm ui
+        #depends_on:
+            #- nimbus
+            #- zookeeper
+            #- supervisor
+        #deploy:
+            #restart_policy:
+                #condition: on-failure
+            #replicas: 1
+        #ports:
+            #- 8081:8080     
             
         
       
@@ -99,19 +122,16 @@ services:
             #- influx:/var/lib/influxdb
         deploy:
             replicas: 1
-            placement:
-                constraints:
-                - node.role == manager
-            resources:
-                limits:
-                    cpus: "0.10"
-                    memory: "128M"
-                reservations:
-                    cpus: "0.05"
-                    memory: "64M"
+            #resources:
+                #limits:
+                    #cpus: "0.10"
+                    #memory: "128M"
+                #reservations:
+                    #cpus: "0.05"
+                    #memory: "64M"
                     
     rabbit-reporter :
-        image: rabbit-reporter
+        image: alogo53/rabbit-metrics-reporter
         environment:
             RABBIT_HOST: rabbit
             RABBIT_PORT: 15672
@@ -120,12 +140,22 @@ services:
             INFLUX_HOST: influx
             INFLUX_PORT: 8086
             INFLUX_DB: mydb
+            REPORT_INTERVAL: 1.5
         depends_on:
             - rabbit
-            - influx                          
+            - influx    
+        deploy:
+            replicas: 1
+            #resources:
+                #limits:
+                    #cpus: "0.05"
+                    #memory: "32M"
+                #reservations:
+                    #cpus: "0.025"
+                    #memory: "16M"
 
     grafana:
-        image: grafana-docker
+        image: grafana/grafana
         environment:
             DS_NAME: InfluxDB
             DS_TYPE: InfluxDB
@@ -140,37 +170,30 @@ services:
             - influx
         deploy:
             replicas: 1
-            placement:
-                constraints:
-                - node.role == manager
-            resources:
-                limits:
-                    cpus: "0.10"
-                    memory: "128M"
-                reservations:
-                    cpus: "0.05"
-                    memory: "64M"
+            #placement:
+                #constraints:
+                #- node.role == manager
+            #resources:
+                #limits:
+                    #cpus: "0.10"
+                    #memory: "128M"
+                #reservations:
+                    #cpus: "0.05"
+                    #memory: "64M"
                     
                     
-    chronograf:
-        image: chronograf
-        ports:
-            - 8888:8888
-        command: chronograf --influxdb-url=http://influx:8086
-        depends_on:
-            - influx
-        deploy:
-            replicas: 1
-            placement:
-                constraints:
-                - node.role == manager
-            resources:
-                limits:
-                    cpus: "0.10"
-                    memory: "128M"
-                reservations:
-                    cpus: "0.05"
-                    memory: "64M"
+    #chronograf:
+        #image: chronograf
+        #ports:
+            #- 8888:8888
+        #command: chronograf --influxdb-url=http://influx:8086
+        #depends_on:
+            #- influx
+        #deploy:
+            #replicas: 1
+            ##placement:
+                ##constraints:
+                ##- node.role == manager
 
     cadvisor:
         image: google/cadvisor
@@ -187,13 +210,13 @@ services:
             - influx
         deploy:
             mode: global
-            resources:
-                limits:
-                    cpus: "0.10"
-                    memory: "128M"
-                reservations:
-                    cpus: "0.05"
-                    memory: "64M"
+            #resources:
+                #limits:
+                    #cpus: "0.05"
+                    #memory: "32M"
+                #reservations:
+                    #cpus: "0.025"
+                    #memory: "16M"
             
             
     #logspout:
