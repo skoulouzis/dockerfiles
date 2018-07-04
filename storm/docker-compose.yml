@@ -96,19 +96,19 @@ services:
                     #memory: "16M"
             
             
-    #ui:
-        #image: storm
-        #command: storm ui
-        #depends_on:
-            #- nimbus
-            #- zookeeper
-            #- supervisor
-        #deploy:
-            #restart_policy:
-                #condition: on-failure
-            #replicas: 1
-        #ports:
-            #- 8081:8080     
+    ui:
+        image: storm
+        command: storm ui -c nimbus.host=nimbus
+        depends_on:
+            - nimbus
+            - zookeeper
+            - supervisor
+        deploy:
+            restart_policy:
+                condition: on-failure
+            replicas: 1
+        ports:
+            - 8081:8080
             
         
       
@@ -140,7 +140,7 @@ services:
             INFLUX_HOST: influx
             INFLUX_PORT: 8086
             INFLUX_DB: mydb
-            REPORT_INTERVAL: 1.5
+            REPORT_INTERVAL: 10
         depends_on:
             - rabbit
             - influx    
