@@ -22,6 +22,17 @@ else
     exit -1
 fi
 
-tail -f screenlog.0
 
+while true
+do
+    string=`screen -ls`
+    if [[ $string = *"No Sockets found"* ]]; then
+    exit -1
+    fi
+    tail screenlog.0
+    sleep 1
+done
+
+
+# tail -f screenlog.0
 # tail -f /dev/null

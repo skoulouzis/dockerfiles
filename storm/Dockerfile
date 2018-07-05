@@ -18,4 +18,4 @@ CMD ["/entrypoint.sh"]
 
 
 
-#sudo docker build -t storm-submitter .
+#sudo docker build -t docker-storm .

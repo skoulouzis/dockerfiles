@@ -5,6 +5,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y 
 RUN apt-get install -y openssh-client curl fetch-crl
 
+RUN ls 
 RUN  curl -L http://go.egi.eu/fedcloud.ui | /bin/bash -
 RUN fetch-crl --httptimeout 3 --verbose 
 

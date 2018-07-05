@@ -66,6 +66,10 @@ services:
         deploy:
             restart_policy:
                 condition: on-failure
+            resources:
+                limits:
+                    cpus: '0.7'
+                    memory: '1500M'
         ports:
             - 8000:8000     
             
@@ -89,10 +93,10 @@ services:
             replicas: 1
             #resources:
                 #limits:
-                    #cpus: "0.05"
+                    #cpus: "0.5"
                     #memory: "32M"
                 #reservations:
-                    #cpus: "0.025"
+                    #cpus: "0.5"
                     #memory: "16M"
             
             
@@ -148,10 +152,10 @@ services:
             replicas: 1
             #resources:
                 #limits:
-                    #cpus: "0.05"
+                    #cpus: "0.5"
                     #memory: "32M"
                 #reservations:
-                    #cpus: "0.025"
+                    #cpus: "0.5"
                     #memory: "16M"
 
     grafana:
