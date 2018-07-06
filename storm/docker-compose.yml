@@ -12,10 +12,7 @@ services:
                 - node.role == manager
             #resources:
                 #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
-                    #cpus: "0.05"
+                    #cpus: "0.01"
                     #memory: "64M"
                 
     rabbit:
@@ -27,6 +24,10 @@ services:
             placement:
                 constraints:
                 - node.role == manager
+            #resources:
+                #limits:
+                    #cpus: "0.4"
+                    #memory: "700M"
         ports:
             - 15672:15672         
             - 5672:5672                
@@ -40,11 +41,20 @@ services:
             TOPOLOGY_ARGS: arg1 arg2
             INFLUX_URI: http://influx:8086
             RABBIT_HOST: rabbit
+            WORKERS: 1
+            TASKS: 20
         depends_on:
             - zookeeper
             - rabbit
             - influx
         deploy:
+            placement:
+                constraints:
+                - node.role == manager   
+            #resources:
+                #limits:
+                    #cpus: '0.4'
+                    #memory: '512M'
             restart_policy:
                 condition: on-failure
             replicas: 1             
@@ -56,8 +66,10 @@ services:
         image: storm
         environment:
             INFLUX_URI: http://influx:8086
-            RABBIT_HOST: rabbit            
-        command: storm supervisor
+            RABBIT_HOST: rabbit    
+            WORKERS: 2
+            TASKS: 5
+        command: storm supervisor -c supervisor.slots.ports=[6700]
         depends_on:
             - nimbus
             - zookeeper
@@ -68,7 +80,7 @@ services:
                 condition: on-failure
             resources:
                 limits:
-                    cpus: '0.65'
+                    cpus: '0.5'
                     memory: '1400M'
         ports:
             - 8000:8000     
@@ -88,16 +100,16 @@ services:
             - rabbit
             - influx
         deploy:
+            placement:
+                constraints:
+                - node.role == manager        
             restart_policy:
                 condition: on-failure
             replicas: 1
             #resources:
                 #limits:
-                    #cpus: "0.5"
-                    #memory: "32M"
-                #reservations:
-                    #cpus: "0.5"
-                    #memory: "16M"
+                    #cpus: "0.08"
+                    #memory: "8M"
             
             
     ui:
@@ -108,8 +120,15 @@ services:
             - zookeeper
             - supervisor
         deploy:
+            placement:
+                constraints:
+                - node.role == manager        
             restart_policy:
                 condition: on-failure
+            #resources:
+                #limits:
+                    #cpus: "0.2"
+                    #memory: "256M"
             replicas: 1
         ports:
             - 8081:8080
@@ -122,15 +141,12 @@ services:
         image: influxdb
         environment:
             INFLUXDB_DB: cadvisor
-        #volumes:
-            #- influx:/var/lib/influxdb
+        volumes:
+            - influx:/var/lib/influxdb
         deploy:
             replicas: 1
             #resources:
                 #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
                     #cpus: "0.05"
                     #memory: "64M"
                     
@@ -148,16 +164,11 @@ services:
         depends_on:
             - rabbit
             - influx    
-        deploy:
-            replicas: 1
+        #deploy:
             #resources:
                 #limits:
-                    #cpus: "0.5"
+                    #cpus: "0.04"
                     #memory: "32M"
-                #reservations:
-                    #cpus: "0.5"
-                    #memory: "16M"
-
     grafana:
         image: grafana/grafana
         environment:
@@ -168,22 +179,19 @@ services:
             DS_DB: cadvisor
         ports:
             - 3000:3000
-        #volumes:
-            #- grafana:/var/lib/grafana
+        volumes:
+            - grafana:/var/lib/grafana
         depends_on:
             - influx
         deploy:
             replicas: 1
-            #placement:
-                #constraints:
-                #- node.role == manager
+            placement:
+                constraints:
+                - node.role == manager
             #resources:
                 #limits:
-                    #cpus: "0.10"
-                    #memory: "128M"
-                #reservations:
-                    #cpus: "0.05"
-                    #memory: "64M"
+                    #cpus: "0.01"
+                    #memory: "32M"
                     
                     
     #chronograf:
@@ -214,13 +222,10 @@ services:
             - influx
         deploy:
             mode: global
-            #resources:
-                #limits:
-                    #cpus: "0.05"
-                    #memory: "32M"
-                #reservations:
-                    #cpus: "0.025"
-                    #memory: "16M"
+            resources:
+                limits:
+                    cpus: "0.03"
+                    memory: "32M"
             
             
     #logspout:
@@ -242,18 +247,11 @@ services:
                     #cpus: "0.05"
                     #memory: "64M"
         #networks:
-            #- monitoring       
-            
-    #influx:
-        #image: influxdb
-        #environment:
-            #INFLUXDB_DB: mydb
-        #volumes:
-            #- influx:/var/lib/influxdb            
+            #- monitoring
           
 
-#volumes:
-  #influx:
-    #driver: local
-  #grafana:
-    #driver: local 
+volumes:
+  influx:
+    driver: local
+  grafana:
+    driver: local 
