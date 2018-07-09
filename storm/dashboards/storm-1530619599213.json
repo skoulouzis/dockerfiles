@@ -123,10 +123,8 @@
                 "type": "mean"
               },
               {
-                "params": [
-                  "10"
-                ],
-                "type": "moving_average"
+                "params": [],
+                "type": "cumulative_sum"
               }
             ]
           ],
@@ -134,7 +132,7 @@
             {
               "key": "message_stats",
               "operator": "=",
-              "value": "publish_details.rate"
+              "value": "deliver"
             }
           ]
         }
@@ -142,7 +140,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "publish rate",
+      "title": "Messages",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -216,7 +214,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "ack_rate",
+          "alias": "ack.rate{queue: $tag_queue}",
           "groupBy": [
             {
               "params": [
@@ -271,7 +269,7 @@
           ]
         },
         {
-          "alias": "publish.rate",
+          "alias": "publish.rate{queue: $tag_queue}",
           "groupBy": [
             {
               "params": [
@@ -329,7 +327,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Queue Rates",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -403,6 +401,7 @@
       "steppedLine": false,
       "targets": [
         {
+          "alias": "consumers{queue: $tag_queue}",
           "groupBy": [
             {
               "params": [
@@ -522,6 +521,7 @@
       },
       "lines": true,
       "linewidth": 1,
+      "links": [],
       "nullPointMode": "null",
       "percentage": false,
       "pointradius": 5,
@@ -533,6 +533,7 @@
       "steppedLine": false,
       "targets": [
         {
+          "alias": "consumer utilization{queue: $tag_queue}",
           "groupBy": [
             {
               "params": [
@@ -590,7 +591,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Consumer Utilization",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -642,8 +643,8 @@
       },
       "id": 6,
       "legend": {
-        "avg": false,
-        "current": false,
+        "avg": true,
+        "current": true,
         "max": true,
         "min": true,
         "show": true,
@@ -816,6 +817,7 @@
       "steppedLine": false,
       "targets": [
         {
+          "alias": "quality: $tag_quality",
           "groupBy": [
             {
               "params": [
@@ -952,5 +954,5 @@
   "timezone": "",
   "title": "New dashboard Copy",
   "uid": "paq1Ybviz",
-  "version": 6
+  "version": 8
 }
