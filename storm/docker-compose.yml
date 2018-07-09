@@ -42,7 +42,7 @@ services:
             INFLUX_URI: http://influx:8086
             RABBIT_HOST: rabbit
             WORKERS: 1
-            TASKS: 20
+            TASKS: 4
         depends_on:
             - zookeeper
             - rabbit
@@ -67,8 +67,8 @@ services:
         environment:
             INFLUX_URI: http://influx:8086
             RABBIT_HOST: rabbit    
-            WORKERS: 2
-            TASKS: 5
+            WORKERS: 1
+            TASKS: 4
         command: storm supervisor -c supervisor.slots.ports=[6700]
         depends_on:
             - nimbus
@@ -80,8 +80,8 @@ services:
                 condition: on-failure
             resources:
                 limits:
-                    cpus: '0.5'
-                    memory: '1400M'
+                    cpus: '0.4'
+                    memory: '2048M'
         ports:
             - 8000:8000     
             
